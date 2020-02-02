@@ -110,6 +110,12 @@ function shuffleRandomNumber(array) {
   return array;
 }
 
+// С.3 Функция нахождения темплейта и нужного тега в нем
+var getTemplateFromMarkup = function (tagTemplate, tagInTemplate) {
+  var foundTemplatePhoto = document.querySelector(tagTemplate).content.querySelector(tagInTemplate);
+  var templatePhoto = foundTemplatePhoto.cloneNode(true);
+  return templatePhoto;
+};
 
 // 1 Функция создания одного слота для фотки
 var createPhotoElementObject = function () {
@@ -219,13 +225,6 @@ var addPhotoComment = function (NUMBER_PEOPLE, commentNumberArray) {
   }
 };
 
-// С.3 Функция нахождения темплейта и нужного тега в нем
-var getTemplateFromMarkup = function (tagTemplate, tagInTemplate) {
-  var foundTemplatePhoto = document.querySelector(tagTemplate).content.querySelector(tagInTemplate);
-  var templatePhoto = foundTemplatePhoto.cloneNode(true);
-  return templatePhoto;
-};
-
 // 1.8 Функция записи количества лайков, коментов и ссылку к одной фотке
 var writeLikeCommentSrcPhoto = function (photoFeautreArray) {
   var foundTemplate = getTemplateFromMarkup('#picture', '.picture');
@@ -258,3 +257,4 @@ addPhotoLike(NUMBER_PEOPLE);
 addPhotoLink(exclNumberArrayForDescriptions);
 addPhotoComment(NUMBER_PEOPLE, generatePhotoCommentNumber(NUMBER_PEOPLE));
 showAllPhoto(photoFeautreArray);
+
