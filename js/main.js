@@ -1,16 +1,106 @@
 /* eslint-disable no-shadow */
 'use strict';
-// 0.2 Данная переменная будет содержать финмальный массив из 25 фотографий. В него будут записаны все данные каждой фотографии
-var readyPhoto;
-var uniqueNumber;
+// 0 Контстанты, к-ые управляют кекстой
+var RULES = {
+  PHOTO: {
+    COUNT: 25,
+    LIKE: {
+      MIN: 15,
+      MAX: 200
+    }
+  },
 
-// C.1 генератор случайных чисел с повторением имен
+  NAME_AVATAR: {
+    MIN: 1,
+    MAX: 6
+  },
+
+  COMMENT: {
+    MIN: 1,
+    MAX: 6
+  },
+};
+
+// 0.1 Объект с массивом, который будет заполнен данными для всех фоток.
+var photo = {
+  ready: []
+};
+
+// 0.2 Объект с наборами заготовок для коментов и описаний фоток
+var placeholderData = {
+  nameTemplate: ['Чебупели', 'Жмых', 'Шоколадный заяц', 'Жорж', 'Ося', 'Насос', 'Дизель', 'Апанасовна', 'Шпротик'],
+
+  photoComment: ['Всё отлично!',
+    'В целом всё неплохо. Но не всё.',
+    'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
+    'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
+    'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
+    'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!',
+    'Я просто выгляжу как лось, а в душе я бабочка.',
+    'Все это видели?! Ибо я отказываюсь это повторять!',
+    'Меня вообще-то сложно удивить... О! Синяя машина!',
+    'Я сидел тихо, мирно. Потом проголодался. Дальше, как в тумане.',
+    'Странно, тут заперто... Как будто нас уже ждали.',
+    'Не пытайся сложить слова в предложения — не твоё это.',
+    'Оставь меня, старушка, я в печали…',
+    'Я, пожалуй, пойду. Потому что, знаете... хочу быть подальше отсюда.',
+    'Как тебя вообще занесло в Испанский монастырь?',
+    'Соблюдай акт воздержания против звуков.',
+    'Как задолбали эти тупые правила: не есть кота, не бить посуду, не есть кота.',
+    'Надо будет Любе сказать, чтоб наркотики пересчитала!',
+    'И ты, очевидно, не так меня понял, раз так быстро согласился.'
+  ],
+
+  photoDescription: ['Давно хочу написать вирус. С чего начать?',
+    'Главное посередине не встретиться',
+    'У меня такие зубы, что приходится говорить вместо я вылечил - я починил.',
+    '- понимаешь, похоже на то, что я ей симпатичен. Ну а она мне... как это будет, наоборот...',
+    'не могу избавиться от ощущения что наговнокодил',
+    'Мой Т9 считает меня женщиной приличной, но прожорливой, поэтому, когда я пишу «садо-мазо», заботливо поправляет меня на «сало-мало».',
+    'Даёшь сурдопереводчика в нижнем углу экрана! Пускай жестами текст передает.',
+    'Порадуй меня. Или хотя бы не сильно расстрой.',
+    'Общительный я... и пьющий.',
+    'Реальный мир для тех, кто не может представить что-то получше.',
+    'Давно хочу написать вирус. С чего начать?',
+    'Ты поможешь мне, а я за это приму помощь от тебя!',
+    'Как много интересного вы говорите! Как жаль, что это меня мало интересует.',
+    'Не стоит горевать. Люди постоянно умирают. Как знать, может и ты завтра проснешься мертвым.',
+    'Иногда я лежу в постели и думаю, что ничто не заставит меня встать. А потом чувствую, как подо мной становится мокро, и понимаю, что ошибался.',
+    'За алкоголь! Причину и решение всех проблем.',
+    'Психиатр нам не нужен. Мы и так знаем, что наш ребенок со сдвигом.',
+    'Мардж, не хочу тебя пугать, но, кажется, я тебя люблю...',
+    'Я сделаю для тебя все, что угодно... если это не слишком сложно.',
+    'Если ты счастлив и осознаешь это, выругайся.',
+    'В католицизме больше глупых правил, чем в видеопрокате.',
+    'Радиация убивает только тех, кто ее боится.',
+    'Я белый мужчина от 18 до 49. И все слушают меня, какую бы ахинею я ни нес.',
+    'Попытка — первый шаг к провалу.',
+    'Атомный реактор — как женщина. Нужно только прочитать инструкцию и вовремя нажать на правильную кнопку.',
+    'Психиатр нам ни к чему. Мы и сами знаем, что ребенок у нас со сдвигом.',
+    'Пение — это низшая форма общения.',
+    'В спорте главное не победа. Главное — чтобы удалось напиться!',
+    'Всю мою жизнь я мечтал об одном — достичь всех своих целей.',
+    'Не может ведь бог успевать повсюду, правда?',
+    'Не бывает невкусных пончиков.',
+    'Можно работать на нескольких работах одновременно и все равно быть лентяем.',
+    'Я не стану лукавить: быть отцом непросто. Не то что матерью.',
+    'Всегда лучше наблюдать за процессом, чем делать что-то самому.',
+    'В моем доме мы подчиняемся только законам термодинамики.',
+    'Жизнь — это просто куча всякой фигни, которая происходит.',
+    'Во Франции никто не зовет меня «жирным придурком». Здесь я гурман!',
+    'Дети — те же обезьяны. Только шума от них больше.',
+    'Я вижу улыбки своих детей. И понимаю, что они затеяли что-то недоброе.'
+  ]
+};
+
+// C.1 генератор случайных чисел в зад. диапазане
 var getRandomNumber = function (min, max) {
   var randomNumberLastName = min + Math.random() * (max + 1 - min);
   return Math.floor(randomNumberLastName);
 };
 
-// С.2 Функция перемешивания массива чисел так, чтобы исключить повторения
+// С.2 Функция сортирует в случайном порядке любой массив. Используется чтобы исключить повторения при генерации адрсов фоток
+// и описаний к фоткам
 function shuffleRandomNumber(array) {
   var currentIndex = array.length; var temporaryValue; var randomIndex;
 
@@ -34,113 +124,66 @@ var getTemplateFromMarkup = function (tagTemplate, tagInTemplate) {
   return templatePhoto;
 };
 
-// 1 Функция создания одного слота для фотки
-var addPhotoFeature = function () {
-  var photoFeature = {};
-  photoFeature.name = '';
-  photoFeature.avatar = '';
-  photoFeature.description = '';
-  photoFeature.comment = [];
-  photoFeature.url = '';
-  photoFeature.like = '';
-
-  return photoFeature;
-};
-
-// 1.1 Функция создания массива из слотов из 1
-var createPhotoElement = function (NUMBER_PEOPLE) {
-  var photoStorage = [];
-  for (var i = 0; i < RULES.PHOTO.COUNT; i++) {
-    var photoElement = addPhotoFeature();
-    photoStorage.push(photoElement);
-  }
-  return photoStorage;
-};
-
-// 1.2 Функция генерит имена и линки на аватарки. При этом используется одни рандомайзер, так как одни и тот же автор должен иметь одинаковую аватарку.
-// то бишь Жорж везде должен иметь аватарку с номером 5. А не так что в одном месте аватарка у него номер 1 а в другом 5 а в третьем 7
-var addOwnerName = function (NUMBER_PEOPLE) {
-  for (var i = 0; i < RULES.PHOTO.COUNT; i++) {
-    var randomNumberOwnerName = getRandomNumber(RULES.NAME_AVATAR.MIN, RULES.NAME_AVATAR.MAX);
-    readyPhoto[i].name = placeholderData.nameTemplate[randomNumberOwnerName];
-
-    var ownerAvatarLink = 'img/avatar-' + randomNumberOwnerName + '.svg';
-    readyPhoto[i].avatar = ownerAvatarLink;
-  }
-};
-
-
-// 1.4 Функция генерации массива чисел от 1 до количество фоток, которые не повторяются
-var getUniqueNumber = function (NUMBER_PEOPLE) {
+// C.4 Генерирует массив к-ом равным к-во фоток, и перемешеивает числа между собой посредством С.2
+var getUniqueNumber = function () {
   var uniqueNumbers = [];
 
   for (var i = 1; i <= RULES.PHOTO.COUNT; i++) {
     uniqueNumbers.push(i);
     shuffleRandomNumber(uniqueNumbers);
   }
-  return uniqueNumbers;
+  return uniqueNumbers; // ограничитель количества выводов
 };
 
-// 1.4.1 Функция выбора и записи подписи к фотке на базе данных из 1.4
-var addPhotoDescription = function (NUMBER_PEOPLE, uniqueNumber) {
-  for (var i = 0; i < uniqueNumber.length; i++) {
-    var randomPhotoDescriptionNumber = uniqueNumber[i];
-
-    var photoDescriptionText = placeholderData.photoDescription[randomPhotoDescriptionNumber];
-    readyPhoto[i].description = photoDescriptionText;
-
-  }
-  return readyPhoto;
-};
-
-
-// 1.5 Функция генерации и записи лайков под каждой фоткой
-var addPhotoLike = function (NUMBER_PEOPLE) {
-  for (var i = 0; i < RULES.PHOTO.COUNT; i++) {
-    var randomNumberLike = getRandomNumber(RULES.PHOTO.LIKE.MIN, RULES.PHOTO.LIKE.MAX);
-    readyPhoto[i].like = randomNumberLike;
-  }
-};
-
-// 1.6 Функция генерации и записи линков на фотки, которые не повторяются
-var addPhotoLink = function (uniqueNumber) {
-  for (var i = 0; i <= uniqueNumber.length - 1; i++) {
-    var randomPhotoLink = uniqueNumber[i];
-    var photoLink = 'photos/' + randomPhotoLink + '.jpg';
-    readyPhoto[i].url = photoLink;
-  }
-
-  return readyPhoto;
-};
-
-
-// 1.7 Функция к-ая формирует массив с количеством фотографий к каждой фотки
-var getCommentNumber = function (NUMBER_PEOPLE) {
+// 1.2 Функция в случайном порядке присваивает количество коментов к каждой фотке,
+// а потом на основании этого берет заготовки и формирует массив с коментами
+var getCommentNumber = function () {
   var commentNumbers = [];
   for (var i = 0; i < RULES.PHOTO.COUNT; i++) {
-
-    var randomCommentNumber = getRandomNumber(RULES.COMMENT.MIN, RULES.COMMENT.MAX);
-    commentNumbers.push(randomCommentNumber);
-  }
-  return commentNumbers;
-};
-
-// 1.7.1  Функция записыывает к каждой фотографии массив коментов на основании сгенер. количества из 1.7.
-// Т е функция 1.7 говорит у фотки 1 будет 4 комента, а функция 1.7 формирует массив длинной 4 комента и наполняет их.
-// Потом передает полученный массив в массив объекта
-var addPhotoComment = function (NUMBER_PEOPLE, commentNumbers) {
-  for (var i = 0; i < RULES.PHOTO.COUNT; i++) {
+    commentNumbers.push(getRandomNumber(RULES.COMMENT.MIN, RULES.COMMENT.MAX));
     var commentBuffer = [];
     for (var j = 0; j < commentNumbers[i]; j++) {
       var randomCommentNumber = getRandomNumber(1, placeholderData.photoComment.length);
       var comment = placeholderData.photoComment[randomCommentNumber];
       commentBuffer.push(comment);
     }
-    readyPhoto[i].comment = commentBuffer;
   }
+  return commentBuffer;
 };
 
-// 1.8 Функция записи количества лайков, коментов и ссылку к одной фотке
+// 1.3 Функция наполняет поля ОДНОЙ фотки (кроме адреса(1.3.2) и подписи(1.3.3))
+var getPhotoFeature = function () {
+  var readyPhoto = {};
+  // Записывается для одной фотки имя и аватарка юзера
+  var randomNumber = getRandomNumber(RULES.NAME_AVATAR.MIN, RULES.NAME_AVATAR.MAX);
+  readyPhoto.name = placeholderData.nameTemplate[randomNumber];
+  readyPhoto.avatar = 'img/avatar-' + randomNumber + '.svg';
+  readyPhoto.like = getRandomNumber(RULES.PHOTO.LIKE.MIN, RULES.PHOTO.LIKE.MAX);
+  readyPhoto.comment = getCommentNumber(RULES.PHOTO.COUNT); // выполняет функцию 1.2
+  return readyPhoto;
+};
+
+// 1.3.1 Функция наполнения ВСЕХ фоток на базе 1.3
+var getReadyPhoto = function () {
+  var filledPhoto = [];
+  for (var k = 0; k < RULES.PHOTO.COUNT; k++) {
+    filledPhoto.push(getPhotoFeature(k));
+  }
+  return filledPhoto;
+};
+
+
+// 1.3.2 Функция записывает после 1.3.1 адрес фотки и подпись к фотке
+var getFulllUrl = function (filledPhoto) {
+  var sortedNumbers = getUniqueNumber(RULES.PHOTO.COUNT);
+  for (var l = 0; l < RULES.PHOTO.COUNT; l++) {
+    filledPhoto[l].url = 'photos/' + sortedNumbers[l] + '.jpg';
+    filledPhoto[l].desceription = placeholderData.photoDescription[l];
+  }
+  return filledPhoto;
+};
+
+// 1.4 Функция записи в разметку количества лайков, коментов и ссылку к одной фотке
 var writeLikeCommentSrcPhoto = function (readyPhoto) {
   var foundTemplate = getTemplateFromMarkup('#picture', '.picture');
   var pictureInfo = foundTemplate.querySelector('.picture__info');
@@ -153,7 +196,7 @@ var writeLikeCommentSrcPhoto = function (readyPhoto) {
   return foundTemplate;
 };
 
-// 1.8.1 Функция генерирует готовые данные для фоток
+// 1.4.1 Функция генерирует готовые данные для фоток
 var showAllPhoto = function (readyPhoto) {
   var connectBlock = document.querySelector('.pictures');
   var fragment = document.createDocumentFragment();
@@ -163,13 +206,7 @@ var showAllPhoto = function (readyPhoto) {
   }
   connectBlock.appendChild(fragment);
 };
-addPhotoFeature();
-readyPhoto = createPhotoElement(RULES.PHOTO.COUNT);
-addOwnerName(RULES.PHOTO.COUNT);
-uniqueNumber = getUniqueNumber(RULES.PHOTO.COUNT);
-addPhotoDescription(RULES.PHOTO.COUNT, uniqueNumber);
-addPhotoLike(RULES.PHOTO.COUNT);
-addPhotoLink(uniqueNumber);
-addPhotoComment(RULES.PHOTO.COUNT, getCommentNumber(RULES.PHOTO.COUNT));
-showAllPhoto(readyPhoto);
-console.log(readyPhoto);
+
+photo.ready = getReadyPhoto();
+getFulllUrl(photo.ready);
+showAllPhoto(photo.ready);
