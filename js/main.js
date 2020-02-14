@@ -210,3 +210,411 @@ var showAllPhoto = function (readyPhoto) {
 photo.ready = getReadyPhoto();
 getFulllUrl(photo.ready);
 showAllPhoto(photo.ready);
+
+
+// UTIL.JS
+// У.1 Делает элемент видимым
+window.showElement = function (element) {
+  element.classList.remove('hidden');
+};
+
+// У.2 Скрывает элемент
+window.hideElement = function (element) {
+  element.classList.add('hidden');
+};
+
+// U.3 Функция оживляет слайдер
+// Так как у нас каждый эффект имеет свой слайдер и каждый эффект имеет свой
+// диапазон входных значений (от 0 до 1 или 0 до 100), поэтому я создал функцию
+// которая генерит типовой слайдер и через effectType позволяет выбрать формулу для
+// выходного эффекта.
+(function () {
+  window.slider = function (sliderTag, minValue, maxtValue, effectType) {
+    var lineEmpty = sliderTag.querySelector('.effect-level__line');
+    var depth = sliderTag.querySelector('.effect-level__depth');
+    var pin = sliderTag.querySelector('.effect-level__pin');
+    var output = sliderTag.querySelector('.effect-level__line');
+    var limitMovementX;
+    var pinCoord;
+    output.value = minValue;
+
+    function movePin(evt) {
+      limitMovementX = {
+        min: 0, // эффект выключен
+        max: lineEmpty.offsetLeft + lineEmpty.offsetWidth - pin.offsetWidth
+      };
+      pinCoord = pin.offsetLeft + evt.movementX;
+      console.log(pinCoord + ' yhumb');
+      if (pinCoord < limitMovementX.min) {
+        pinCoord = limitMovementX.min;
+      }
+      if (pinCoord > limitMovementX.max) {
+        pinCoord = limitMovementX.max;
+      }
+
+      // Далее идет переключение между расчетом выхода для разных эффектов
+      switch (effectType) {
+        case 'marvin':
+          output.value = Math.round(pinCoord * (maxtValue - minValue) / limitMovementX.max);
+          console.log(output.value);
+          pin.style.left = pinCoord + 'px';
+          depth.style.width = pinCoord + 'px';
+          return;
+
+        case 'sepia':
+          output.value = pinCoord * (maxtValue - minValue) / limitMovementX.max;
+          console.log(output.value);
+          pin.style.left = pinCoord + 'px';
+          depth.style.width = pinCoord + 'px';
+          return;
+      }
+    }
+
+    function onPinMouseUp() {
+      document.removeEventListener('mousemove', movePin);
+      document.removeEventListener('mouseup', onPinMouseUp);
+    }
+    pin.addEventListener('mousedown', function () {
+      pin.addEventListener('dragstart', function (evt) {
+        evt.preventDefault();
+      });
+      document.addEventListener('mousemove', movePin);
+      document.addEventListener('mouseup', onPinMouseUp);
+    });
+  };
+}());
+
+
+// DIALOG.JS
+// Д.1 Функция открывает диалоговое окно по изменению поля файл.
+(function () {
+  var body = document.querySelector('body');
+  var clickedElement = document.querySelector('#upload-select-image');
+  var dialogBox = document.querySelector('.img-upload__overlay');
+
+  var showDialogBox = function () {
+    // dialogBox.classList.remove('hidden');
+    window.showElement(dialogBox);
+    body.classList.add('modal-open');
+  };
+
+  clickedElement.addEventListener('change', showDialogBox);
+})();
+
+// Д.2 Функция закрывает диалоговое окно по клику на керстик
+(function () {
+  var body = document.querySelector('body');
+  var clickedElement = document.querySelector('.img-upload__cancel');
+  var uploadButton = document.querySelector('#upload-select-image');
+  var dialogBox = document.querySelector('.img-upload__overlay');
+
+  var hideDialogBox = function () {
+    window.hideElement(dialogBox);
+    body.classList.remove('modal-open');
+    clickedElement.removeEventListener('click' && 'keydown', hideDialogBox);
+    uploadButton.reset();
+  };
+
+  document.addEventListener('keydown', function (evt) {
+    if (evt.key === 'Escape') {
+      hideDialogBox();
+    }
+  });
+
+  clickedElement.addEventListener('click', hideDialogBox);
+})();
+
+// SCALE.JS
+// S.1 Увеличивает размер изображения по нажатию на +
+(function () {
+  var photoPreview = document.querySelector('.img-upload__preview');
+  var imgPreview = photoPreview.querySelector('img');
+  var divHidden = photoPreview.querySelector('div');
+  var zoomInButton = document.querySelector('.scale__control--bigger');
+  var zoomStorage = document.querySelector('.scale__control--value');
+
+  var zoomIn = function () {
+    if (parseInt(zoomStorage.value, 10) < 400) {
+      var newValaue = parseInt(zoomStorage.value, 10) + 25;
+      zoomStorage.value = newValaue + '%';
+
+      var scaleValue = newValaue / 100;
+      imgPreview.style = 'transform: scale(' + scaleValue + ')';
+      divHidden.style = 'overflow: auto';
+      // divHidden.style добавлен, так как без него изображение при зуме
+      // выскакивает из контейнера. Поэтому я добавил в html доп. div и
+      // ему присваиваю стиль, который скрывает излишки изображения и
+      // показывает скролл внутри
+    } else {
+      alert('Масштаб должен быть менее 400%');
+    }
+  };
+
+  zoomInButton.addEventListener('click', zoomIn); // закртывается слушатешль
+
+})(); // закрывают самовызов.
+
+// S.2 Уменьшает размер изображения по нажатию на -
+(function () {
+  var photoPreview = document.querySelector('.img-upload__preview');
+  var imgPreview = photoPreview.querySelector('img');
+  var zoomInButton = document.querySelector('.scale__control--smaller');
+  var zoomStorage = document.querySelector('.scale__control--value');
+
+  var zoomOut = function () {
+    if (parseInt(zoomStorage.value, 10) > 25) {
+      var newValaue = parseInt(zoomStorage.value, 10) - 25;
+      zoomStorage.value = newValaue + '%';
+
+      var scaleValue = newValaue / 100;
+      console.log(scaleValue);
+      imgPreview.style = 'transform: scale(' + scaleValue + ')';
+
+      console.log(imgPreview);
+    } else {
+      alert('Масштаб должен быть менее 25%');
+    }
+  };
+
+  zoomInButton.addEventListener('click', zoomOut); // закртывается слушатешль
+})(); // закрывают самовызов.
+
+
+// EFFECTS.JS
+// E.1 Переключает эффекты и применяет их к фото
+(function () {
+  var photoPreview = document.querySelector('.img-upload__preview');
+  var imgPreview = photoPreview.querySelector('img');
+  var dialogBox = document.querySelector('.img-upload__overlay');
+  var effectsVolume = dialogBox.querySelector('.img-upload__effect-level');
+  var effectList = document.querySelector('.effects__list');
+
+  // var removeFx = function () {
+  //   console.log(imgPreview.removeAttribute);
+  //   imgPreview.removeAttribute('class');
+  // };
+
+  var applyEffects = function (evt) {
+    (function () {
+      console.log(imgPreview.removeAttribute);
+      imgPreview.removeAttribute('class');
+    })();
+
+    var eventTarget = evt.target;
+
+    if (eventTarget.value !== 'none') {
+      imgPreview.classList.add('effects__preview--' + eventTarget.value);
+      if (effectsVolume.classList.contains !== 'hidden') {
+        window.showElement(effectsVolume);
+      }
+    } else {
+      window.hideElement(effectsVolume);
+    }
+  };
+  effectList.addEventListener('change', applyEffects);
+})();
+
+// E.2 Функция для оживляения ползунка
+(function () {
+  window.slider(document.querySelector('.img-upload__effect-level'), 0, 100, 'marvin');
+})();
+
+
+// HASHTAG.JS
+// Валидацмя тегов
+
+(function () {
+  var tagInput = document.querySelector('.text__hashtags');
+  var submitButton = document.querySelector('#upload-submit');
+
+  var checkCondOneTag = function (tagStorage) {
+    var REG_EXP = /(^)(#[a-zA-Zа-яА-Я\d]*$)/ig;
+    var checkedRegExp = REG_EXP.test(tagStorage);
+    window.isTagOk = '';
+
+    if (tagStorage.length > 0) {
+      switch (true) {
+        case checkedRegExp !== true:
+          tagInput.setCustomValidity('Хэш-тег после решётки не должен содержать пробелы, специальные символы, символы пунктуации, эмодзи');
+          tagInput.removeAttribute('style');
+          window.isTagOk = 'false';
+          return;
+
+        case tagStorage[0] !== '#':
+          tagInput.setCustomValidity('Хэш-тег начинается с символа # (решётка)');
+          tagInput.removeAttribute('style');
+          window.isTagOk = 'false';
+          return;
+
+        case tagStorage.length === 1:
+          tagInput.setCustomValidity('Хэш-тег не может состоять только из одной решётки');
+          tagInput.removeAttribute('style');
+          window.isTagOk = 'false';
+          return;
+
+        case tagStorage.length >= 20:
+          tagInput.setCustomValidity('Максимальная длина хэш-тега 20 символов, включая решётку');
+          tagInput.removeAttribute('style');
+          window.isTagOk = 'false';
+          return;
+
+        case tagStorage.indexOf('#', 1) > 0:
+          tagInput.setCustomValidity('Хэш-теги разделяются пробелами');
+          tagInput.removeAttribute('style');
+          window.isTagOk = 'false';
+          return;
+
+        default:
+          tagInput.setCustomValidity('');
+          window.isTagOk = 'true';
+          return;
+      }// finished switch
+    } else {
+      window.isTagOk = 'true';
+    } // finished if tagstorage
+  }; // заканчивается checkConOneTag
+
+
+  var checkerHandler = function (evt) {
+  
+    var tagCollector = tagInput.value.toLowerCase().split(' '); // собрали все наши теги из инпута
+    var areTagsOk = [];
+    for (var i = 0; i < tagCollector.length; i++) {
+      checkCondOneTag(tagCollector[i]);
+      console.log(window.isTagOk1);
+      if (window.isTagOk === 'false') {
+        evt.preventDefault();
+        console.log('23423');
+      }
+      areTagsOk.push(window.isTagOk);
+      console.log(areTagsOk);
+    }
+
+    // var isThereFalse = areTagsOk.indexOf('false');
+    // console.log(isThereFalse);
+
+    // if (isThereFalse >= 0) {
+    //   evt.preventDefault();
+    //   console.log('sdfsd');
+    // } else {
+    //   tagInput.setCustomValidity('');
+    // }
+  };
+
+  // submitButton.addEventListener('click', function (evt) {
+  //   var tagCollector = tagInput.value.toLowerCase().split(' '); // собрали все наши теги из инпута
+  //   evt.preventDefault();
+  //   var areTagsOk = [];
+  //   for (var i = 0; i < tagCollector.length; i++) {
+  //     checkCondOneTag(tagCollector[i]);
+  //     areTagsOk.push(window.isTagOk);
+  //     console.log(areTagsOk);
+  //   }
+  // }); // finished submitlistener
+
+  tagInput.addEventListener('blur', checkerHandler);
+  submitButton.addEventListener('click', checkerHandler);
+
+})(); // finished IIFE
+
+
+// (function () {
+//   var effectsList = document.getElementsByName('effect');
+//   var effectContainer = document.querySelector('.effects__list');
+//   var photoPreview = document.querySelector('.img-upload__preview');
+
+//   window.presetsEffects = [
+//     '',
+//     'effects__preview--chrome',
+//     'effects__preview--sepia',
+//     'effects__preview--marvin',
+//     'effects__preview--phobos',
+//     'effects__preview--heat'
+//   ];
+
+//   var checkSelectedEffectHandler = function () {
+//     for (var i = 0; i < effectsList.length; i++) {
+//       if (effectsList[i].checked) {
+//         console.log(effectsList[i]);
+//         console.log('выбран^^^^^');
+//         photoPreview.classList.add(window.presetsEffects[i]);
+//       };
+
+//       if (effectsList[i].unchecked) {
+//         console.log(effectsList[i]);
+//         console.log('выбран^^^^^');
+//         photoPreview.classList.remove(window.presetsEffects[i]);
+//       };
+
+//     }
+//   };
+
+//   effectContainer.addEventListener('change', checkSelectedEffectHandler);
+
+// })();
+
+
+// (function () {
+//   var photoPreview = document.querySelector('.img-upload__preview');
+//   var effectContainer = document.querySelector('.effects__list');
+
+//   var effectHandler = function (evt) {
+//     var valueFx = evt.target.value;
+
+//     var chooseEffect = function (valueFx) {
+//       switch (valueFx) {
+//         case 'chrome':
+//           return 'effects__preview--chrome';
+//         case 'sepia':
+//           return 'effects__preview--sepia';
+//         case 'marvin':
+//           return 'effects__preview--marvin';
+//         case 'phobos':
+//           return 'effects__preview--phobos';
+//         case 'heat':
+//           return 'effects__preview--heat';
+//         case 'none':
+//           return '';
+//       }
+//     };
+
+//     var add = chooseEffect(valueFx);
+//     photoPreview.classList.add(add);
+//     console.log(photoPreview);
+//   };
+
+//   effectContainer.addEventListener('change', effectHandler);
+// })();
+
+
+// (function () {
+//   var photoPreview = document.querySelector('.img-upload__preview');
+//   var effectContainer = document.querySelector('.effects__list');
+
+//   var effectHandler = function (evt) {
+//     var valueFx = evt.target.value;
+
+//     var chooseEffect = function (valueFx) {
+//       switch (valueFx) {
+//         case 'chrome':
+//           return 'effects__preview--chrome';
+//         case 'sepia':
+//           return 'effects__preview--sepia';
+//         case 'marvin':
+//           return 'effects__preview--marvin';
+//         case 'phobos':
+//           return 'effects__preview--phobos';
+//         case 'heat':
+//           return 'effects__preview--heat';
+//         case 'none':
+//           return '';
+//       }
+//     };
+
+//     var add = chooseEffect(valueFx);
+//     photoPreview.classList.add(add);
+//     console.log(photoPreview);
+//   };
+
+//   effectContainer.addEventListener('change', effectHandler);
+// }) ();
