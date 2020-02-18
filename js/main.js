@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-shadow */
 'use strict';
 // 0 Контстанты, к-ые управляют кекстой
@@ -212,18 +213,57 @@ getFulllUrl(photo.ready);
 showAllPhoto(photo.ready);
 
 
+// VAR.JS
+// Содержит глобальные штуки
+// V.1 Массив содержит правила для сайта
+window.RULES = {
+  UPLD_COMMENTS: {
+    MIN_LENGTH: 0,
+    MAX_LENGTH: 140
+  },
+  UPLD_TAGS: {
+    DIVIDER_SYMBOL: '#',
+    // REG_EXP: '/(^)(#[a-zA-Zа-яА-Я\d]*$)/ig', НЕ РАБОТАЕТ
+    MIN_LENGTH: 3,
+    MAX_LENGTH: 20,
+    MAX_AMOUNT_TAG: 5
+  },
+  ZOOM: {
+    MIN: 25,
+    MAX: 400,
+    STEP: 25
+  },
+};
+
+// Флаги по умолчанию, чтобы работал ESC на закрытие (функции U.5 и H.1 и T.3)
+window.commentFocused = false;
+window.tagFocused = false;
+
 // UTIL.JS
-// У.1 Делает элемент видимым
+// U.1 Делает элемент видимым
 window.showElement = function (element) {
   element.classList.remove('hidden');
 };
 
-// У.2 Скрывает элемент
+// U.2 Скрывает элемент
 window.hideElement = function (element) {
   element.classList.add('hidden');
 };
 
-// U.3 Функция оживляет слайдер
+// U.3 Блокировка действия по умолчанию
+window.preventAction = function (evt) {
+  evt.preventDefault();
+};
+
+// U.5 Закрытие кнопкой ESC
+var closeEsc = function (evt) {
+  if (evt.key === 'Escape' && window.commentFocused === false && window.tagFocused === false) {
+    window.hideDialogBox();
+  }
+};
+
+
+// U.4 Функция оживляет слайдер
 // Так как у нас каждый эффект имеет свой слайдер и каждый эффект имеет свой
 // диапазон входных значений (от 0 до 1 или 0 до 100), поэтому я создал функцию
 // которая генерит типовой слайдер и через effectType позволяет выбрать формулу для
@@ -275,15 +315,17 @@ window.hideElement = function (element) {
       document.removeEventListener('mouseup', onPinMouseUp);
     }
     pin.addEventListener('mousedown', function () {
-      pin.addEventListener('dragstart', function (evt) {
-        evt.preventDefault();
-      });
+      pin.addEventListener('dragstart', window.preventAction);
       document.addEventListener('mousemove', movePin);
       document.addEventListener('mouseup', onPinMouseUp);
     });
   };
 }());
 
+// U.4 Запред дефолтного действия
+window.preventAction = function (evt) {
+  evt.preventDefault();
+};
 
 // DIALOG.JS
 // Д.1 Функция открывает диалоговое окно по изменению поля файл.
@@ -304,25 +346,22 @@ window.hideElement = function (element) {
 // Д.2 Функция закрывает диалоговое окно по клику на керстик
 (function () {
   var body = document.querySelector('body');
-  var clickedElement = document.querySelector('.img-upload__cancel');
+  var crossButton = document.querySelector('.img-upload__cancel');
   var uploadButton = document.querySelector('#upload-select-image');
   var dialogBox = document.querySelector('.img-upload__overlay');
 
-  var hideDialogBox = function () {
+  window.hideDialogBox = function () {
     window.hideElement(dialogBox);
     body.classList.remove('modal-open');
-    clickedElement.removeEventListener('click' && 'keydown', hideDialogBox);
     uploadButton.reset();
+
   };
 
-  document.addEventListener('keydown', function (evt) {
-    if (evt.key === 'Escape') {
-      hideDialogBox();
-    }
-  });
+  document.addEventListener('keydown', closeEsc);
 
-  clickedElement.addEventListener('click', hideDialogBox);
+  crossButton.addEventListener('click', window.hideDialogBox);
 })();
+
 
 // SCALE.JS
 // S.1 Увеличивает размер изображения по нажатию на +
@@ -330,27 +369,33 @@ window.hideElement = function (element) {
   var photoPreview = document.querySelector('.img-upload__preview');
   var imgPreview = photoPreview.querySelector('img');
   var divHidden = photoPreview.querySelector('div');
-  var zoomInButton = document.querySelector('.scale__control--bigger');
+  var zoomOutButton = document.querySelector('.scale__control--bigger');
+  var zoomInButton = document.querySelector('.scale__control--smaller');
   var zoomStorage = document.querySelector('.scale__control--value');
 
   var zoomIn = function () {
-    if (parseInt(zoomStorage.value, 10) < 400) {
-      var newValaue = parseInt(zoomStorage.value, 10) + 25;
-      zoomStorage.value = newValaue + '%';
+    var newValaue = parseInt(zoomStorage.value, 10) + window.RULES.ZOOM.STEP;
+    zoomStorage.value = newValaue + '%';
 
-      var scaleValue = newValaue / 100;
-      imgPreview.style = 'transform: scale(' + scaleValue + ')';
-      divHidden.style = 'overflow: auto';
-      // divHidden.style добавлен, так как без него изображение при зуме
-      // выскакивает из контейнера. Поэтому я добавил в html доп. div и
-      // ему присваиваю стиль, который скрывает излишки изображения и
-      // показывает скролл внутри
-    } else {
-      alert('Масштаб должен быть менее 400%');
+    var scaleValue = newValaue / 100;
+    imgPreview.style = 'transform: scale(' + scaleValue + ')';
+    divHidden.style = 'overflow: auto';
+    // divHidden.style добавлен, так как без него изображение при зуме
+    // выскакивает из контейнера. Поэтому я добавил в html доп. div и
+    // ему присваиваю стиль, который скрывает излишки изображения и
+    // показывает скролл внутри
+
+
+    if (parseInt(zoomStorage.value, 10) === window.RULES.ZOOM.MAX) {
+      zoomOutButton.disabled = true;
+    }
+    if (parseInt(zoomStorage.value, 10) > window.RULES.ZOOM.MIN) {
+      zoomInButton.disabled = false;
     }
   };
 
-  zoomInButton.addEventListener('click', zoomIn); // закртывается слушатешль
+  zoomOutButton.addEventListener('click', zoomIn); // закртывается слушатешль
+
 
 })(); // закрывают самовызов.
 
@@ -359,26 +404,28 @@ window.hideElement = function (element) {
   var photoPreview = document.querySelector('.img-upload__preview');
   var imgPreview = photoPreview.querySelector('img');
   var zoomInButton = document.querySelector('.scale__control--smaller');
+  var zoomOutButton = document.querySelector('.scale__control--bigger');
   var zoomStorage = document.querySelector('.scale__control--value');
 
   var zoomOut = function () {
-    if (parseInt(zoomStorage.value, 10) > 25) {
-      var newValaue = parseInt(zoomStorage.value, 10) - 25;
-      zoomStorage.value = newValaue + '%';
+    var newValaue = parseInt(zoomStorage.value, 10) - window.RULES.ZOOM.STEP;
+    zoomStorage.value = newValaue + '%';
 
-      var scaleValue = newValaue / 100;
-      console.log(scaleValue);
-      imgPreview.style = 'transform: scale(' + scaleValue + ')';
+    var scaleValue = newValaue / 100;
+    console.log(scaleValue);
+    imgPreview.style = 'transform: scale(' + scaleValue + ')';
+    console.log(imgPreview);
 
-      console.log(imgPreview);
-    } else {
-      alert('Масштаб должен быть менее 25%');
+    if (parseInt(zoomStorage.value, 10) === window.RULES.ZOOM.MIN) {
+      zoomInButton.disabled = true;
+    }
+    if (parseInt(zoomStorage.value, 10) < window.RULES.ZOOM.MAX) {
+      zoomOutButton.disabled = false;
     }
   };
 
   zoomInButton.addEventListener('click', zoomOut); // закртывается слушатешль
 })(); // закрывают самовызов.
-
 
 // EFFECTS.JS
 // E.1 Переключает эффекты и применяет их к фото
@@ -388,12 +435,6 @@ window.hideElement = function (element) {
   var dialogBox = document.querySelector('.img-upload__overlay');
   var effectsVolume = dialogBox.querySelector('.img-upload__effect-level');
   var effectList = document.querySelector('.effects__list');
-
-  // var removeFx = function () {
-  //   console.log(imgPreview.removeAttribute);
-  //   imgPreview.removeAttribute('class');
-  // };
-
   var applyEffects = function (evt) {
     (function () {
       console.log(imgPreview.removeAttribute);
@@ -422,199 +463,156 @@ window.hideElement = function (element) {
 
 // HASHTAG.JS
 // Валидацмя тегов
-
 (function () {
+  // Находим поле ввода и кнопку отправить
   var tagInput = document.querySelector('.text__hashtags');
-  var submitButton = document.querySelector('#upload-submit');
 
-  var checkCondOneTag = function (tagStorage) {
-    var REG_EXP = /(^)(#[a-zA-Zа-яА-Я\d]*$)/ig;
-    var checkedRegExp = REG_EXP.test(tagStorage);
-    window.isTagOk = '';
+  // H.1 Устаналиваем и снимаем флаги для разрешения / запрета закрытия по ESC (используются в U.5)
+  tagInput.onfocus = function () {
+    window.tagFocused = true;
+    console.log(window.tagFocused);
+  };
 
-    if (tagStorage.length > 0) {
-      switch (true) {
-        case checkedRegExp !== true:
-          tagInput.setCustomValidity('Хэш-тег после решётки не должен содержать пробелы, специальные символы, символы пунктуации, эмодзи');
-          tagInput.removeAttribute('style');
-          window.isTagOk = 'false';
-          return;
+  tagInput.onblur = function () {
+    window.tagFocused = false;
+    console.log(window.tagFocused);
+  };
 
-        case tagStorage[0] !== '#':
-          tagInput.setCustomValidity('Хэш-тег начинается с символа # (решётка)');
-          tagInput.removeAttribute('style');
-          window.isTagOk = 'false';
-          return;
+  // H.2 Функция проверяет на соотвествие правилам 1 тэг и резултьтаты вности в объект
+  var checkOneTag = function (tagStorage) {
 
-        case tagStorage.length === 1:
-          tagInput.setCustomValidity('Хэш-тег не может состоять только из одной решётки');
-          tagInput.removeAttribute('style');
-          window.isTagOk = 'false';
-          return;
+    var checkedTag = {}; // этот объект будет содержать результаты проверок тэга
+    // валидатор регулярки
+    // var regExp = window.RULES.UPLD_TAGS.REG_EXP;  ===== Эта строка выдает Err regExp.test is not a function
+    var regExp = /(^)(#[a-zA-Zа-яА-Я\d]*$)/ig;
+    var checkedRegExp = regExp.test(tagStorage);
 
-        case tagStorage.length >= 20:
-          tagInput.setCustomValidity('Максимальная длина хэш-тега 20 символов, включая решётку');
-          tagInput.removeAttribute('style');
-          window.isTagOk = 'false';
-          return;
 
-        case tagStorage.indexOf('#', 1) > 0:
-          tagInput.setCustomValidity('Хэш-теги разделяются пробелами');
-          tagInput.removeAttribute('style');
-          window.isTagOk = 'false';
-          return;
-
-        default:
-          tagInput.setCustomValidity('');
-          window.isTagOk = 'true';
-          return;
-      }// finished switch
-    } else {
-      window.isTagOk = 'true';
-    } // finished if tagstorage
+    // записывает в объект результаты проверки условий
+    checkedTag.regExp = checkedRegExp;
+    checkedTag.isSharp = tagStorage[0] === window.RULES.UPLD_TAGS.DIVIDER_SYMBOL;
+    checkedTag.length = tagStorage.length > window.RULES.UPLD_TAGS.MIN_LENGTH && tagStorage.length < window.RULES.UPLD_TAGS.MAX_LENGTH;
+    return checkedTag;
   }; // заканчивается checkConOneTag
 
 
-  var checkerHandler = function (evt) {
-  
-    var tagCollector = tagInput.value.toLowerCase().split(' '); // собрали все наши теги из инпута
-    var areTagsOk = [];
-    for (var i = 0; i < tagCollector.length; i++) {
-      checkCondOneTag(tagCollector[i]);
-      console.log(window.isTagOk1);
-      if (window.isTagOk === 'false') {
-        evt.preventDefault();
-        console.log('23423');
+  // Н.3 Функция проверяет циклом все тэги, которые к ней попали
+  var checkAllTag = function () {
+
+    // evt.preventDefault();
+    var enteredTags = tagInput.value.split(' '); // обрабатывает поле ввода, приводит все в нижний регистр и делает массив (split)
+    var checkedTags = []; // массив с объектами (ТЭГАМИ), каждый из которых содержит ошибки
+    var errArray = []; // массив будет содержать НАЗВАНИЕ тэга и ОШИБКУ к-ую удалось найти
+
+    var checkedTagErr = {// объект содержит набор ошибок, которые подставляются в сообщение об ошибке
+      errSharp: 'должен начинаться с символа #\n',
+      errRegExp: 'должен быть без специальных символов\n',
+      errLength: 'должен содержать от 2 до 20 символов включая #\n',
+      errAmount: 'должно быть не более 5 тэгов'
+    };
+
+    for (var i = 0; i < enteredTags.length; i++) { // цикл, который проверяет все тэги на ошибки ==> напол. массив с ними
+
+      var checkedOneTag = checkOneTag(enteredTags[i]); // запускает функцию Н.1 для тэга из инпута
+      var objectToArray = Object.values(checkedOneTag); // из массива объектов делает просто МАСИВ
+      // ^^^ такое преобрахование нужно для глобальной проверки: если преобр. массив содержит
+      // ХОТЯ БЫ 1 false, то будет заход в IF с ошибками.
+      checkedTags.push(checkedOneTag);
+
+      console.log(enteredTags[0].length);
+
+      if (enteredTags[0].length > 0) { // ПЕРВАЯ ГЛОБАЛЬНАЯ ПРОВЕРКА: если поле тэгов НЕ пустое, то идем дальше
+        tagInput.removeAttribute('style');
+        if (objectToArray.includes(false) || checkedTags.length >= window.RULES.UPLD_TAGS.MAX_AMOUNT_TAG) { // Проверяем на есть ли в массиве тэга ХОТЯ бы один FALSE или к-во тэгов больше 5
+          tagInput.style = 'border: 2px solid #e60000'; // обводим поле красным
+          if (checkedTags[i].isSharp === false) {
+            errArray.push(enteredTags[i] + ' ' + checkedTagErr.errSharp); // в массив записываем ошибки для вывода в сообщ. Формат название тэга -- ошибка
+          } // if #
+
+          if (checkedTags[i].regExp === false) {
+            errArray.push(enteredTags[i] + ' ' + checkedTagErr.errRegExp);
+          } // if regExp
+
+          if (checkedTags[i].length === false) {
+            errArray.push(enteredTags[i] + ' ' + checkedTagErr.errLength);
+          } // if length
+
+          if (checkedTags.length >= window.RULES.UPLD_TAGS.MAX_AMOUNT_TAG) { // контролирует количество тэгов (не более)
+            errArray.push(checkedTagErr.errAmount);
+          } // if arr length
+
+          tagInput.setCustomValidity('Найдены ошибки:\n' + errArray); // вывод сообщения об ВСЕХ ошиб. в формате: название тэга -- ошибка
+        } else {
+          console.log('works');
+          tagInput.setCustomValidity('');
+          tagInput.style = 'border: 2px solid green';
+        }
+      } else {
+        tagInput.setCustomValidity('');
+        console.log('works');
+        tagInput.removeAttribute('style');
       }
-      areTagsOk.push(window.isTagOk);
-      console.log(areTagsOk);
-    }
+    } // end for i
 
-    // var isThereFalse = areTagsOk.indexOf('false');
-    // console.log(isThereFalse);
-
-    // if (isThereFalse >= 0) {
-    //   evt.preventDefault();
-    //   console.log('sdfsd');
-    // } else {
-    //   tagInput.setCustomValidity('');
-    // }
-  };
-
-  // submitButton.addEventListener('click', function (evt) {
-  //   var tagCollector = tagInput.value.toLowerCase().split(' '); // собрали все наши теги из инпута
-  //   evt.preventDefault();
-  //   var areTagsOk = [];
-  //   for (var i = 0; i < tagCollector.length; i++) {
-  //     checkCondOneTag(tagCollector[i]);
-  //     areTagsOk.push(window.isTagOk);
-  //     console.log(areTagsOk);
-  //   }
-  // }); // finished submitlistener
-
-  tagInput.addEventListener('blur', checkerHandler);
-  submitButton.addEventListener('click', checkerHandler);
+  }; // end checkAlltag
+  tagInput.addEventListener('blur', checkAllTag);
 
 })(); // finished IIFE
 
+// TEXTAREA.JS
+(function () {
+  // T.1 Поле текста автоматически подстраивается под контент + ресайз только по высоте (чтобы не рвало при вытягивании по ширине)
+  var textArea = document.getElementsByTagName('textarea');
+  for (var i = 0; i < textArea.length; i++) {
+    textArea[i].setAttribute('style', 'height:' + (textArea[i].scrollHeight) + 'px;overflow-y:auto;' + 'resize: vertical');
+    textArea[i].addEventListener('input', OnInput, false);
+  }
+  function OnInput() {
+    this.style.height = 'auto';
+    this.style.height = (this.scrollHeight) + 'px';
+  }
+})();
 
-// (function () {
-//   var effectsList = document.getElementsByName('effect');
-//   var effectContainer = document.querySelector('.effects__list');
-//   var photoPreview = document.querySelector('.img-upload__preview');
+(function () {
+  // Т.2 Контроль длины поля ввода
+  var counterPlace = document.querySelector('.text__counter');
+  var textArea = document.querySelector('.text__description');
+  var submitButton = document.querySelector('#upload-submit');
 
-//   window.presetsEffects = [
-//     '',
-//     'effects__preview--chrome',
-//     'effects__preview--sepia',
-//     'effects__preview--marvin',
-//     'effects__preview--phobos',
-//     'effects__preview--heat'
-//   ];
+  // T.3 Устаналиваем и снимаем флаги для разрешения / запрета закрытия по ESC (используются в U.5)
+  textArea.onfocus = function () {
+    window.commentFocused = true;
+    console.log(window.commentFocused);
+  };
 
-//   var checkSelectedEffectHandler = function () {
-//     for (var i = 0; i < effectsList.length; i++) {
-//       if (effectsList[i].checked) {
-//         console.log(effectsList[i]);
-//         console.log('выбран^^^^^');
-//         photoPreview.classList.add(window.presetsEffects[i]);
-//       };
+  textArea.onblur = function () {
+    window.commentFocused = false;
+    console.log(window.commentFocused);
+  };
 
-//       if (effectsList[i].unchecked) {
-//         console.log(effectsList[i]);
-//         console.log('выбран^^^^^');
-//         photoPreview.classList.remove(window.presetsEffects[i]);
-//       };
+  var counterSymbol;
 
-//     }
-//   };
+  var checkLengthTextArea = function () {
+    var textAreaLength = textArea.value.length;
+    counterSymbol = textAreaLength;
+    counterPlace.style = 'color: #717171; font-size: 12px; position: absolute; bottom: 10px; left: 80px;  text-transform: initial';
+    counterPlace.textContent = 'Введено ' + counterSymbol + ' из' + ' 140 символов';
+    if (counterSymbol > window.RULES.UPLD_COMMENTS.MIN_LENGTH && counterSymbol <= window.RULES.UPLD_COMMENTS.MAX_LENGTH) {
+      textArea.classList.add('border-success');
+    }
 
-//   effectContainer.addEventListener('change', checkSelectedEffectHandler);
+    if (counterSymbol >= window.RULES.UPLD_COMMENTS.MAX_LENGTH) {
+      counterPlace.style = 'color: #e60000; font-size: 12px; position: absolute; bottom: 10px; left: 80px;  text-transform: initial';
+      counterPlace.textContent = 'Достигнут лимит в 140 символов 😶';
+      textArea.classList.add('border-error');
+      textArea.classList.remove('border-success');
+      submitButton.addEventListener('click', window.preventAction);
 
-// })();
+    } else {
+      counterPlace.removeAttribute('class');
+      textArea.classList.remove('border-error');
+    }
+  };
 
-
-// (function () {
-//   var photoPreview = document.querySelector('.img-upload__preview');
-//   var effectContainer = document.querySelector('.effects__list');
-
-//   var effectHandler = function (evt) {
-//     var valueFx = evt.target.value;
-
-//     var chooseEffect = function (valueFx) {
-//       switch (valueFx) {
-//         case 'chrome':
-//           return 'effects__preview--chrome';
-//         case 'sepia':
-//           return 'effects__preview--sepia';
-//         case 'marvin':
-//           return 'effects__preview--marvin';
-//         case 'phobos':
-//           return 'effects__preview--phobos';
-//         case 'heat':
-//           return 'effects__preview--heat';
-//         case 'none':
-//           return '';
-//       }
-//     };
-
-//     var add = chooseEffect(valueFx);
-//     photoPreview.classList.add(add);
-//     console.log(photoPreview);
-//   };
-
-//   effectContainer.addEventListener('change', effectHandler);
-// })();
-
-
-// (function () {
-//   var photoPreview = document.querySelector('.img-upload__preview');
-//   var effectContainer = document.querySelector('.effects__list');
-
-//   var effectHandler = function (evt) {
-//     var valueFx = evt.target.value;
-
-//     var chooseEffect = function (valueFx) {
-//       switch (valueFx) {
-//         case 'chrome':
-//           return 'effects__preview--chrome';
-//         case 'sepia':
-//           return 'effects__preview--sepia';
-//         case 'marvin':
-//           return 'effects__preview--marvin';
-//         case 'phobos':
-//           return 'effects__preview--phobos';
-//         case 'heat':
-//           return 'effects__preview--heat';
-//         case 'none':
-//           return '';
-//       }
-//     };
-
-//     var add = chooseEffect(valueFx);
-//     photoPreview.classList.add(add);
-//     console.log(photoPreview);
-//   };
-
-//   effectContainer.addEventListener('change', effectHandler);
-// }) ();
+  textArea.addEventListener('keyup', checkLengthTextArea);
+})();
