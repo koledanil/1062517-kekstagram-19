@@ -18,7 +18,7 @@ var RULES = {
 
   COMMENT: {
     MIN: 1,
-    MAX: 6
+    MAX: 5
   },
 };
 
@@ -212,18 +212,17 @@ photo.ready = getReadyPhoto();
 getFulllUrl(photo.ready);
 showAllPhoto(photo.ready);
 
-
 // VAR.JS
 // Содержит глобальные штуки
-// V.1 Массив содержит правила для сайта
-window.RULES = {
+// V.1 Массив содержит правила для сайта window.ADD_PHOTO_RULES
+window.ADD_PHOTO_RULES = {
   UPLD_COMMENTS: {
     MIN_LENGTH: 0,
     MAX_LENGTH: 140
   },
   UPLD_TAGS: {
     DIVIDER_SYMBOL: '#',
-    // REG_EXP: '/(^)(#[a-zA-Zа-яА-Я\d]*$)/ig', НЕ РАБОТАЕТ
+    REG_EXP: /(^)(#[a-zA-Zа-яА-Я\d]*$)/ig,
     MIN_LENGTH: 3,
     MAX_LENGTH: 20,
     MAX_AMOUNT_TAG: 5
@@ -233,11 +232,13 @@ window.RULES = {
     MAX: 400,
     STEP: 25
   },
+  msg: {
+    errSharp: 'должен начинаться с символа #\n',
+    errRegExp: 'должен быть без специальных символов\n',
+    errLength: 'должен содержать от 2 до 20 символов включая #\n',
+    errAmount: 'должно быть не более 5 тэгов'
+  }
 };
-
-// Флаги по умолчанию, чтобы работал ESC на закрытие (функции U.5 и H.1 и T.3)
-window.commentFocused = false;
-window.tagFocused = false;
 
 // UTIL.JS
 // U.1 Делает элемент видимым
@@ -251,17 +252,9 @@ window.hideElement = function (element) {
 };
 
 // U.3 Блокировка действия по умолчанию
-window.preventAction = function (evt) {
+window.preventActionHandler = function (evt) {
   evt.preventDefault();
 };
-
-// U.5 Закрытие кнопкой ESC
-var closeEsc = function (evt) {
-  if (evt.key === 'Escape' && window.commentFocused === false && window.tagFocused === false) {
-    window.hideDialogBox();
-  }
-};
-
 
 // U.4 Функция оживляет слайдер
 // Так как у нас каждый эффект имеет свой слайдер и каждый эффект имеет свой
@@ -269,7 +262,7 @@ var closeEsc = function (evt) {
 // которая генерит типовой слайдер и через effectType позволяет выбрать формулу для
 // выходного эффекта.
 (function () {
-  window.slider = function (sliderTag, minValue, maxtValue, effectType) {
+  window.slider = function (sliderTag, minValue, maxValue, effectType) {
     var lineEmpty = sliderTag.querySelector('.effect-level__line');
     var depth = sliderTag.querySelector('.effect-level__depth');
     var pin = sliderTag.querySelector('.effect-level__pin');
@@ -278,7 +271,7 @@ var closeEsc = function (evt) {
     var pinCoord;
     output.value = minValue;
 
-    function movePin(evt) {
+    var movePinHandler = function (evt) {
       limitMovementX = {
         min: 0, // эффект выключен
         max: lineEmpty.offsetLeft + lineEmpty.offsetWidth - pin.offsetWidth
@@ -295,56 +288,77 @@ var closeEsc = function (evt) {
       // Далее идет переключение между расчетом выхода для разных эффектов
       switch (effectType) {
         case 'marvin':
-          output.value = Math.round(pinCoord * (maxtValue - minValue) / limitMovementX.max);
+          output.value = Math.round(pinCoord * (maxValue - minValue) / limitMovementX.max);
           console.log(output.value);
           pin.style.left = pinCoord + 'px';
           depth.style.width = pinCoord + 'px';
           return;
 
         case 'sepia':
-          output.value = pinCoord * (maxtValue - minValue) / limitMovementX.max;
+          output.value = pinCoord * (maxValue - minValue) / limitMovementX.max;
           console.log(output.value);
           pin.style.left = pinCoord + 'px';
           depth.style.width = pinCoord + 'px';
           return;
       }
-    }
+    };
 
-    function onPinMouseUp() {
-      document.removeEventListener('mousemove', movePin);
-      document.removeEventListener('mouseup', onPinMouseUp);
-    }
+    var pinMouseUpHandler = function () {
+      document.removeEventListener('mousemove', movePinHandler);
+      document.removeEventListener('mouseup', pinMouseUpHandler);
+    };
+
     pin.addEventListener('mousedown', function () {
-      pin.addEventListener('dragstart', window.preventAction);
-      document.addEventListener('mousemove', movePin);
-      document.addEventListener('mouseup', onPinMouseUp);
+      pin.addEventListener('dragstart', window.preventActionHandler);
+      document.addEventListener('mousemove', movePinHandler);
+      document.addEventListener('mouseup', pinMouseUpHandler);
     });
   };
 }());
 
 // U.4 Запред дефолтного действия
-window.preventAction = function (evt) {
+window.preventActionHandler = function (evt) {
   evt.preventDefault();
 };
 
 // DIALOG.JS
-// Д.1 Функция открывает диалоговое окно по изменению поля файл.
+// D.1 Функция открывает диалоговое окно по изменению поля файл.
 (function () {
   var body = document.querySelector('body');
   var clickedElement = document.querySelector('#upload-select-image');
   var dialogBox = document.querySelector('.img-upload__overlay');
+  var filePicker = document.querySelector('.img-upload__input');
 
-  var showDialogBox = function () {
-    // dialogBox.classList.remove('hidden');
+  var showDialogBoxHandler = function () {
     window.showElement(dialogBox);
     body.classList.add('modal-open');
+    filePicker.blur();
   };
 
-  clickedElement.addEventListener('change', showDialogBox);
+  clickedElement.addEventListener('change', showDialogBoxHandler);
 })();
 
-// Д.2 Функция закрывает диалоговое окно по клику на керстик
+// D.2 Функция закрывает диалоговое окно по клику на керстик и ESC
 (function () {
+  var resetForm = function () {
+    var imgPreview = document.querySelector('.img-upload__preview')
+                             .querySelector('img'); // находим картинку чтоб сбить масштаб
+
+    var zoomInButton = document.querySelector('.scale__control--bigger'); // находим кнопку ув. масштаба
+    var zoomOutButton = document.querySelector('.scale__control--smaller'); // находим кнопку ум. масштаба
+
+    var restoreDefaultEffect = document.querySelector('.img-upload__preview').querySelector('img');
+    restoreDefaultEffect.removeAttribute('class');
+
+    // var counterPlace = document.querySelector('.text__counter'); // находим каунтер
+    // counterPlace.textContent = '123123';
+    // console.log(counterPlace); ===== ошибка 312
+
+    imgPreview.style = 'transform: 0'; // сбиваем масштаб фотки
+    zoomInButton.disabled = false; // сбиваем псевдо с увелич, чтоб кнопка стала активной
+    zoomOutButton.disabled = false;// сбиваем псевдо с уменьше, чтоб кнопка стала активной
+  };
+
   var body = document.querySelector('body');
   var crossButton = document.querySelector('.img-upload__cancel');
   var uploadButton = document.querySelector('#upload-select-image');
@@ -354,11 +368,29 @@ window.preventAction = function (evt) {
     window.hideElement(dialogBox);
     body.classList.remove('modal-open');
     uploadButton.reset();
-
+    resetForm();
   };
 
-  document.addEventListener('keydown', closeEsc);
+  var closeEscHandler = function (evt) {
+    var tagInput = document.querySelector('.text__hashtags');
+    var textArea = document.querySelector('.text__description');
 
+    switch (true) {
+      case evt.key === 'Escape' && evt.target.tagName === 'INPUT':
+        tagInput.blur();
+        return;
+
+      case evt.key === 'Escape' && evt.target.tagName === 'TEXTAREA':
+        textArea.blur();
+        return;
+      case evt.key === 'Escape':
+        window.hideDialogBox();
+        resetForm();
+        return;
+    }
+  };
+
+  document.addEventListener('keydown', closeEscHandler);
   crossButton.addEventListener('click', window.hideDialogBox);
 })();
 
@@ -373,8 +405,8 @@ window.preventAction = function (evt) {
   var zoomInButton = document.querySelector('.scale__control--smaller');
   var zoomStorage = document.querySelector('.scale__control--value');
 
-  var zoomIn = function () {
-    var newValaue = parseInt(zoomStorage.value, 10) + window.RULES.ZOOM.STEP;
+  var zoomInHandler = function () {
+    var newValaue = parseInt(zoomStorage.value, 10) + window.ADD_PHOTO_RULES.ZOOM.STEP;
     zoomStorage.value = newValaue + '%';
 
     var scaleValue = newValaue / 100;
@@ -386,15 +418,15 @@ window.preventAction = function (evt) {
     // показывает скролл внутри
 
 
-    if (parseInt(zoomStorage.value, 10) === window.RULES.ZOOM.MAX) {
+    if (parseInt(zoomStorage.value, 10) === window.ADD_PHOTO_RULES.ZOOM.MAX) {
       zoomOutButton.disabled = true;
     }
-    if (parseInt(zoomStorage.value, 10) > window.RULES.ZOOM.MIN) {
+    if (parseInt(zoomStorage.value, 10) > window.ADD_PHOTO_RULES.ZOOM.MIN) {
       zoomInButton.disabled = false;
     }
   };
 
-  zoomOutButton.addEventListener('click', zoomIn); // закртывается слушатешль
+  zoomOutButton.addEventListener('click', zoomInHandler); // закртывается слушатешль
 
 
 })(); // закрывают самовызов.
@@ -407,8 +439,8 @@ window.preventAction = function (evt) {
   var zoomOutButton = document.querySelector('.scale__control--bigger');
   var zoomStorage = document.querySelector('.scale__control--value');
 
-  var zoomOut = function () {
-    var newValaue = parseInt(zoomStorage.value, 10) - window.RULES.ZOOM.STEP;
+  var zoomOutHandler = function () {
+    var newValaue = parseInt(zoomStorage.value, 10) - window.ADD_PHOTO_RULES.ZOOM.STEP;
     zoomStorage.value = newValaue + '%';
 
     var scaleValue = newValaue / 100;
@@ -416,15 +448,15 @@ window.preventAction = function (evt) {
     imgPreview.style = 'transform: scale(' + scaleValue + ')';
     console.log(imgPreview);
 
-    if (parseInt(zoomStorage.value, 10) === window.RULES.ZOOM.MIN) {
+    if (parseInt(zoomStorage.value, 10) === window.ADD_PHOTO_RULES.ZOOM.MIN) {
       zoomInButton.disabled = true;
     }
-    if (parseInt(zoomStorage.value, 10) < window.RULES.ZOOM.MAX) {
+    if (parseInt(zoomStorage.value, 10) < window.ADD_PHOTO_RULES.ZOOM.MAX) {
       zoomOutButton.disabled = false;
     }
   };
 
-  zoomInButton.addEventListener('click', zoomOut); // закртывается слушатешль
+  zoomInButton.addEventListener('click', zoomOutHandler); // закртывается слушатешль
 })(); // закрывают самовызов.
 
 // EFFECTS.JS
@@ -435,7 +467,7 @@ window.preventAction = function (evt) {
   var dialogBox = document.querySelector('.img-upload__overlay');
   var effectsVolume = dialogBox.querySelector('.img-upload__effect-level');
   var effectList = document.querySelector('.effects__list');
-  var applyEffects = function (evt) {
+  var applyEffectsHandler = function (evt) {
     (function () {
       console.log(imgPreview.removeAttribute);
       imgPreview.removeAttribute('class');
@@ -452,7 +484,7 @@ window.preventAction = function (evt) {
       window.hideElement(effectsVolume);
     }
   };
-  effectList.addEventListener('change', applyEffects);
+  effectList.addEventListener('change', applyEffectsHandler);
 })();
 
 // E.2 Функция для оживляения ползунка
@@ -467,49 +499,30 @@ window.preventAction = function (evt) {
   // Находим поле ввода и кнопку отправить
   var tagInput = document.querySelector('.text__hashtags');
 
-  // H.1 Устаналиваем и снимаем флаги для разрешения / запрета закрытия по ESC (используются в U.5)
-  tagInput.onfocus = function () {
-    window.tagFocused = true;
-    console.log(window.tagFocused);
-  };
-
-  tagInput.onblur = function () {
-    window.tagFocused = false;
-    console.log(window.tagFocused);
-  };
-
   // H.2 Функция проверяет на соотвествие правилам 1 тэг и резултьтаты вности в объект
   var checkOneTag = function (tagStorage) {
 
     var checkedTag = {}; // этот объект будет содержать результаты проверок тэга
     // валидатор регулярки
-    // var regExp = window.RULES.UPLD_TAGS.REG_EXP;  ===== Эта строка выдает Err regExp.test is not a function
-    var regExp = /(^)(#[a-zA-Zа-яА-Я\d]*$)/ig;
+    var regExp = window.ADD_PHOTO_RULES.UPLD_TAGS.REG_EXP;
     var checkedRegExp = regExp.test(tagStorage);
 
 
     // записывает в объект результаты проверки условий
     checkedTag.regExp = checkedRegExp;
-    checkedTag.isSharp = tagStorage[0] === window.RULES.UPLD_TAGS.DIVIDER_SYMBOL;
-    checkedTag.length = tagStorage.length > window.RULES.UPLD_TAGS.MIN_LENGTH && tagStorage.length < window.RULES.UPLD_TAGS.MAX_LENGTH;
+    checkedTag.isSharp = tagStorage[0] === window.ADD_PHOTO_RULES.UPLD_TAGS.DIVIDER_SYMBOL;
+    checkedTag.length = tagStorage.length > window.ADD_PHOTO_RULES.UPLD_TAGS.MIN_LENGTH && tagStorage.length < window.ADD_PHOTO_RULES.UPLD_TAGS.MAX_LENGTH;
     return checkedTag;
   }; // заканчивается checkConOneTag
 
 
   // Н.3 Функция проверяет циклом все тэги, которые к ней попали
-  var checkAllTag = function () {
+  var checkAllTagHandler = function () {
 
     // evt.preventDefault();
     var enteredTags = tagInput.value.split(' '); // обрабатывает поле ввода, приводит все в нижний регистр и делает массив (split)
     var checkedTags = []; // массив с объектами (ТЭГАМИ), каждый из которых содержит ошибки
     var errArray = []; // массив будет содержать НАЗВАНИЕ тэга и ОШИБКУ к-ую удалось найти
-
-    var checkedTagErr = {// объект содержит набор ошибок, которые подставляются в сообщение об ошибке
-      errSharp: 'должен начинаться с символа #\n',
-      errRegExp: 'должен быть без специальных символов\n',
-      errLength: 'должен содержать от 2 до 20 символов включая #\n',
-      errAmount: 'должно быть не более 5 тэгов'
-    };
 
     for (var i = 0; i < enteredTags.length; i++) { // цикл, который проверяет все тэги на ошибки ==> напол. массив с ними
 
@@ -523,29 +536,28 @@ window.preventAction = function (evt) {
 
       if (enteredTags[0].length > 0) { // ПЕРВАЯ ГЛОБАЛЬНАЯ ПРОВЕРКА: если поле тэгов НЕ пустое, то идем дальше
         tagInput.removeAttribute('style');
-        if (objectToArray.includes(false) || checkedTags.length >= window.RULES.UPLD_TAGS.MAX_AMOUNT_TAG) { // Проверяем на есть ли в массиве тэга ХОТЯ бы один FALSE или к-во тэгов больше 5
+        if (objectToArray.includes(false) || checkedTags.length >= window.ADD_PHOTO_RULES.UPLD_TAGS.MAX_AMOUNT_TAG) { // Проверяем на есть ли в массиве тэга ХОТЯ бы один FALSE или к-во тэгов больше 5
           tagInput.style = 'border: 2px solid #e60000'; // обводим поле красным
           if (checkedTags[i].isSharp === false) {
-            errArray.push(enteredTags[i] + ' ' + checkedTagErr.errSharp); // в массив записываем ошибки для вывода в сообщ. Формат название тэга -- ошибка
+            errArray.push(enteredTags[i] + ' ' + window.ADD_PHOTO_RULES.msg.errSharp); // в массив записываем ошибки для вывода в сообщ. Формат название тэга -- ошибка
           } // if #
 
           if (checkedTags[i].regExp === false) {
-            errArray.push(enteredTags[i] + ' ' + checkedTagErr.errRegExp);
+            errArray.push(enteredTags[i] + ' ' + window.ADD_PHOTO_RULES.msg.errRegExp);
           } // if regExp
 
           if (checkedTags[i].length === false) {
-            errArray.push(enteredTags[i] + ' ' + checkedTagErr.errLength);
+            errArray.push(enteredTags[i] + ' ' + window.ADD_PHOTO_RULES.msg.errLength);
           } // if length
 
-          if (checkedTags.length >= window.RULES.UPLD_TAGS.MAX_AMOUNT_TAG) { // контролирует количество тэгов (не более)
-            errArray.push(checkedTagErr.errAmount);
+          if (checkedTags.length >= window.ADD_PHOTO_RULES.UPLD_TAGS.MAX_AMOUNT_TAG) { // контролирует количество тэгов (не более)
+            errArray.push(window.ADD_PHOTO_RULES.msg.errAmount);
           } // if arr length
-
           tagInput.setCustomValidity('Найдены ошибки:\n' + errArray); // вывод сообщения об ВСЕХ ошиб. в формате: название тэга -- ошибка
         } else {
           console.log('works');
           tagInput.setCustomValidity('');
-          tagInput.style = 'border: 2px solid green';
+          tagInput.classList.add = 'border: 2px solid green';
         }
       } else {
         tagInput.setCustomValidity('');
@@ -555,7 +567,7 @@ window.preventAction = function (evt) {
     } // end for i
 
   }; // end checkAlltag
-  tagInput.addEventListener('blur', checkAllTag);
+  tagInput.addEventListener('blur', checkAllTagHandler);
 
 })(); // finished IIFE
 
@@ -563,13 +575,14 @@ window.preventAction = function (evt) {
 (function () {
   // T.1 Поле текста автоматически подстраивается под контент + ресайз только по высоте (чтобы не рвало при вытягивании по ширине)
   var textArea = document.getElementsByTagName('textarea');
-  for (var i = 0; i < textArea.length; i++) {
-    textArea[i].setAttribute('style', 'height:' + (textArea[i].scrollHeight) + 'px;overflow-y:auto;' + 'resize: vertical');
-    textArea[i].addEventListener('input', OnInput, false);
-  }
-  function OnInput() {
+  // ПОЧЕМУ ТО НЕ СРАБАТЫАЕТ var textArea = document.querySelector('.img-upload__form').querySelector('.img-upload__text').querySelector('.text__description');
+  var inputHandler = function () {
     this.style.height = 'auto';
     this.style.height = (this.scrollHeight) + 'px';
+  };
+  for (var i = 0; i < textArea.length; i++) {
+    textArea[i].setAttribute('style', 'height:' + (textArea[i].scrollHeight) + 'px;overflow-y:auto;' + 'resize: vertical');
+    textArea[i].addEventListener('input', inputHandler, false);
   }
 })();
 
@@ -579,40 +592,165 @@ window.preventAction = function (evt) {
   var textArea = document.querySelector('.text__description');
   var submitButton = document.querySelector('#upload-submit');
 
-  // T.3 Устаналиваем и снимаем флаги для разрешения / запрета закрытия по ESC (используются в U.5)
-  textArea.onfocus = function () {
-    window.commentFocused = true;
-    console.log(window.commentFocused);
-  };
-
-  textArea.onblur = function () {
-    window.commentFocused = false;
-    console.log(window.commentFocused);
-  };
-
   var counterSymbol;
-
-  var checkLengthTextArea = function () {
+  // Т.2.1 Отображает каунтер
+  var showCounterHandler = function () {
+    window.showElement(counterPlace);
+  };
+  // Т.2.2 Убирает каунтер
+  var hideCounterHandler = function () {
+    if (counterSymbol === undefined || counterSymbol === 0) {
+      window.hideElement(counterPlace);
+    }
+  };
+  // Т.2.3 Считает символы в тексте
+  var checkLengthTextAreaHandler = function () {
+    window.showElement(counterPlace);
     var textAreaLength = textArea.value.length;
     counterSymbol = textAreaLength;
-    counterPlace.style = 'color: #717171; font-size: 12px; position: absolute; bottom: 10px; left: 80px;  text-transform: initial';
+    counterPlace.style = 'color: #717171; font-size: 12px; position: absolute; bottom: 0px; left: 80px;  text-transform: initial';
     counterPlace.textContent = 'Введено ' + counterSymbol + ' из' + ' 140 символов';
-    if (counterSymbol > window.RULES.UPLD_COMMENTS.MIN_LENGTH && counterSymbol <= window.RULES.UPLD_COMMENTS.MAX_LENGTH) {
-      textArea.classList.add('border-success');
+    if (counterSymbol === 0) {
+      textArea.classList.remove('border-error');
     }
 
-    if (counterSymbol >= window.RULES.UPLD_COMMENTS.MAX_LENGTH) {
-      counterPlace.style = 'color: #e60000; font-size: 12px; position: absolute; bottom: 10px; left: 80px;  text-transform: initial';
+    if (counterSymbol >= window.ADD_PHOTO_RULES.UPLD_COMMENTS.MAX_LENGTH) {
+      counterPlace.style = 'color: #e60000; font-size: 12px; position: absolute; bottom: 0px; left: 80px;  text-transform: initial';
       counterPlace.textContent = 'Достигнут лимит в 140 символов 😶';
       textArea.classList.add('border-error');
-      textArea.classList.remove('border-success');
-      submitButton.addEventListener('click', window.preventAction);
+      submitButton.addEventListener('click', window.preventActionHandler);
 
     } else {
       counterPlace.removeAttribute('class');
       textArea.classList.remove('border-error');
     }
   };
-
-  textArea.addEventListener('keyup', checkLengthTextArea);
+  textArea.addEventListener('focus', showCounterHandler); // Показывает счетчик символов при фокусе
+  textArea.addEventListener('keyup', checkLengthTextAreaHandler); // Считает символы при вводе
+  textArea.addEventListener('blur', hideCounterHandler); // Прячет счетчик при потери фокуса
 })();
+
+
+// ЧЕРНОВИК
+// // Нужно использовать эту версию.
+// var PHOTO_RULES = {
+//   PHOTO: {
+//     COUNT: 25,
+//     DECRIPTION_AMOUNT: 10,
+
+//     LIKE: {
+//       MIN: 15,
+//       MAX: 200
+//     }
+//   },
+
+//   NAME_AVATAR: {
+//     MIN: 1,
+//     MAX: 6,
+//     MAX_NAME_TEMPLATE: 6
+//   },
+
+//   COMMENT: {
+//     MIN: 1,
+//     MAX: 5,
+//     MAX_COMMENT_TEMPLATE: 10,
+//   },
+// };
+
+// //DATA.JS
+// // Данные, которые используются для отображения фоток и так далее.
+// (function () {
+//   // D.1 Создает массив с коментами (аватар автора, текст и имя)
+//   var createComment = function () {
+//     var commentStorage = [];
+//     for (var i = 0; i < getRandomNumber(PHOTO_RULES.COMMENT.MIN, PHOTO_RULES.COMMENT.MAX); i++) {
+//       var randomAvatar = getRandomNumber(PHOTO_RULES.NAME_AVATAR.MIN, PHOTO_RULES.NAME_AVATAR.MAX);
+//       var randomText = getRandomNumber(0, PHOTO_RULES.COMMENT.MAX_COMMENT_TEMPLATE);
+//       var randomName = getRandomNumber(0, PHOTO_RULES.NAME_AVATAR.MAX_NAME_TEMPLATE);
+//       commentStorage [i] = {
+//         avatarComment: 'img/avatar-' + randomAvatar + '.svg',
+//         text: placeholderData.photoComment[randomText],
+//         name: placeholderData.nameTemplate[randomName]
+//       }; // end comments [i]
+//     } // end for
+//     return commentStorage;
+//   };
+
+//   // D.2 Создает финальный массив для фотки (урл, опис, лайки, коменты (вызывает функцию D.1))
+//   var getPhoto = function () {
+//     var photoStorage = [];
+//     for (var i = 0; i < PHOTO_RULES.PHOTO.COUNT; i++) {
+//       var randomLike = getRandomNumber(PHOTO_RULES.PHOTO.LIKE.MIN, PHOTO_RULES.PHOTO.LIKE.MAX);
+//       var randomDescription = getRandomNumber(0, PHOTO_RULES.PHOTO.DECRIPTION_AMOUNT);
+//       var randomAvatar = getRandomNumber(PHOTO_RULES.NAME_AVATAR.MIN, PHOTO_RULES.NAME_AVATAR.MAX);
+
+//       photoStorage [i] = {
+//         url: 'photos/' + (i + 1) + '.jpg',
+//         description: placeholderData.photoDescription[randomDescription],
+//         like: randomLike,
+//         avatarOwner: 'img/avatar-' + randomAvatar + '.svg',
+//         comment: createComment()
+//       };
+//     } // end for
+//     return photoStorage;
+//   };
+
+//   // Выводим результат D.2 в общую видимость
+//   window.preparedPhoto = getPhoto();
+// })(); // end iife
+
+// // PREVIEW.JS
+// // Функция наполнения одной большой фотки
+// (function () {
+
+//   console.log(window.preparedPhoto);
+//   // P.2 Находим родителя и детеныша для клонирования
+//   var imgСommentUl = document.querySelector('.social__comments');
+//   var imgСommentLi = imgСommentUl.querySelector('.social__comment');
+
+//   // P.2.1 Клонирование и наполннение одной фотки
+//   var getCommentImg = function (data) {
+//     var cloneComment = imgСommentLi.cloneNode(true);
+//     var avatar = cloneComment.querySelector('img');
+//     var comment = cloneComment.querySelector('.social__text');
+
+//     avatar.src = data.avatarComment;
+//     avatar.alt = data.name;
+//     comment.textContent = data.text;
+
+//     console.log(cloneComment);
+//     return cloneComment;
+//   };
+
+//   // P.2.2 Отображение большой фотки со всем данными
+//   var showBigPhoto = function (item) {
+//     var bigPicture = document.querySelector('.big-picture');
+//     var imgPicture = bigPicture.querySelector('img');
+//     var imgLike = bigPicture.querySelector('.likes-count');
+//     var imgComment = bigPicture.querySelector('.comments-count');
+//     var imgDescription = bigPicture.querySelector('.social__caption');
+//     var fragment = document.createDocumentFragment(); // сюда запис. детеныши-коментарии
+
+//     (function () {
+//       var commentCounter = document.querySelector('.social__comment-count');
+//       var commentsLoader = document.querySelector('.comments-loader');
+//       commentCounter.classList.add('hidden');
+//       commentsLoader.classList.add('hidden');
+//     })(); // функция скрывает кнопку ЕЩЕ КОМЕНТОВ и СЧЕТЧИК
+
+//     window.showElement(bigPicture); // отображает окно с большой фоткой
+//     imgPicture.src = item.url;
+//     imgLike.textContent = item.like;
+//     imgComment.textContent = item.comment.length;
+//     imgDescription.textContent = item.description;
+
+//     for (var i = 0; i < item.comment.length; i++) {
+//       fragment.appendChild(getCommentImg(item.comment[i]));
+//     } // набиваем детенышами фрагмент
+
+//     imgСommentUl.innerHTML = ''; // очищаем от шаблона
+//     imgСommentUl.appendChild(fragment); // вешаем их на место
+//   };
+
+//   showBigPhoto(window.preparedPhoto[0]);
+// })();

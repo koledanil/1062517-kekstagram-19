@@ -49,9 +49,9 @@
 
                   <!-- Изменение размера изображения -->
                   <fieldset class="img-upload__scale  scale">
-                    <button type="button" class="scale__control  scale__control--smaller scale__control--disabled">Уменьшить</button> <!--scale__control--disabled добавлен чтобы моожно было делать кнопку дис-->
+                    <button type="button" class="scale__control  scale__control--smaller">Уменьшить</button> <!--scale__control--disabled добавлен чтобы моожно было делать кнопку дис-->
                     <input type="text" class="scale__control  scale__control--value" value="100%" title="Image Scale" name="scale" readonly>
-                    <button type="button" class="scale__control  scale__control--bigger scale__control--disabled">Увеличить</button> <!--scale__control--disabled добавлен чтобы моожно было делать кнопку дис-->
+                    <button type="button" class="scale__control  scale__control--bigger">Увеличить</button> <!--scale__control--disabled добавлен чтобы моожно было делать кнопку дис-->
                   </fieldset>
                   <!-- Предварительный просмотр изображения -->
                   <div class="img-upload__preview">
@@ -125,7 +125,7 @@
                 <fieldset class="img-upload__text text">
                   <input class="text__hashtags" name="hashtags" placeholder="#хэш-тег">
                   <textarea class="text__description" name="description" placeholder="Ваш комментарий..." maxlength="140"></textarea> <!--Добавлено HTML ограничение на 140 символов-->
-                  <p class="text__counter"></p>
+                  <p class="text__counter hidden">Введено 0 из 140 символов</p>
                 </fieldset>
 
                 <!-- Кнопка для отправки данных на сервер -->
