@@ -740,7 +740,7 @@ main {
   width: 450px;
 
   margin: 0 auto;
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
   padding: 5px 10px;
 
   font-family: "Open Sans", "Arial", sans-serif;
@@ -757,6 +757,7 @@ main {
   margin: 0 auto;
   padding: 15px 10px;
   padding-bottom: 25px;
+  margin-top: 25px; /*свойство добавлено чтобы не слипались поля во время вывода ошибки*/
 
   font-family: "Open Sans", "Arial", sans-serif;
   font-weight: 400;
@@ -1394,7 +1395,30 @@ main {
   text-transform: initial;
 } 
 
+.border-error {
+  border: 2px solid #e60000;
+}
 
+
+.error-list {
+padding-left: 66px;
+margin-top: 0px;
+margin-bottom: 0px;
+}
+
+.error-list__item {
+  width: 450px;
+  margin-top: 5px;
+  padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 5px;
+
+  list-style: none;
+  background-color:red;
+  text-align: left;
+  text-transform: initial;
+}
 
 /**
  * Экран загрузки изображения

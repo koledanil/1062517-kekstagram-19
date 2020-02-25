@@ -123,7 +123,11 @@
 
                 <!-- Добавление хэш-тегов и комментария к изображению -->
                 <fieldset class="img-upload__text text">
-                  <input class="text__hashtags" name="hashtags" placeholder="#хэш-тег">
+                 
+                  <input class="text__hashtags" name="hashtags" placeholder="#хэш-тег" id="input__tags">
+                   <ul class = "error-list"id="tag-error">              
+                   </ul>
+                   <template id = "error-item"><li>Shit happens</li></template>
                   <textarea class="text__description" name="description" placeholder="Ваш комментарий..." maxlength="140"></textarea> <!--Добавлено HTML ограничение на 140 символов-->
                   <p class="hidden" id="symbol_counter">Введено 0 из 140 символов</p>
                 </fieldset>
