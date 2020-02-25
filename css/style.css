@@ -768,16 +768,6 @@ main {
   position: relative;
 }
 
-.text__counter { /* Базовый стиль каунтера */
-  color: #717171;
-  font-size: 12px;
-  position: absolute;
-  bottom: 0px;
-  left: 80px;
-  text-transform: initial;
-} 
-
-
 /**
  * Кнопка для отправки изображения
  */
@@ -1381,6 +1371,7 @@ main {
 .border-success {
   border: 2px solid green;
 }
+
 /* Делает кнопку масштаба ненажимабельной при достижении мин или макс*/
 .scale__control:disabled {
   background-color: #f2f2f2;
@@ -1388,6 +1379,21 @@ main {
         -ms-transform: none;
             transform: none;
 };
+
+/*Стиль счетчика по умолчанию*/
+.counter__regular {
+  color: #e60000 !important
+}
+
+.text__counter { /* Базовый стиль каунтера */
+  color: #717171;
+  font-size: 12px;
+  position: absolute;
+  bottom: 0px;
+  left: 80px;
+  text-transform: initial;
+} 
+
 
 
 /**

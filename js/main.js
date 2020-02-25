@@ -350,9 +350,12 @@ window.preventActionHandler = function (evt) {
     var restoreDefaultEffect = document.querySelector('.img-upload__preview').querySelector('img');
     restoreDefaultEffect.removeAttribute('class');
 
-    // var counterPlace = document.querySelector('.text__counter'); // находим каунтер
-    // counterPlace.textContent = '123123';
-    // console.log(counterPlace); ===== ошибка 312
+    var counterPlace = document.querySelector('#symbol_counter'); // находим каунтер
+    console.log(counterPlace);
+    counterPlace.innerHTML = 'Введено 0 из 140 символов';
+    console.log(window.counterSymbol);
+    window.counterSymbol = 0;
+    console.log(window.counterSymbol);
 
     imgPreview.style = 'transform: 0'; // сбиваем масштаб фотки
     zoomInButton.disabled = false; // сбиваем псевдо с увелич, чтоб кнопка стала активной
@@ -574,32 +577,32 @@ window.preventActionHandler = function (evt) {
 // TEXTAREA.JS
 (function () {
   // T.1 Поле текста автоматически подстраивается под контент + ресайз только по высоте (чтобы не рвало при вытягивании по ширине)
-  var textArea = document.getElementsByTagName('textarea');
-  // ПОЧЕМУ ТО НЕ СРАБАТЫАЕТ var textArea = document.querySelector('.img-upload__form').querySelector('.img-upload__text').querySelector('.text__description');
-  var inputHandler = function () {
-    this.style.height = 'auto';
-    this.style.height = (this.scrollHeight) + 'px';
+  var textArea = document.querySelector('.text__description');
+  var inputHandler = function (evt) {
+    evt.target.style.height = 'auto';
+    evt.target.style.height = (evt.target.scrollHeight) + 'px';
   };
-  for (var i = 0; i < textArea.length; i++) {
-    textArea[i].setAttribute('style', 'height:' + (textArea[i].scrollHeight) + 'px;overflow-y:auto;' + 'resize: vertical');
-    textArea[i].addEventListener('input', inputHandler, false);
-  }
+
+  textArea.setAttribute('style', 'height:' + (textArea.scrollHeight) + 'px;overflow-y:auto;' + 'resize: vertical');
+  textArea.addEventListener('input', inputHandler, false);
+
 })();
 
 (function () {
   // Т.2 Контроль длины поля ввода
-  var counterPlace = document.querySelector('.text__counter');
+  var counterPlace = document.querySelector('p');
   var textArea = document.querySelector('.text__description');
   var submitButton = document.querySelector('#upload-submit');
+  counterPlace.classList.add('text__counter'); // присваивет стиль каунтера по умолчанию
 
-  var counterSymbol;
+  window.counterSymbol;
   // Т.2.1 Отображает каунтер
   var showCounterHandler = function () {
     window.showElement(counterPlace);
   };
   // Т.2.2 Убирает каунтер
   var hideCounterHandler = function () {
-    if (counterSymbol === undefined || counterSymbol === 0) {
+    if (window.counterSymbol === undefined || window.counterSymbol === 0) {
       window.hideElement(counterPlace);
     }
   };
@@ -607,15 +610,17 @@ window.preventActionHandler = function (evt) {
   var checkLengthTextAreaHandler = function () {
     window.showElement(counterPlace);
     var textAreaLength = textArea.value.length;
-    counterSymbol = textAreaLength;
-    counterPlace.style = 'color: #717171; font-size: 12px; position: absolute; bottom: 0px; left: 80px;  text-transform: initial';
-    counterPlace.textContent = 'Введено ' + counterSymbol + ' из' + ' 140 символов';
-    if (counterSymbol === 0) {
+    window.counterSymbol = textAreaLength;
+    
+
+    // counterPlace.style = 'color: #717171; font-size: 12px; position: absolute; bottom: 0px; left: 80px;  text-transform: initial';
+    counterPlace.textContent = 'Введено ' + window.counterSymbol + ' из' + ' 140 символов';
+    if (window.counterSymbol === 0) {
       textArea.classList.remove('border-error');
     }
 
-    if (counterSymbol >= window.ADD_PHOTO_RULES.UPLD_COMMENTS.MAX_LENGTH) {
-      counterPlace.style = 'color: #e60000; font-size: 12px; position: absolute; bottom: 0px; left: 80px;  text-transform: initial';
+    if (window.counterSymbol >= window.ADD_PHOTO_RULES.UPLD_COMMENTS.MAX_LENGTH) {
+      // counterPlace.style = 'color: #e60000; font-size: 12px; position: absolute; bottom: 0px; left: 80px;  text-transform: initial';
       counterPlace.textContent = 'Достигнут лимит в 140 символов 😶';
       textArea.classList.add('border-error');
       submitButton.addEventListener('click', window.preventActionHandler);
