@@ -1,5 +1,5 @@
-/* eslint-disable no-console */
-/* eslint-disable no-shadow */
+// /* eslint-disable no-console */
+// /* eslint-disable no-shadow */
 'use strict';
 // 0 Контстанты, к-ые управляют кекстой
 var RULES = {
@@ -199,13 +199,13 @@ var writeLikeCommentSrcPhoto = function (readyPhoto) {
 
 // 1.4.1 Функция генерирует готовые данные для фоток
 var showAllPhoto = function (readyPhoto) {
-  var connectBlock = document.querySelector('.pictures');
+  var connectimgDragged = document.querySelector('.pictures');
   var fragment = document.createDocumentFragment();
 
   for (var i = 0; i < readyPhoto.length; i++) {
     fragment.appendChild(writeLikeCommentSrcPhoto(readyPhoto[i]));
   }
-  connectBlock.appendChild(fragment);
+  connectimgDragged.appendChild(fragment);
 };
 
 photo.ready = getReadyPhoto();
@@ -233,10 +233,22 @@ window.ADD_PHOTO_RULES = {
     STEP: 25
   },
   msg: {
-    errSharp: 'должен начинаться с символа #\n',
+    errSharp: 'должен начинаться с символа #',
     errRegExp: 'должен быть без специальных символов\n',
     errLength: 'должен содержать от 2 до 20 символов включая #\n',
-    errAmount: 'должно быть не более 5 тэгов'
+    errAmount: 'должно быть не более 5 тэгов',
+    errDuplicate: 'Встречаются одинаковые тэги',
+    errToShort: 'тэг не может содержать только #'
+  },
+  SPECIAL: {
+    ERR_TAGS_TITLE: 0,
+    ERR_AREA_TITLE: 0,
+    ORIGINAL_TITLE: ''
+    // ^^^ Здесь содержится:
+    // 1. каунтер ошибок в инпуте тэгов
+    // 2. каунтер ошибок в textarea (она у нас там одна)
+    // 3. Оригинальное название страницы. Его мы возвращаем по закрытию формы или исправлении всех ошибок
+    // нужны для работы S.2
   }
 };
 
@@ -277,7 +289,6 @@ window.preventActionHandler = function (evt) {
         max: lineEmpty.offsetLeft + lineEmpty.offsetWidth - pin.offsetWidth
       };
       pinCoord = pin.offsetLeft + evt.movementX;
-      console.log(pinCoord + ' yhumb');
       if (pinCoord < limitMovementX.min) {
         pinCoord = limitMovementX.min;
       }
@@ -289,14 +300,13 @@ window.preventActionHandler = function (evt) {
       switch (effectType) {
         case 'marvin':
           output.value = Math.round(pinCoord * (maxValue - minValue) / limitMovementX.max);
-          console.log(output.value);
           pin.style.left = pinCoord + 'px';
           depth.style.width = pinCoord + 'px';
           return;
 
         case 'sepia':
           output.value = pinCoord * (maxValue - minValue) / limitMovementX.max;
-          console.log(output.value);
+
           pin.style.left = pinCoord + 'px';
           depth.style.width = pinCoord + 'px';
           return;
@@ -351,16 +361,26 @@ window.preventActionHandler = function (evt) {
     restoreDefaultEffect.removeAttribute('class');
 
     var counterPlace = document.querySelector('#symbol_counter'); // находим каунтер
-    console.log(counterPlace);
+
+    var tagErrPlaceUl = document.querySelector('#tag-error');// находим тэг для ошибок заполнения поля тэг
+    var tagInput = document.querySelector('.text__hashtags');
+    var textArea = document.querySelector('.text__description');
+
     counterPlace.innerHTML = 'Введено 0 из 140 символов';
     counterPlace.classList.add('hidden');
-    console.log(window.counterSymbol);
     window.counterSymbol = 0;
-    console.log(window.counterSymbol);
 
     imgPreview.style = 'transform: 0'; // сбиваем масштаб фотки
     zoomInButton.disabled = false; // сбиваем псевдо с увелич, чтоб кнопка стала активной
     zoomOutButton.disabled = false;// сбиваем псевдо с уменьше, чтоб кнопка стала активной
+
+    textArea.classList.remove('border-error'); // убираем обводку  текстового поля
+
+    window.validityTag = true; // обнуляем флаг для инпута тэгов, необходимо для S.1
+    window.validityTextArea = true; // обнуляем флаг для комента, необходимо для S.1
+    document.title = window.ADD_PHOTO_RULES.SPECIAL.ORIGINAL_TITLE; // возвращаем исходное значение тайтла, использ в S.2
+    tagInput.classList.remove('border-error');
+    tagErrPlaceUl.innerHTML = ''; // затираем мамку ошибок (фн.H.3)
   };
 
   var body = document.querySelector('body');
@@ -383,7 +403,7 @@ window.preventActionHandler = function (evt) {
 
     switch (true) {
       case evt.key === 'Escape' && evt.target.type === 'radio':
-        console.log(effectPreview.length);
+
         for (var i = 0; i < effectPreview.length; i++) {
           if (effectPreview[i].checked) {
             effectPreview[i].blur();
@@ -393,7 +413,6 @@ window.preventActionHandler = function (evt) {
 
       case evt.key === 'Escape' && evt.target.type === 'text':
         tagInput.blur();
-        console.log(evt.target.type);
         return;
 
       case evt.key === 'Escape' && evt.target.tagName === 'TEXTAREA':
@@ -412,7 +431,51 @@ window.preventActionHandler = function (evt) {
 
 
 // SCALE.JS
-// S.1 Увеличивает размер изображения по нажатию на +
+// S.1 Перетягивание изображения во время зума в дополнение к скроллам
+var dragImg = function (flag) {
+  var imgContainer = document.querySelector('#imgContainer');
+  var imgDragged = document.querySelector('#imgContainer-img');
+  var leftCord = 0;
+  var topCord = 0;
+  var xCord = 0;
+  var yCord = 0;
+
+  switch (true) {
+    case (flag === true):
+      imgContainer.onmousedown = function (evt) {
+        evt.preventDefault();
+        xCord = evt.pageX;
+        yCord = evt.pageY;
+
+        var moveAt = function (evtY) {
+          imgDragged.style.left = (leftCord + evtY.pageX - xCord) + 'px';
+          imgDragged.style.top = (topCord + evtY.pageY - yCord) + 'px';
+        };
+
+        imgContainer.onmousemove = function (evtX) {
+          moveAt(evtX);
+        };
+
+        imgContainer.onmouseleave = imgContainer.onmouseup = function () {
+          leftCord = parseFloat(imgDragged.style.left);
+          topCord = parseFloat(imgDragged.style.top);
+          imgContainer.onmouseleave = null;
+          imgContainer.onmousemove = null;
+          imgContainer.onmouseup = null;
+        };
+      };
+      return;
+
+    case (flag === false):
+      imgContainer.onmousedown = null;
+      imgContainer.onmouseleave = null;
+      imgContainer.onmousemove = null;
+      imgContainer.onmouseup = null;
+      return;
+  }
+};
+
+// S.2 Увеличивает размер изображения по нажатию на +
 (function () {
   var photoPreview = document.querySelector('.img-upload__preview');
   var imgPreview = photoPreview.querySelector('img');
@@ -420,6 +483,7 @@ window.preventActionHandler = function (evt) {
   var zoomOutButton = document.querySelector('.scale__control--bigger');
   var zoomInButton = document.querySelector('.scale__control--smaller');
   var zoomStorage = document.querySelector('.scale__control--value');
+  var imgContainer = document.querySelector('#imgContainer');
 
   var zoomInHandler = function () {
     var newValaue = parseInt(zoomStorage.value, 10) + window.ADD_PHOTO_RULES.ZOOM.STEP;
@@ -433,18 +497,21 @@ window.preventActionHandler = function (evt) {
     // ему присваиваю стиль, который скрывает излишки изображения и
     // показывает скролл внутри
 
+    if (scaleValue > 1) { // если масштаб более 100 то передаем флаг и включаем таскание
+      dragImg(true);
+      imgContainer.classList.add('all-scroll'); // добавляем правильный стиль курсора
+    }
 
     if (parseInt(zoomStorage.value, 10) === window.ADD_PHOTO_RULES.ZOOM.MAX) {
       zoomOutButton.disabled = true;
     }
+
     if (parseInt(zoomStorage.value, 10) > window.ADD_PHOTO_RULES.ZOOM.MIN) {
       zoomInButton.disabled = false;
     }
   };
 
   zoomOutButton.addEventListener('click', zoomInHandler); // закртывается слушатешль
-
-
 })(); // закрывают самовызов.
 
 // S.2 Уменьшает размер изображения по нажатию на -
@@ -454,15 +521,23 @@ window.preventActionHandler = function (evt) {
   var zoomInButton = document.querySelector('.scale__control--smaller');
   var zoomOutButton = document.querySelector('.scale__control--bigger');
   var zoomStorage = document.querySelector('.scale__control--value');
+  var imgContainer = document.querySelector('#imgContainer');
 
   var zoomOutHandler = function () {
     var newValaue = parseInt(zoomStorage.value, 10) - window.ADD_PHOTO_RULES.ZOOM.STEP;
     zoomStorage.value = newValaue + '%';
 
     var scaleValue = newValaue / 100;
-    console.log(scaleValue);
     imgPreview.style = 'transform: scale(' + scaleValue + ')';
-    console.log(imgPreview);
+
+    imgContainer.addEventListener('mousedown', function (evt) {
+      evt.preventDefault();
+    }); // вытаски
+
+    if (scaleValue === 1) { // если масштаб равен 100 то передаем флаг и ВЫКЛЮЧАЕМ таскание
+      dragImg(false);
+      imgContainer.classList.remove('all-scroll');
+    }
 
     if (parseInt(zoomStorage.value, 10) === window.ADD_PHOTO_RULES.ZOOM.MIN) {
       zoomInButton.disabled = true;
@@ -485,7 +560,7 @@ window.preventActionHandler = function (evt) {
   var effectList = document.querySelector('.effects__list');
   var applyEffectsHandler = function (evt) {
     (function () {
-      console.log(imgPreview.removeAttribute);
+
       imgPreview.removeAttribute('class');
     })();
 
@@ -512,113 +587,119 @@ window.preventActionHandler = function (evt) {
 // HASHTAG.JS
 // Валидацмя тегов
 (function () {
-  // Находим поле ввода и кнопку отправить
+  window.validityTag = true;
   var tagInput = document.querySelector('.text__hashtags');
+  window.ADD_PHOTO_RULES.SPECIAL.ORIGINAL_TITLE = document.title;
+  // ^^^сохраняем в объект название страницы, оно будет использовано когда пользователь исправит
+  // все ошибки и нам надо будет вернуть старое название страницы. Для работы S.2
 
-  // H.2 Функция проверяет на соотвествие правилам 1 тэг и резултьтаты вности в объект
-  var checkOneTag = function (tagStorage) {
+  // H.1 Поиск дубликатов внутри массива и возвращение False или true, знак
+  var findDuplicate = function (arr) {
+    var temp = {};
+    var isDuplicate;
+    temp = arr.filter(function (a) {
+      return temp[a] || !(temp[a] = !0);
+    });
+    if (temp.length > 0) {
+      isDuplicate = true;
+      return isDuplicate;
 
-    var checkedTag = {}; // этот объект будет содержать результаты проверок тэга
-    // валидатор регулярки
-    var regExp = window.ADD_PHOTO_RULES.UPLD_TAGS.REG_EXP;
-    var checkedRegExp = tagStorage.match(regExp);
+    } else {
+      isDuplicate = false;
+      return isDuplicate;
+    }
+  };
 
-    // записывает в объект результаты проверки условий
-    checkedTag.regExp = checkedRegExp;
-    checkedTag.isSharp = tagStorage[0] === window.ADD_PHOTO_RULES.UPLD_TAGS.DIVIDER_SYMBOL;
-    checkedTag.length = tagStorage.length > window.ADD_PHOTO_RULES.UPLD_TAGS.MIN_LENGTH && tagStorage.length < window.ADD_PHOTO_RULES.UPLD_TAGS.MAX_LENGTH;
+  // H.2 Функция проверяет каждый тег на ошибки характ. для 1 тэга. Проверка к-ва тэгов и дубликатов идет отдельно
+  var checkTag = function (tagStorage) {
+    var checkedTag = {};
+    checkedTag.isSharp = tagStorage[0] === '#';
+    checkedTag.maxLength = tagStorage.length < 5;
+    checkedTag.onlySharp = tagStorage.length === 1 && tagStorage === '#';
+    checkedTag.regExp = /[^a-zA-Z0-9]/.test(tagStorage.substring(1, (tagStorage.length)));
     return checkedTag;
-  }; // заканчивается checkConOneTag
+  };
 
+  // H.3 Функция првоеряет каждый тэг на ошибки согласно H.2
+  var checkAllTags = function () {
+    var enteredTags = tagInput.value.split(' ');
 
-  // Н.3 Функция проверяет циклом все тэги, которые к ней попали
-  var checkAllTagHandler = function () {
+    var tagErrTemplate = document.querySelector('#error-item').content.querySelector('li'); // детеныши ошибок
+    var tagErrPlaceUl = document.querySelector('#tag-error'); // мамка ошибок
+    var errArray = []; // массив с перечнем дошибок для каждого тэга
 
-    // evt.preventDefault();
-    var enteredTags = tagInput.value.split(' '); // обрабатывает поле ввода, приводит все в нижний регистр и делает массив (split)
-    var checkedTags = []; // массив с объектами (ТЭГАМИ), каждый из которых содержит ошибки
-    var errArray = []; // массив будет содержать НАЗВАНИЕ тэга и ОШИБКУ к-ую удалось найти
-    var submitButton = document.querySelector('#upload-submit'); // находим кнопку Отправить, чтобы потом залочить
+    if (findDuplicate(enteredTags)) { // проверяем на дубликаты и записываем значение в массив.
+      // проверка идет первой, чтобы юзер сразу видел есть дубликаты.
 
-    var tagErrPlaceUl = document.querySelector('#tag-error'); // список под ошибки
- 
-    
+      errArray.push(window.ADD_PHOTO_RULES.msg.errDuplicate);
+    }
+    // проверка идет второй, чтобы также сразу его обрадывать.
+    if (enteredTags.length > 5) {
 
+      errArray.push(window.ADD_PHOTO_RULES.msg.errAmount);
+    }
+    for (var i = 0; i < enteredTags.length; i++) { // цикл запускает проверку тэгов массива
+      var checkedTag = checkTag(enteredTags[i]); // вот и стартанула фукнция H.2
+      if (enteredTags[i].length > 0 && checkedTag.isSharp !== true || checkedTag.maxLength !== true
+      //  В данном условии записана глобальная проверка:
+      //  1. Она начинается если итый тыг больше нуля
+      //  2. Через или описаны все варианты ошибок, которые могут встретиться (на основании H.2)
+      // Если это все выполняется то пойдет наполнение тэга ошибок
+                                      || checkedTag.onlySharp !== false
+                                      || checkedTag.regExp !== false) {
+        tagErrPlaceUl.innerHTML = ''; // затирает мамку ошибок
+        window.validityTag = false; // ставит флаг о том что невалид и форма не отправится
+        if (checkedTag.isSharp !== true) {
+          errArray.push(enteredTags[i] + ' ' + window.ADD_PHOTO_RULES.msg.errSharp);
+        } // если нет решетки записываем ошибку и имя тэга
 
-    for (var i = 0; i < enteredTags.length; i++) { // цикл, который проверяет все тэги на ошибки ==> напол. массив с ними
-      var tagErrTemplate = document.querySelector('#error-item').content.querySelector('li');
-      
-      var checkedOneTag = checkOneTag(enteredTags[i]); // запускает функцию Н.1 для тэга из инпута
-      var objectToArray = Object.values(checkedOneTag); // из массива объектов делает просто МАСИВ
-      // ^^^ такое преобрахование нужно для глобальной проверки: если преобр. массив содержит
-      // ХОТЯ БЫ 1 false, то будет заход в IF с ошибками.
-      checkedTags.push(checkedOneTag);
+        if (checkedTag.maxLength !== true) {
+          errArray.push(enteredTags[i] + ' ' + window.ADD_PHOTO_RULES.msg.errLength);
+        } // если тэг длиннее нормы
 
-      if (enteredTags[0].length > 0) { // ПЕРВАЯ ГЛОБАЛЬНАЯ ПРОВЕРКА: если поле тэгов НЕ пустое, то идем дальше
-        tagInput.removeAttribute('style');
-        if (objectToArray.includes(false) || checkedTags.length >= window.ADD_PHOTO_RULES.UPLD_TAGS.MAX_AMOUNT_TAG) { // Проверяем на есть ли в массиве тэга ХОТЯ бы один FALSE или к-во тэгов больше 5
-          tagInput.classList.add('border-error'); // обводим поле красным
-          if (checkedTags[i].isSharp === false) {
-            errArray.push(enteredTags[i] + ' ' + window.ADD_PHOTO_RULES.msg.errSharp); // в массив записываем ошибки для вывода в сообщ. Формат название тэга -- ошибка
-          } // if #
+        if (checkedTag.regExp !== false) {
+          errArray.push(enteredTags[i] + ' ' + window.ADD_PHOTO_RULES.msg.errRegExp);
+        } // если регулярка пролетела
 
-          if (checkedTags[i].regExp === false) {
-            errArray.push(enteredTags[i] + ' ' + window.ADD_PHOTO_RULES.msg.errRegExp);
-          } // if regExp
+        if (checkedTag.onlySharp !== false) {
+          errArray.push(enteredTags[i] + ' ' + window.ADD_PHOTO_RULES.msg.errToShort);
+        } // если только решетка и все
 
-          if (checkedTags[i].length === false) {
-            errArray.push(enteredTags[i] + ' ' + window.ADD_PHOTO_RULES.msg.errLength);
-          } // if 1 tag length
-
-          if (checkedTags.length >= window.ADD_PHOTO_RULES.UPLD_TAGS.MAX_AMOUNT_TAG) { // контролирует количество тэгов (не более)
-            errArray.push(window.ADD_PHOTO_RULES.msg.errAmount);
-          } // if amout tags
-          console.log(errArray.length);
-                 
-          for (var m = 0; m < errArray.length; m++) {
-            var clonedElement = tagErrTemplate.cloneNode(true);
-            clonedElement.textContent = errArray[m];
-            clonedElement.classList.add('error-list__item');
-            tagErrPlaceUl.appendChild(clonedElement);
-          }
-          console.log(tagErrPlaceUl);
-
-          submitButton.addEventListener('click', window.preventActionHandler);
-        } else {
-          console.log('====================');
-          console.log(errArray);
-          tagInput.classList.remove('border-error');
-          submitButton.removeEventListener('click', window.preventActionHandler);
+        for (var m = 0; m < errArray.length; m++) {
+          var clonedElement = tagErrTemplate.cloneNode(true);
+          clonedElement.textContent = errArray[m];
+          clonedElement.classList.add('error-list__item');
+          tagErrPlaceUl.appendChild(clonedElement);
+          tagInput.classList.add('border-error');
         }
-      } else {
-        tagErrPlaceUl.innerHTML = ' ';
-        tagInput.classList.remove('border-error');
-        submitButton.removeEventListener('click', window.preventActionHandler);
-      }
-    } // end for i
+        // ^^^Даннаый фор предназначен для того, чтобы понятно отобразить юзеру:
+        // 1. какие ошибки есть
+        // 2. в каких тэгах они есть
+        // То бишь чтобы избежать такой стиуации что по одной ошибки вывводится, и после исправления одной идет другая
+        // и пользователь не может понять сколько ошибок всего.
+        window.ADD_PHOTO_RULES.SPECIAL.ERR_TAGS_TITLE = errArray.length; // вносим длинну тэга в значение в объекте, чтобы отобр. в тайтле S.2
 
-  }; // end checkAlltag
-  tagInput.addEventListener('change', checkAllTagHandler);
+      } else { //  if (checkedTag.isSharp
+        if (errArray.length === 0) {
+          tagErrPlaceUl.innerHTML = '';
+          window.ADD_PHOTO_RULES.SPECIAL.ERR_TAGS_TITLE = 0;
+          tagInput.classList.remove('border-error');
+          window.validityTag = true;
+          // Этот иф проверяет массив ошибок на длинну. Если массив пустой значит ошибок нет значит можно детенышей затереть.
+        }
+      }
+    } // end for var i
+  }; // end check all tags
+
+  tagInput.addEventListener('change', checkAllTags);
 
 })(); // finished IIFE
-
-
-// var addErr = function (arr) {
-//   clonedLi.textContent = arr;
-//   clonedLi.classList.remove('visually-hidden');
-//   clonedLi.classList.add('error-list__item');
-//   fragment.appendChild(clonedLi);
-// };
-
-// for (var n = 0; n < errArray.length; n++) {
-//   addErr(errArray[n]);
-// }
-// tagErrPlaceUl.appendChild(fragment);
 
 
 // TEXTAREA.JS
 (function () {
   // T.1 Поле текста автоматически подстраивается под контент + ресайз только по высоте (чтобы не рвало при вытягивании по ширине)
+
   var textArea = document.querySelector('.text__description');
   var inputHandler = function (evt) {
     evt.target.style.height = 'auto';
@@ -636,6 +717,7 @@ window.preventActionHandler = function (evt) {
   var textArea = document.querySelector('.text__description');
   var submitButton = document.querySelector('#upload-submit');
   counterPlace.classList.add('text__counter'); // присваивет стиль каунтера по умолчанию
+  window.validityTextArea = true;
 
   window.counterSymbol = 0;
   // Т.2.1 Отображает каунтер
@@ -651,28 +733,66 @@ window.preventActionHandler = function (evt) {
   // Т.2.3 Считает символы в тексте
   var checkLengthTextAreaHandler = function () {
     window.showElement(counterPlace);
-    var textAreaLength = textArea.value.length;
-    window.counterSymbol = textAreaLength;
-    counterPlace.style = 'color: #717171; font-size: 12px; position: absolute; bottom: 0px; left: 80px;  text-transform: initial';
+    window.counterSymbol = textArea.value.length;
+    counterPlace.classList.add('counter__default');
     counterPlace.textContent = 'Введено ' + window.counterSymbol + ' из' + ' 140 символов';
     if (window.counterSymbol === 0) {
       textArea.classList.remove('border-error');
     }
 
     if (window.counterSymbol >= window.ADD_PHOTO_RULES.UPLD_COMMENTS.MAX_LENGTH) {
-      counterPlace.style = 'color: #e60000; font-size: 12px; position: absolute; bottom: 0px; left: 80px;  text-transform: initial';
+      counterPlace.classList.add('counter-error');
       counterPlace.textContent = 'Достигнут лимит в 140 символов 😶';
+      window.ADD_PHOTO_RULES.SPECIAL.ERR_AREA_TITLE = 1; // используется для отображения количества ошибок в заголовке S.2
       textArea.classList.add('border-error');
-      submitButton.addEventListener('click', window.preventActionHandler);
+      window.validityTextArea = false;
 
     } else {
-      counterPlace.removeAttribute('class');
+      // counterPlace.removeAttribute('class');
+      counterPlace.classList.remove('counter-error');
       textArea.classList.remove('border-error');
+      window.validityTextArea = true;
+      window.ADD_PHOTO_RULES.SPECIAL.ERR_AREA_TITLE = 0; // затираем количество ощибок в заголовке
     }
   };
   textArea.addEventListener('focus', showCounterHandler); // Показывает счетчик символов при фокусе
   textArea.addEventListener('keyup', checkLengthTextAreaHandler); // Считает символы при вводе
   textArea.addEventListener('blur', hideCounterHandler); // Прячет счетчик при потери фокуса
+
+
+  // SUBMIT.JS
+  // S.1 Функция проверяет состояние проверки двух полей, и разрешает / запрещает отправку формы
+  var checkRules = function (evt) {
+    if (window.validityTextArea === false || window.validityTag === false) {
+      evt.preventDefault();
+    }
+  };
+  submitButton.addEventListener('click', checkRules);
+
+  // S.2 Выводит количество ошибок в заголовок окна
+  // Данная функция предназначена для отображения к-ва ошибок в поле теги и комент в ЗАГОЛОВКЕ СТРАНИЦЫ
+  var formUpldImg = document.querySelector('.img-upload__text');
+  var errCounterTitle = function () {
+
+    if (window.ADD_PHOTO_RULES.SPECIAL.ERR_TAGS_TITLE > 0 || window.ADD_PHOTO_RULES.SPECIAL.ERR_AREA_TITLE > 0) { // если значение не нулевое (то есть есть ошибки), выполняется выввод в заголовк
+      var sumErr = window.ADD_PHOTO_RULES.SPECIAL.ERR_TAGS_TITLE + window.ADD_PHOTO_RULES.SPECIAL.ERR_AREA_TITLE;
+      var endWord = '';
+      if (sumErr === 1) {
+        endWord = 'а';
+      } else if (sumErr >= 2 && sumErr <= 4) {
+        endWord = 'ки';
+      } else if (sumErr >= 5) {
+        endWord = 'ок';
+      }
+      document.title = '[' + sumErr + ' ошиб' + endWord + ']' + ' ' + window.ADD_PHOTO_RULES.SPECIAL.ORIGINAL_TITLE;
+
+    } else {
+      document.title = window.ADD_PHOTO_RULES.SPECIAL.ORIGINAL_TITLE; // обнуляем заголовок если ошибок нет.
+    }
+  };
+
+  formUpldImg.addEventListener('change', errCounterTitle);
+
 })();
 
 

@@ -50,6 +50,25 @@ main {
   display: none;
 }
 
+/* стиль для ограничителя передвижения  */
+.border-zoom { 
+      margin: auto;
+      overflow: hidden;
+      width: 587px;
+      height: 587px;
+      position: relative;
+      }
+  
+/* стиль для изображения чтобы оно двигалось  */
+.border-zoom__img{
+  height:  auto;
+          width: 100%;
+          position: absolute;
+          left: 0;
+          top: 0;
+  
+}
+
 .visually-hidden {
   position: absolute;
 
@@ -456,6 +475,28 @@ main {
   border: 0;
 }
 
+.scale__control--readonly { 
+  /* Стиль для ячейки с процентовкой, так как это не интпут, то он не может быть кликабельным и не может быть в фокусе */
+  position: relative;
+
+  width: 33px;
+  height: 33px;
+  margin: 0;
+  padding: 0;
+
+  text-align: center;
+  vertical-align: middle;
+
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 0;
+}
+
+/* Выключаем фокусную обводку для ячейки с процентовкой */
+.scale__control--readonly:focus,
+.scale__control--readonly:hover {
+  outline:none;
+}
+
 .scale__control:hover,
 .scale__control:focus {
   background-color: rgba(0, 0, 0, 0.3);
@@ -753,11 +794,12 @@ main {
 .text__description {
   width: 450px;
   min-height: 100px; /*Изменил с height на min-height, чтобы пользователь не мог ужать поле до 0;*/
-
+  border: 2px solid rgba(0, 0, 0, 0);
   margin: 0 auto;
   padding: 15px 10px;
   padding-bottom: 25px;
   margin-top: 25px; /*свойство добавлено чтобы не слипались поля во время вывода ошибки*/
+  line-height: 18px;
 
   font-family: "Open Sans", "Arial", sans-serif;
   font-weight: 400;
@@ -1366,9 +1408,6 @@ main {
 
 
 /* Эти две ошибки оформляют блордер текстареа при добавлении фотки */
-.border-error {
-  border: 2px solid #e60000;
-}
 .border-success {
   border: 2px solid green;
 }
@@ -1399,6 +1438,10 @@ main {
   border: 2px solid #e60000;
 }
 
+/*Курсор для таскания*/
+.all-scroll { 
+  cursor: all-scroll;
+}
 
 .error-list {
 padding-left: 66px;
@@ -1418,6 +1461,24 @@ margin-bottom: 0px;
   background-color:red;
   text-align: left;
   text-transform: initial;
+}
+
+.counter__default {
+  color: #717171; 
+  font-size: 12px; 
+  position: absolute; 
+  bottom: 0px; 
+  left: 80px;  
+  text-transform: initial
+}
+
+.counter-error {
+  color: #e60000; 
+  font-size: 12px; 
+  position: absolute; 
+  bottom: 0px; 
+  left: 80px;  
+  text-transform: initial
 }
 
 /**
