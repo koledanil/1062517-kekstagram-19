@@ -614,7 +614,7 @@ var dragImg = function (flag) {
   var checkTag = function (tagStorage) {
     var checkedTag = {};
     checkedTag.isSharp = tagStorage[0] === '#';
-    checkedTag.maxLength = tagStorage.length < 5;
+    checkedTag.maxLength = tagStorage.length > 2 && tagStorage.length < 20;
     checkedTag.onlySharp = tagStorage.length === 1 && tagStorage === '#';
     checkedTag.regExp = /[^a-zA-Z0-9]/.test(tagStorage.substring(1, (tagStorage.length)));
     return checkedTag;
