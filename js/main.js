@@ -660,19 +660,19 @@ var dragImg = function (flag) {
           if (checkedTag.isSharp !== true && checkedTag !== '') {
             (errArray.push(enteredTags[i] + ' ' + window.ADD_PHOTO_RULES.msg.errSharp));
           } // если нет решетки записываем ошибку и имя тэга
-  
+
           if (checkedTag.maxLength !== true) {
             errArray.push(enteredTags[i] + ' ' + window.ADD_PHOTO_RULES.msg.errLength);
           } // если тэг длиннее нормы
-  
+
           if (checkedTag.regExp !== false) {
             errArray.push(enteredTags[i] + ' ' + window.ADD_PHOTO_RULES.msg.errRegExp);
           } // если регулярка пролетела
-  
+
           if (checkedTag.onlySharp !== false) {
             errArray.push(enteredTags[i] + ' ' + window.ADD_PHOTO_RULES.msg.errToShort);
           } // если только решетка и все
-  
+
           for (var m = 0; m < errArray.length; m++) {
             var clonedElement = tagErrTemplate.cloneNode(true);
             clonedElement.textContent = errArray[m];
@@ -686,7 +686,7 @@ var dragImg = function (flag) {
           // То бишь чтобы избежать такой стиуации что по одной ошибки вывводится, и после исправления одной идет другая
           // и пользователь не может понять сколько ошибок всего.
           window.ADD_PHOTO_RULES.SPECIAL.ERR_TAGS_TITLE = errArray.length; // вносим длинну тэга в значение в объекте, чтобы отобр. в тайтле S.2
-        } 
+        }
       } // end for var i
     }
   }; // end check all tags
