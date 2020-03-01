@@ -224,7 +224,106 @@ window.preventActionHandler = function (evt) {
   evt.preventDefault();
 };
 
-// // U.4 Запред дефолтного действия СТРАННЫЙ
+// U.4 Функция оживляет слайдер
+// Так как у нас каждый эффект имеет свой слайдер и каждый эффект имеет свой
+// диапазон входных значений (от 0 до 1 или 0 до 100), поэтому я создал функцию
+// которая генерит типовой слайдер и через effectType позволяет выбрать формулу для
+// выходного эффекта.
+(function () {
+  var getEffectLevelValue = function () {
+    return Math.round(effectLevelPin.offsetLeft / effectLevelLine.offsetWidth * 100);
+  };
+
+  var onEffectPinMouseUp = function () {
+    var effectItem = uploadImagePreview.getAttribute('class');
+    switch (effectItem) {
+      case 'effects__preview--none':
+        uploadImagePreview.style.filter = 'none';
+        break;
+      case 'effects__preview--chrome':
+        uploadImagePreview.style.filter = 'grayscale(' + getEffectLevelValue() / 100 + ')';
+        break;
+      case 'effects__preview--sepia':
+        uploadImagePreview.style.filter = 'sepia(' + getEffectLevelValue() / 100 + ')';
+        break;
+      case 'effects__preview--marvin':
+        uploadImagePreview.style.filter = 'invert(' + getEffectLevelValue() + '%)';
+        break;
+      case 'effects__preview--phobos':
+        uploadImagePreview.style.filter = 'blur(' + (getEffectLevelValue() / 10) / 3 + 'px)';
+        break;
+      case 'effects__preview--heat':
+        uploadImagePreview.style.filter = 'brightness(' + (getEffectLevelValue() / 100 * 2) + 1 + ')';
+        break;
+      default:
+        uploadImagePreview.style.filter = 'none';
+        break;
+    }
+    effectLevelValue.value = getEffectLevelValue();
+  };
+
+  effectLevelPin.addEventListener('mouseup', onEffectPinMouseUp);
+
+
+  window.slider = function (sliderTag, minValue, maxValue, effectType) {
+    var lineEmpty = sliderTag.querySelector('.effect-level__line');
+    var depth = sliderTag.querySelector('.effect-level__depth');
+    var pin = sliderTag.querySelector('.effect-level__pin');
+    var output = sliderTag.querySelector('.effect-level__line');
+    var limitMovementX;
+    var pinCoord;
+    output.value = minValue;
+
+    var movePinHandler = function (evt) {
+      limitMovementX = {
+        min: 0, // эффект выключен
+        max: lineEmpty.offsetLeft + lineEmpty.offsetWidth - pin.offsetWidth
+      };
+      pinCoord = pin.offsetLeft + evt.movementX;
+      if (pinCoord < limitMovementX.min) {
+        pinCoord = limitMovementX.min;
+      }
+      if (pinCoord > limitMovementX.max) {
+        pinCoord = limitMovementX.max;
+      }
+
+      // Далее идет переключение между расчетом выхода для разных эффектов
+      switch (effectType) {
+        case 'marvin':
+          output.value = Math.round(pinCoord * (maxValue - minValue) / limitMovementX.max);
+          pin.style.left = pinCoord + 'px';
+          depth.style.width = pinCoord + 'px';
+          return;
+
+        case 'sepia':
+          output.value = pinCoord * (maxValue - minValue) / limitMovementX.max;
+
+          pin.style.left = pinCoord + 'px';
+          depth.style.width = pinCoord + 'px';
+          return;
+      }
+    };
+
+    var pinMouseUpHandler = function () {
+      document.removeEventListener('mousemove', movePinHandler);
+      document.removeEventListener('mouseup', pinMouseUpHandler);
+    };
+
+    pin.addEventListener('mousedown', function () {
+      pin.addEventListener('dragstart', window.preventActionHandler);
+      document.addEventListener('mousemove', movePinHandler);
+      document.addEventListener('mouseup', pinMouseUpHandler);
+    });
+  };
+}());
+
+// E.2 Функция для оживляения ползунка
+(function () {
+  window.slider(document.querySelector('.img-upload__effect-level'), 0, 100, 'marvin');
+})();
+
+
+// // U.4 Запред дефолтного действия СТРАННЫЙ КОД
 // window.preventActionHandler = function (evt) {
 //   evt.preventDefault();
 // };
@@ -382,61 +481,6 @@ window.preventActionHandler = function (evt) {
   imgContainer.addEventListener('mousedown', preventDragImage);
 })(); // end iife s1
 
-// SLIDER.JS
-// Полузнок эффектов
-// SL.1  Функция оживляет слайдер и в зависимости от значений min/max выдает число при движении
-(function () {
-  var sliderTag = document.querySelector('.img-upload__effect-level');
-  var lineEmpty = sliderTag.querySelector('.effect-level__line');
-  var depth = sliderTag.querySelector('.effect-level__depth');
-  var pin = sliderTag.querySelector('.effect-level__pin');
-  var output = sliderTag.querySelector('.effect-level__line'); 
-  window.slider = function (minValue, maxValue) {
-    pin.removeAttribute('style');
-    depth.removeAttribute('style');
-    var limitMovementX;
-    var pinCoord;
-
-    var movePinHandler = function (evt) {
-      limitMovementX = {
-        min: 0,
-        max: lineEmpty.offsetLeft + lineEmpty.offsetWidth - pin.offsetWidth
-      };
-      pinCoord = pin.offsetLeft + evt.movementX;
-      if (pinCoord < limitMovementX.min) {
-        pinCoord = limitMovementX.min;
-      }
-      if (pinCoord >= limitMovementX.max) {
-        pinCoord = limitMovementX.max;
-      }
-      output.value = pinCoord * maxValue / limitMovementX.max;
-      // здесь мы ограничиваем выходное значение (например, от 1 до 3 или от 10 до 100 и так далее)
-      if (output.value < minValue) {
-        output.value = minValue;
-      }
-      pin.style.left = pinCoord + 'px'; // меняем положение ползунка
-      depth.style.width = pinCoord + 'px'; // меняем положение акцента
-      var resultPLS = output.value;
-      console.log(resultPLS);
-      return resultPLS;
-    };
-
-    var pinMouseUpHandler = function () {
-      document.removeEventListener('mousemove', movePinHandler);
-      document.removeEventListener('mouseup', pinMouseUpHandler);
-    };
-
-    pin.addEventListener('mousedown', function () {
-      pin.addEventListener('dragstart', window.preventActionHandler);
-      document.addEventListener('mousemove', movePinHandler);
-      document.addEventListener('mouseup', pinMouseUpHandler);
-    });
-  };
-})();
-
-var sepiaFx = window.slider(0, 1);
-            console.log(sepiaFx);
-
 
 // EFFECTS.JS
 // E.1 Переключает эффекты и применяет их к фото
@@ -446,51 +490,18 @@ var sepiaFx = window.slider(0, 1);
   var dialogBox = document.querySelector('.img-upload__overlay');
   var effectsVolume = dialogBox.querySelector('.img-upload__effect-level');
   var effectList = document.querySelector('.effects__list');
-
-
   var applyEffectsHandler = function (evt) {
-    var eventTarget;
-    var chromeFx;
-    var sepiaFx;
-    var marvinFx;
-    var phobosFx;
-    var heatFx;
+    (function () {
 
-    eventTarget = evt.target;
-    console.log(eventTarget.value);
+      imgPreview.removeAttribute('class');
+    })();
+
+    var eventTarget = evt.target;
+
     if (eventTarget.value !== 'none') {
-
+      imgPreview.classList.add('effects__preview--' + eventTarget.value);
       if (effectsVolume.classList.contains !== 'hidden') {
         window.showElement(effectsVolume);
-
-        switch (true) {
-          case eventTarget.value === 'chrome':
-            imgPreview.classList.add('effects__preview--' + eventTarget.value);
-            return;
-
-          case eventTarget.value === 'sepia':
-            imgPreview.classList.add('effects__preview--' + eventTarget.value);
-            return;
-
-          case eventTarget.value === 'marvin':
-            imgPreview.classList.add('effects__preview--' + eventTarget.value);
-            marvinFx = window.slider(0, 100) + '%';
-            return;
-
-          case eventTarget.value === 'phobos':
-            imgPreview.classList.add('effects__preview--' + eventTarget.value);
-            phobosFx = window.slider(0, 3) + '%';
-            return;
-
-          case eventTarget.value === 'heat':
-            imgPreview.classList.add('effects__preview--' + eventTarget.value);
-            heatFx = window.slider(1, 3) + '%';
-            return;
-
-          case eventTarget.value === 'none':
-            imgPreview.classList.add('effects__preview--' + eventTarget.value);
-            return;
-        } // switch
       }
     } else {
       window.hideElement(effectsVolume);
@@ -499,10 +510,7 @@ var sepiaFx = window.slider(0, 1);
   effectList.addEventListener('change', applyEffectsHandler);
 })();
 
-// E.2 Функция для оживляения ползунка
-// (function () {
-//   window.slider(document.querySelector('.img-upload__effect-level'), 0, 100, 'sepia');
-// })();
+
 
 // HASHTAG.JS
 // Валидацмя тегов
@@ -716,6 +724,8 @@ var sepiaFx = window.slider(0, 1);
   formUpldImg.addEventListener('change', errCounterTitle);
 
 })();
+
+
 
 
 // // PREVIEW.JS
