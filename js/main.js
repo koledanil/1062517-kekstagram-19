@@ -208,7 +208,7 @@ var getTemplateFromMarkup = function (tagTemplate, tagInTemplate) {
 // DATAGEN.JS
 // Данные, которые используются для отображения фоток и так далее.
 (function () {
-  // D.1 Создает массив КОММЕНТАРИЕВ (аватар автора, текст и имя)
+  // D.1 Создает массив КОММЕНТАРИЕВ (аватар автора, текст и имя), который потом будет записан в D.2 строка 240
   var createComment = function () {
     var commentStorage = [];
     for (var i = 0; i < getRandomNumber(window.PHOTO_RULES.COMMENT.MIN, window.PHOTO_RULES.COMMENT.MAX); i++) {
