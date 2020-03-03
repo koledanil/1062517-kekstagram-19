@@ -175,9 +175,7 @@ var submitButton = document.querySelector('#upload-submit');
 var formUpldImg = document.querySelector('.img-upload__text');
 
 // PHOTO_PAGE
-var foundTemplate = getTemplateFromMarkup('#picture', '.picture');
-var infoContainer = foundTemplate.querySelector('.picture__info'); // контейнер для коментов и лайков
-var pathPicture = foundTemplate.querySelector('.picture__img');
+var imagePlace = document.querySelector('.pictures');
 
 // PREVIEW_SELECTOR.JS
 // var imgСommentUl = document.querySelector('.social__comments');
@@ -248,10 +246,13 @@ var getTemplateFromMarkup = function (tagTemplate, tagInTemplate) {
 
 // PHOTPAGE.JS
 // P.1 Записываем данные фотки в разметку для одной шутки
-var imagePlace = document.querySelector('.pictures');
 var fragment = document.createDocumentFragment();
 
 var writeInfoPhoto = function (element) {
+  var foundTemplate = getTemplateFromMarkup('#picture', '.picture');
+  var infoContainer = foundTemplate.querySelector('.picture__info'); // контейнер для коментов и лайков
+  var pathPicture = foundTemplate.querySelector('.picture__img');
+
   infoContainer.querySelector('.picture__likes').textContent = element.like;
   infoContainer.querySelector('.picture__comments').textContent = element.comment.length;
   pathPicture.src = element.url;
@@ -537,13 +538,15 @@ window.preventActionHandler = function (evt) {
 
   // H.3 Функция првоеряет каждый тэг на ошибки согласно H.2
   var checkAllTags = function () {
-    tagErrPlaceUl.innerHTML = '';
-    tagInput.classList.remove('border-error');
-    var enteredTags = tagInput.value.split(' ').filter(function (item) {
+
+    var enteredTags = tagInput.value.toLowerCase().split(' ').filter(function (item) {
       return item !== '';
     });
 
+    // var tagErrTemplate = document.querySelector('#error-item').content.querySelector('li'); // детеныши ошибок
+    // var tagErrPlaceUl = document.querySelector('#tag-error'); // мамка ошибок
     var errArray = []; // массив с перечнем дошибок для каждого тэга
+
     if (enteredTags.length === 0) {
       tagErrPlaceUl.innerHTML = '';
       window.ADD_PHOTO_RULES.special.counterErrTagTitle = 0;
@@ -606,7 +609,7 @@ window.preventActionHandler = function (evt) {
     }
   }; // end check all tags
 
-  tagInput.addEventListener('blur', checkAllTags);
+  tagInput.addEventListener('change', checkAllTags);
 
 })(); // finished IIFE
 
@@ -677,8 +680,9 @@ window.preventActionHandler = function (evt) {
   };
   submitButton.addEventListener('click', checkRules);
 
-  // S.2 Выводит количество ошибок в заголовок окна
+ // S.2 Выводит количество ошибок в заголовок окна
   // Данная функция предназначена для отображения к-ва ошибок в поле теги и комент в ЗАГОЛОВКЕ СТРАНИЦЫ
+  // var formUpldImg = document.querySelector('.img-upload__text');
   var errCounterTitle = function () {
 
     if (window.ADD_PHOTO_RULES.special.counterErrTagTitle > 0 || window.ADD_PHOTO_RULES.special.counterErrAreaTitle > 0) { // если значение не нулевое (то есть есть ошибки), выполняется выввод в заголовк
@@ -699,6 +703,7 @@ window.preventActionHandler = function (evt) {
   };
 
   formUpldImg.addEventListener('change', errCounterTitle);
+
 })();
 
 
