@@ -653,7 +653,7 @@ window.preventActionHandler = function (evt) {
 
     if (window.counterSymbol >= window.ADD_PHOTO_RULES.UPLD_COMMENTS.MAX_LENGTH) {
       counterPlace.classList.add('counter-error');
-      counterPlace.textContent = 'Достигнут лимит в 140 символов 😶';
+      counterPlace.textContent = 'Достигли лимит в 140 символов 😶';
       window.ADD_PHOTO_RULES.special.counterErrAreaTitle = 1; // используется для отображения количества ошибок в заголовке S.2
       textArea.classList.add('border-error');
       window.validityTextArea = false;
@@ -680,7 +680,7 @@ window.preventActionHandler = function (evt) {
   };
   submitButton.addEventListener('click', checkRules);
 
- // S.2 Выводит количество ошибок в заголовок окна
+  // S.2 Выводит количество ошибок в заголовок окна
   // Данная функция предназначена для отображения к-ва ошибок в поле теги и комент в ЗАГОЛОВКЕ СТРАНИЦЫ
   // var formUpldImg = document.querySelector('.img-upload__text');
   var errCounterTitle = function () {
@@ -708,7 +708,7 @@ window.preventActionHandler = function (evt) {
 
 
 // // PREVIEW.JS
-// // Функция наполнения одной большой фотки
+// // Функция наполнения одной большой фотки с превьюшки
 // (function () {
 //   // P.2.1 Клонирование и наполннение одной фотки
 //   var getCommentImg = function (data) {
