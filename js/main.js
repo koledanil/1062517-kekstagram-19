@@ -100,7 +100,7 @@ window.ADD_PHOTO_RULES = {
   },
   UPLD_TAGS: {
     DIVIDER_SYMBOL: '#',
-    REG_EXP: /(^)(#[a-zA-Zа-яА-Я\d]*$)/ig,
+    REG_EXP: /[^a-zA-Z0-9]/,
     MIN_LENGTH: 3,
     MAX_LENGTH: 20,
     MAX_AMOUNT_TAG: 5
@@ -129,6 +129,68 @@ window.ADD_PHOTO_RULES = {
     // нужны для работы S.2
   }
 };
+
+// V.3 Поиск элементов разметки для кода
+// SCALE_SELECTOR
+// Находим тэги увеличения масштаба
+var imgPreview = document.querySelector('.img-upload__preview').querySelector('img'); // изображение
+var zoomButtons = document.querySelector('.img-upload__scale'); // родитель кнопок
+var zoomStorage = document.querySelector('.scale__control--value'); // отображает значение масштаба
+var zoomOutButton = document.querySelector('.scale__control--smaller'); // уменьшаем масштаб
+var zoomInButton = document.querySelector('.scale__control--bigger'); // увеличиваем масштаб
+
+
+// DIALOG_SELECTOR
+// Находим тэги увеличения масштаба
+var body = document.querySelector('body'); // поиск бади, нужен для блокировки скролла
+var clickedElement = document.querySelector('#upload-select-image');
+var dialogBox = document.querySelector('.img-upload__overlay');
+var filePicker = document.querySelector('.img-upload__input');
+var crossButton = document.querySelector('.img-upload__cancel');
+var uploadButton = document.querySelector('#upload-select-image');
+
+// из закрытия окна
+var counterPlace = document.querySelector('#symbol_counter'); // находим каунтер
+var tagErrPlaceUl = document.querySelector('#tag-error');// находим тэг для ошибок заполнения поля тэг
+var tagInput = document.querySelector('.text__hashtags');
+var textArea = document.querySelector('.text__description');
+var effectPreview = document.querySelectorAll('.effects__radio');
+
+// SLIDER_SELECTOR
+var sliderTag = document.querySelector('.img-upload__effect-level');
+var lineEmpty = sliderTag.querySelector('.effect-level__line');
+var depth = sliderTag.querySelector('.effect-level__depth');
+var pin = sliderTag.querySelector('.effect-level__pin');
+
+// EFFECT_SELECTRO
+var effectList = document.querySelector('.effects__list');
+
+// TAG_SELECTOR
+var tagErrTemplate = document.querySelector('#error-item').content.querySelector('li'); // детеныши ошибок
+
+// TEXTAREA_SELECTOR
+var submitButton = document.querySelector('#upload-submit');
+
+// SUBMIT_SELECTOR
+var formUpldImg = document.querySelector('.img-upload__text');
+
+// PHOTO_PAGE
+var foundTemplate = getTemplateFromMarkup('#picture', '.picture');
+var infoContainer = foundTemplate.querySelector('.picture__info'); // контейнер для коментов и лайков
+var pathPicture = foundTemplate.querySelector('.picture__img');
+
+// PREVIEW_SELECTOR.JS
+// var imgСommentUl = document.querySelector('.social__comments');
+// var imgСommentLi = imgСommentUl.querySelector('.social__comment'); // переменная использована в коде, что закамент
+// var bigPicture = document.querySelector('.big-picture');
+// var imgPicture = bigPicture.querySelector('img'); // переменная использована в коде, что закамент
+// var imgLike = bigPicture.querySelector('.likes-count'); // переменная использована в коде, что закамент
+// var imgComment = bigPicture.querySelector('.comments-count'); // переменная использована в коде, что закамент
+// var imgDescription = bigPicture.querySelector('.social__caption'); // переменная использована в коде, что закамент
+// var commentCounter = document.querySelector('.social__comment-count'); // переменная использована в коде, что закамент
+// var commentsLoader = document.querySelector('.comments-loader'); // переменная использована в коде, что закамент
+
+// //////////////////////////////////////////////////////////////////
 
 // C.1 генератор случайных чисел в зад. диапазане
 var getRandomNumber = function (min, max) {
@@ -190,10 +252,6 @@ var imagePlace = document.querySelector('.pictures');
 var fragment = document.createDocumentFragment();
 
 var writeInfoPhoto = function (element) {
-  var foundTemplate = getTemplateFromMarkup('#picture', '.picture');
-  var infoContainer = foundTemplate.querySelector('.picture__info'); // контейнер для коментов и лайков
-  var pathPicture = foundTemplate.querySelector('.picture__img');
-
   infoContainer.querySelector('.picture__likes').textContent = element.like;
   infoContainer.querySelector('.picture__comments').textContent = element.comment.length;
   pathPicture.src = element.url;
@@ -224,51 +282,23 @@ window.preventActionHandler = function (evt) {
   evt.preventDefault();
 };
 
-// // U.4 Запред дефолтного действия СТРАННЫЙ
-// window.preventActionHandler = function (evt) {
-//   evt.preventDefault();
-// };
-
 // DIALOG.JS
 // D.1 Функция открывает диалоговое окно по изменению поля файл.
 (function () {
-  var body = document.querySelector('body');
-  var clickedElement = document.querySelector('#upload-select-image');
-  var dialogBox = document.querySelector('.img-upload__overlay');
-  var filePicker = document.querySelector('.img-upload__input');
-
   var showDialogBoxHandler = function () {
     window.showElement(dialogBox);
     body.classList.add('modal-open');
     filePicker.blur();
   };
-
   clickedElement.addEventListener('change', showDialogBoxHandler);
 })();
 
 // D.2 Функция закрывает диалоговое окно по клику на керстик и ESC
 (function () {
-  var body = document.querySelector('body');
-  var crossButton = document.querySelector('.img-upload__cancel');
-  var uploadButton = document.querySelector('#upload-select-image');
-  var dialogBox = document.querySelector('.img-upload__overlay');
-
   var resetForm = function () {
-    var imgPreview = document.querySelector('.img-upload__preview')
-                             .querySelector('img'); // находим картинку чтоб сбить масштаб
-
-    var zoomOutButton = document.querySelector('.scale__control--bigger'); // находим кнопку ув. масштаба
-    var zoomInButton = document.querySelector('.scale__control--smaller'); // находим кнопку ум. масштаба
-
-    var restoreDefaultEffect = document.querySelector('.img-upload__preview').querySelector('img');
-    restoreDefaultEffect.removeAttribute('class');
-
-    var counterPlace = document.querySelector('#symbol_counter'); // находим каунтер
-
-    var tagErrPlaceUl = document.querySelector('#tag-error');// находим тэг для ошибок заполнения поля тэг
-    var tagInput = document.querySelector('.text__hashtags');
-    var textArea = document.querySelector('.text__description');
-
+    // переменные imgPreview zoomOutButton zoomInButton --- scale_selector.js
+    // переменные counterPlace tagErrPlaceUl tagInput textArea --- DIALOG_SELECTOR.JS
+    imgPreview.removeAttribute('class');
     counterPlace.innerHTML = 'Введено 0 из 140 символов';
     counterPlace.classList.add('hidden');
     window.counterSymbol = 0;
@@ -284,6 +314,10 @@ window.preventActionHandler = function (evt) {
     document.title = window.ADD_PHOTO_RULES.special.ORIGINAL_TITLE; // возвращаем исходное значение тайтла, использ в S.2
     tagInput.classList.remove('border-error');
     tagErrPlaceUl.innerHTML = ''; // затираем мамку ошибок (фн.H.3)
+
+    zoomInButton.disabled = true; // лочим зум.
+
+    sliderTag.classList.add('hidden'); // скрываем ползунок эффекта
   };
 
   window.hideDialogBox = function () {
@@ -294,14 +328,8 @@ window.preventActionHandler = function (evt) {
   };
 
   var closeEscHandler = function (evt) {
-    var tagInput = document.querySelector('.text__hashtags');
-    var textArea = document.querySelector('.text__description');
-    var effectPreview = document.querySelectorAll('.effects__radio');
-
-
     switch (true) {
       case evt.key === 'Escape' && evt.target.type === 'radio':
-
         for (var i = 0; i < effectPreview.length; i++) {
           if (effectPreview[i].checked) {
             effectPreview[i].blur();
@@ -331,21 +359,9 @@ window.preventActionHandler = function (evt) {
 // SCALE.JS
 // Изменение масштаба изобаржения
 (function () {
-  var photoPreview = document.querySelector('.img-upload__preview');
-  var zoomButtons = document.querySelector('.img-upload__scale');
-  var zoomStorage = document.querySelector('.scale__control--value');
-  var imgPreview = photoPreview.querySelector('img');
-  var zoomOutButton = document.querySelector('.scale__control--smaller');
-  var zoomInButton = document.querySelector('.scale__control--bigger');
-  var imgContainer = document.querySelector('#imgContainer');
   var newValaue;
   var scaleValue;
   zoomInButton.disabled = true; // октлючаем кнопку зума при 100%
-
-  // SC.1 Отключаем возможность перетащить фотку мышкой
-  var preventDragImage = function (evt) {
-    evt.preventDefault();
-  };
 
   // SC.2 Изменяем масштаб изображения туда и сюда
   var scaleImage = function (evt) {
@@ -379,146 +395,123 @@ window.preventActionHandler = function (evt) {
   };
 
   zoomButtons.addEventListener('click', scaleImage);
-  imgContainer.addEventListener('mousedown', preventDragImage);
+  // window.addEventListener('mousedown', preventDragImage); // отключает случайное выделение фотки
 })(); // end iife s1
 
 // SLIDER.JS
 // Полузнок эффектов
 // SL.1  Функция оживляет слайдер и в зависимости от значений min/max выдает число при движении
 (function () {
-  var sliderTag = document.querySelector('.img-upload__effect-level');
-  var lineEmpty = sliderTag.querySelector('.effect-level__line');
-  var depth = sliderTag.querySelector('.effect-level__depth');
-  var pin = sliderTag.querySelector('.effect-level__pin');
-  var output = sliderTag.querySelector('.effect-level__line'); 
-  window.slider = function (minValue, maxValue) {
-    pin.removeAttribute('style');
-    depth.removeAttribute('style');
-    var limitMovementX;
-    var pinCoord;
+  pin.removeAttribute('style');
+  depth.removeAttribute('style');
+  var limitMovementX;
+  var pinCoord;
+  var slideOutput;
+  var effectType;
 
-    var movePinHandler = function (evt) {
-      limitMovementX = {
-        min: 0,
-        max: lineEmpty.offsetLeft + lineEmpty.offsetWidth - pin.offsetWidth
-      };
-      pinCoord = pin.offsetLeft + evt.movementX;
-      if (pinCoord < limitMovementX.min) {
-        pinCoord = limitMovementX.min;
-      }
-      if (pinCoord >= limitMovementX.max) {
-        pinCoord = limitMovementX.max;
-      }
-      output.value = pinCoord * maxValue / limitMovementX.max;
-      // здесь мы ограничиваем выходное значение (например, от 1 до 3 или от 10 до 100 и так далее)
-      if (output.value < minValue) {
-        output.value = minValue;
-      }
-      pin.style.left = pinCoord + 'px'; // меняем положение ползунка
-      depth.style.width = pinCoord + 'px'; // меняем положение акцента
-      var resultPLS = output.value;
-      console.log(resultPLS);
-      return resultPLS;
+  var movePinHandler = function (evt) {
+    limitMovementX = {
+      min: 0,
+      max: lineEmpty.offsetLeft + lineEmpty.offsetWidth - pin.offsetWidth
     };
+    pinCoord = pin.offsetLeft + evt.movementX;
+    if (pinCoord < limitMovementX.min) {
+      pinCoord = limitMovementX.min;
+    }
+    if (pinCoord >= limitMovementX.max) {
+      pinCoord = limitMovementX.max;
+    }
+    slideOutput = pinCoord * 100 / limitMovementX.max;
+    if (slideOutput < 0) {
+      slideOutput = 0;
+    }
+    pin.style.left = pinCoord + 'px'; // меняем положение ползунка
+    depth.style.width = pinCoord + 'px'; // меняем положение акцента
 
-    var pinMouseUpHandler = function () {
-      document.removeEventListener('mousemove', movePinHandler);
-      document.removeEventListener('mouseup', pinMouseUpHandler);
-    };
+    switch (effectType) {
+      case 'effects__preview--none':
+        imgPreview.style.filter = 'none';
+        return;
 
-    pin.addEventListener('mousedown', function () {
-      pin.addEventListener('dragstart', window.preventActionHandler);
-      document.addEventListener('mousemove', movePinHandler);
-      document.addEventListener('mouseup', pinMouseUpHandler);
-    });
+      case 'effects__preview--chrome':
+        imgPreview.style.filter = 'grayscale(' + slideOutput / 100 + ')';
+        return;
+
+      case 'effects__preview--sepia':
+        imgPreview.style.filter = 'sepia(' + slideOutput / 100 + ')';
+        return;
+
+      case 'effects__preview--marvin':
+        imgPreview.style.filter = 'invert(' + slideOutput + '%)';
+        return;
+
+      case 'effects__preview--phobos':
+        imgPreview.style.filter = 'blur(' + (slideOutput / 10) / 3 + 'px)';
+        return;
+
+      case 'effects__preview--heat':
+        if (slideOutput < 1) { // условие ограничивает минимальное значение 1 (а не 0, как стандартно выдает ползунок). Эффект не прнимает 0
+          slideOutput = 1;
+        }
+        imgPreview.style.filter = 'brightness(' + (slideOutput / 100 * 2) + 1 + ')';
+        return;
+    }
+
   };
+  var pinMouseUpHandler = function () {
+    document.removeEventListener('mousemove', movePinHandler);
+    document.removeEventListener('mouseup', pinMouseUpHandler);
+  };
+
+  pin.addEventListener('mousedown', function () {
+    effectType = imgPreview.getAttribute('class');
+
+
+    pin.addEventListener('dragstart', window.preventActionHandler);
+    document.addEventListener('mousemove', movePinHandler);
+    document.addEventListener('mouseup', pinMouseUpHandler);
+  });
 })();
-
-var sepiaFx = window.slider(0, 1);
-            console.log(sepiaFx);
-
 
 // EFFECTS.JS
 // E.1 Переключает эффекты и применяет их к фото
 (function () {
-  var photoPreview = document.querySelector('.img-upload__preview');
-  var imgPreview = photoPreview.querySelector('img');
-  var dialogBox = document.querySelector('.img-upload__overlay');
-  var effectsVolume = dialogBox.querySelector('.img-upload__effect-level');
-  var effectList = document.querySelector('.effects__list');
-
-
   var applyEffectsHandler = function (evt) {
-    var eventTarget;
-    var chromeFx;
-    var sepiaFx;
-    var marvinFx;
-    var phobosFx;
-    var heatFx;
-
-    eventTarget = evt.target;
-    console.log(eventTarget.value);
+    imgPreview.removeAttribute('class');
+    imgPreview.style.filter = '';
+    pin.style.left = 453 + 'px';
+    depth.style.width = 453 + 'px';
+    var eventTarget = evt.target;
     if (eventTarget.value !== 'none') {
-
-      if (effectsVolume.classList.contains !== 'hidden') {
-        window.showElement(effectsVolume);
-
-        switch (true) {
-          case eventTarget.value === 'chrome':
-            imgPreview.classList.add('effects__preview--' + eventTarget.value);
-            return;
-
-          case eventTarget.value === 'sepia':
-            imgPreview.classList.add('effects__preview--' + eventTarget.value);
-            return;
-
-          case eventTarget.value === 'marvin':
-            imgPreview.classList.add('effects__preview--' + eventTarget.value);
-            marvinFx = window.slider(0, 100) + '%';
-            return;
-
-          case eventTarget.value === 'phobos':
-            imgPreview.classList.add('effects__preview--' + eventTarget.value);
-            phobosFx = window.slider(0, 3) + '%';
-            return;
-
-          case eventTarget.value === 'heat':
-            imgPreview.classList.add('effects__preview--' + eventTarget.value);
-            heatFx = window.slider(1, 3) + '%';
-            return;
-
-          case eventTarget.value === 'none':
-            imgPreview.classList.add('effects__preview--' + eventTarget.value);
-            return;
-        } // switch
+      imgPreview.classList.add('effects__preview--' + eventTarget.value);
+      if (sliderTag.classList.contains !== 'hidden') {
+        window.showElement(sliderTag);
       }
     } else {
-      window.hideElement(effectsVolume);
+      window.hideElement(sliderTag);
     }
   };
   effectList.addEventListener('change', applyEffectsHandler);
 })();
 
-// E.2 Функция для оживляения ползунка
-// (function () {
-//   window.slider(document.querySelector('.img-upload__effect-level'), 0, 100, 'sepia');
-// })();
-
 // HASHTAG.JS
 // Валидацмя тегов
 (function () {
   window.validityTag = true;
-  var tagInput = document.querySelector('.text__hashtags');
   window.ADD_PHOTO_RULES.special.ORIGINAL_TITLE = document.title;
   // ^^^сохраняем в объект название страницы, оно будет использовано когда пользователь исправит
   // все ошибки и нам надо будет вернуть старое название страницы. Для работы S.2
 
-
   // H.1 Поиск дубликатов внутри массива и возвращение False или true, знак
   var findDuplicate = function (arr) {
+    var lowerCaseArr = [];
+    arr.forEach(function (element) {
+      lowerCaseArr.push(element.toLowerCase());
+    });
+
     var temp = {};
     var isDuplicate;
-    temp = arr.filter(function (item) {
+    temp = lowerCaseArr.filter(function (item) {
       return temp[item] || !(temp[item] = !0);
     });
     if (temp.length > 0) {
@@ -537,21 +530,20 @@ var sepiaFx = window.slider(0, 1);
     checkedTag.isSharp = tagStorage[0] === '#';
     checkedTag.maxLength = tagStorage.length > 2 && tagStorage.length < 20;
     checkedTag.onlySharp = tagStorage.length === 1 && tagStorage === '#';
-    checkedTag.regExp = tagStorage.match(window.ADD_PHOTO_RULES.UPLD_TAGS.REG_EXP);
+    checkedTag.regExp = window.ADD_PHOTO_RULES.UPLD_TAGS.REG_EXP.test(tagStorage.substring(1, (tagStorage.length)));
+    // checkedTag.regExp = tagStorage.match(window.ADD_PHOTO_RULES.UPLD_TAGS.REG_EXP);
     return checkedTag;
   };
 
   // H.3 Функция првоеряет каждый тэг на ошибки согласно H.2
   var checkAllTags = function () {
-
-    var enteredTags = tagInput.value.toLowerCase().split(' ').filter(function (item) {
+    tagErrPlaceUl.innerHTML = '';
+    tagInput.classList.remove('border-error');
+    var enteredTags = tagInput.value.split(' ').filter(function (item) {
       return item !== '';
     });
 
-    var tagErrTemplate = document.querySelector('#error-item').content.querySelector('li'); // детеныши ошибок
-    var tagErrPlaceUl = document.querySelector('#tag-error'); // мамка ошибок
     var errArray = []; // массив с перечнем дошибок для каждого тэга
-
     if (enteredTags.length === 0) {
       tagErrPlaceUl.innerHTML = '';
       window.ADD_PHOTO_RULES.special.counterErrTagTitle = 0;
@@ -614,16 +606,13 @@ var sepiaFx = window.slider(0, 1);
     }
   }; // end check all tags
 
-  tagInput.addEventListener('change', checkAllTags);
+  tagInput.addEventListener('blur', checkAllTags);
 
 })(); // finished IIFE
-
 
 // TEXTAREA.JS
 (function () {
   // T.1 Поле текста автоматически подстраивается под контент + ресайз только по высоте (чтобы не рвало при вытягивании по ширине)
-
-  var textArea = document.querySelector('.text__description');
   var inputHandler = function (evt) {
     evt.target.style.height = 'auto';
     evt.target.style.height = (evt.target.scrollHeight) + 'px';
@@ -635,9 +624,6 @@ var sepiaFx = window.slider(0, 1);
 
 (function () {
   // Т.2 Контроль длины поля ввода
-  var counterPlace = document.querySelector('p');
-  var textArea = document.querySelector('.text__description');
-  var submitButton = document.querySelector('#upload-submit');
   counterPlace.classList.add('text__counter'); // присваивет стиль каунтера по умолчанию
   window.validityTextArea = true;
 
@@ -693,7 +679,6 @@ var sepiaFx = window.slider(0, 1);
 
   // S.2 Выводит количество ошибок в заголовок окна
   // Данная функция предназначена для отображения к-ва ошибок в поле теги и комент в ЗАГОЛОВКЕ СТРАНИЦЫ
-  var formUpldImg = document.querySelector('.img-upload__text');
   var errCounterTitle = function () {
 
     if (window.ADD_PHOTO_RULES.special.counterErrTagTitle > 0 || window.ADD_PHOTO_RULES.special.counterErrAreaTitle > 0) { // если значение не нулевое (то есть есть ошибки), выполняется выввод в заголовк
@@ -714,17 +699,12 @@ var sepiaFx = window.slider(0, 1);
   };
 
   formUpldImg.addEventListener('change', errCounterTitle);
-
 })();
 
 
 // // PREVIEW.JS
 // // Функция наполнения одной большой фотки
 // (function () {
-//   // P.2 Находим родителя и детеныша для клонирования
-//   var imgСommentUl = document.querySelector('.social__comments');
-//   var imgСommentLi = imgСommentUl.querySelector('.social__comment');
-
 //   // P.2.1 Клонирование и наполннение одной фотки
 //   var getCommentImg = function (data) {
 //     var cloneComment = imgСommentLi.cloneNode(true);
@@ -740,16 +720,9 @@ var sepiaFx = window.slider(0, 1);
 
 //   // P.2.2 Отображение большой фотки со всем данными
 //   var showBigPhoto = function (item) {
-//     var bigPicture = document.querySelector('.big-picture');
-//     var imgPicture = bigPicture.querySelector('img');
-//     var imgLike = bigPicture.querySelector('.likes-count');
-//     var imgComment = bigPicture.querySelector('.comments-count');
-//     var imgDescription = bigPicture.querySelector('.social__caption');
-//     var fragment = document.createDocumentFragment(); // сюда запис. детеныши-коментарии
+//     var fragmenBigPhoto = document.createDocumentFragment(); // сюда запис. детеныши-коментарии
 
 //     (function () {
-//       var commentCounter = document.querySelector('.social__comment-count');
-//       var commentsLoader = document.querySelector('.comments-loader');
 //       commentCounter.classList.add('hidden');
 //       commentsLoader.classList.add('hidden');
 //     })(); // функция скрывает кнопку ЕЩЕ КОМЕНТОВ и СЧЕТЧИК
@@ -761,11 +734,11 @@ var sepiaFx = window.slider(0, 1);
 //     imgDescription.textContent = item.description;
 
 //     for (var i = 0; i < item.comment.length; i++) {
-//       fragment.appendChild(getCommentImg(item.comment[i]));
+//       fragmenBigPhoto.appendChild(getCommentImg(item.comment[i]));
 //     } // набиваем детенышами фрагмент
 
 //     imgСommentUl.innerHTML = ''; // очищаем от шаблона
-//     imgСommentUl.appendChild(fragment); // вешаем их на место
+//     imgСommentUl.appendChild(fragmenBigPhoto); // вешаем их на место
 //   };
 
 //   showBigPhoto(window.preparedPhoto[0]);
