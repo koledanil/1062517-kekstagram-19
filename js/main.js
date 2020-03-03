@@ -538,7 +538,10 @@ window.preventActionHandler = function (evt) {
 
   // H.3 Функция првоеряет каждый тэг на ошибки согласно H.2
   var checkAllTags = function () {
-
+    tagErrPlaceUl.innerHTML = '';
+    window.ADD_PHOTO_RULES.special.counterErrTagTitle = 0;
+    tagInput.classList.remove('border-error');
+    window.validityTag = true;
     var enteredTags = tagInput.value.toLowerCase().split(' ').filter(function (item) {
       return item !== '';
     });
