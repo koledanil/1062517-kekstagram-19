@@ -50,6 +50,25 @@ main {
   display: none;
 }
 
+/* стиль для ограничителя передвижения  */
+.border-zoom { 
+      margin: auto;
+      overflow: hidden;
+      width: 587px;
+      height: 587px;
+      position: relative;
+      }
+  
+/* стиль для изображения чтобы оно двигалось  */
+.border-zoom__img{
+  height:  auto;
+          width: 100%;
+          position: absolute;
+          left: 0;
+          top: 0;
+  
+}
+
 .visually-hidden {
   position: absolute;
 
@@ -77,7 +96,6 @@ main {
   height: 100vh;
   overflow: hidden;
 }
-
 
 /**
  * Кнопка закрытия модального окна
@@ -156,6 +174,14 @@ main {
 
 .img-filters--inactive {
   opacity: 0;
+}
+
+/* Отключаем выделение на фотках */
+img {
+  user-select: none; 
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none
 }
 
 .img-filters__button {
@@ -457,6 +483,28 @@ main {
   border: 0;
 }
 
+.scale__control--readonly { 
+  /* Стиль для ячейки с процентовкой, так как это не интпут, то он не может быть кликабельным и не может быть в фокусе */
+  position: relative;
+
+  width: 33px;
+  height: 33px;
+  margin: 0;
+  padding: 0;
+
+  text-align: center;
+  vertical-align: middle;
+
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 0;
+}
+
+/* Выключаем фокусную обводку для ячейки с процентовкой */
+.scale__control--readonly:focus,
+.scale__control--readonly:hover {
+  outline:none;
+}
+
 .scale__control:hover,
 .scale__control:focus {
   background-color: rgba(0, 0, 0, 0.3);
@@ -488,7 +536,7 @@ main {
 }
 
 .scale__control--value {
-  width: 60px;
+  width: 70px;
 
   font-size: 16px;
   color: #ffffff;
@@ -595,7 +643,7 @@ main {
 .effect-level__pin {
   position: absolute;
   top: 50%;
-  left: 20%;
+  left: 100%;
   z-index: 1;
 
   width: 18px;
@@ -615,7 +663,7 @@ main {
 .effect-level__depth {
   position: absolute;
 
-  width: 20%;
+  width: 100%;
   height: 100%;
 
   background-color: #ffe753;
@@ -741,7 +789,7 @@ main {
   width: 450px;
 
   margin: 0 auto;
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
   padding: 5px 10px;
 
   font-family: "Open Sans", "Arial", sans-serif;
@@ -753,18 +801,23 @@ main {
 
 .text__description {
   width: 450px;
-  height: 100px;
-
+  min-height: 100px; /*Изменил с height на min-height, чтобы пользователь не мог ужать поле до 0;*/
+  border: 2px solid rgba(0, 0, 0, 0);
   margin: 0 auto;
   padding: 15px 10px;
+  padding-bottom: 25px;
+  margin-top: 25px; /*свойство добавлено чтобы не слипались поля во время вывода ошибки*/
+  line-height: 18px;
 
   font-family: "Open Sans", "Arial", sans-serif;
   font-weight: 400;
   color: #000000;
-
   border-radius: 5px;
 }
 
+ .img-upload__text { /*Изменил чтобы споцизионировать каунтер внутрь текстареа и он всегда был внизу ее */
+  position: relative;
+}
 
 /**
  * Кнопка для отправки изображения
@@ -1361,6 +1414,80 @@ main {
   opacity: 0.6;
 }
 
+
+/* Эти две ошибки оформляют блордер текстареа при добавлении фотки */
+.border-success {
+  border: 2px solid green;
+}
+
+/* Делает кнопку масштаба ненажимабельной при достижении мин или макс*/
+.scale__control:disabled {
+  background-color: #999999;
+    -webkit-transform: none;
+        -ms-transform: none;
+            transform: none;
+};
+
+/*Стиль счетчика по умолчанию*/
+.counter__regular {
+  color: #e60000 !important
+}
+
+.text__counter { /* Базовый стиль каунтера */
+  color: #717171;
+  font-size: 12px;
+  position: absolute;
+  bottom: 0px;
+  left: 80px;
+  text-transform: initial;
+} 
+
+.border-error {
+  border: 2px solid #e60000;
+}
+
+/*Курсор для таскания*/
+.all-scroll { 
+  cursor: all-scroll;
+}
+
+.error-list {
+padding-left: 66px;
+margin-top: 0px;
+margin-bottom: 0px;
+}
+
+.error-list__item {
+  width: 450px;
+  margin-top: 5px;
+  padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 5px;
+
+  list-style: none;
+  background-color:red;
+  text-align: left;
+  text-transform: initial;
+}
+
+.counter__default {
+  color: #717171; 
+  font-size: 12px; 
+  position: absolute; 
+  bottom: 0px; 
+  left: 80px;  
+  text-transform: initial
+}
+
+.counter-error {
+  color: #e60000; 
+  font-size: 12px; 
+  position: absolute; 
+  bottom: 0px; 
+  left: 80px;  
+  text-transform: initial
+}
 
 /**
  * Экран загрузки изображения

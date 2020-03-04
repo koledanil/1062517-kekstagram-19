@@ -30,7 +30,11 @@
       <section class="img-upload">
         <div class="img-upload__wrapper">
           <h2 class="img-upload__title  visually-hidden">Загрузка фотографии</h2>
-          <form class="img-upload__form" id="upload-select-image" method="post" enctype="multipart/form-data" autocomplete="off">
+          <form class="img-upload__form" id="upload-select-image" 
+                                         method="post"
+                                         enctype="multipart/form-data"
+                                         action="https://js.dump.academy/kekstagram"
+                                         autocomplete="off">
 
             <!-- Изначальное состояние поля для загрузки изображения -->
             <fieldset class="img-upload__start">
@@ -45,19 +49,20 @@
 
                   <!-- Изменение размера изображения -->
                   <fieldset class="img-upload__scale  scale">
-                    <button type="button" class="scale__control  scale__control--smaller">Уменьшить</button>
-                    <input type="text" class="scale__control  scale__control--value" value="55%" title="Image Scale" name="scale" readonly>
-                    <button type="button" class="scale__control  scale__control--bigger">Увеличить</button>
+                    <button type="button" class="scale__control  scale__control--smaller">Уменьшить</button> <!--scale__control--disabled добавлен чтобы моожно было делать кнопку дис-->
+                    <input type="text" class="scale__control--readonly scale__control--value" value="100%" title="Image Scale" name="scale" readonly tabindex="-1">
+                    <button type="button" class="scale__control  scale__control--bigger">Увеличить</button> <!--scale__control--disabled добавлен чтобы моожно было делать кнопку дис-->
                   </fieldset>
-
                   <!-- Предварительный просмотр изображения -->
                   <div class="img-upload__preview">
-                    <img src="img/upload-default-image.jpg" alt="Предварительный просмотр фотографии">
+                    <div id="imgContainer" class="border-zoom">
+                      <img src="img/upload-default-image.jpg" class="border-zoom__img" alt="Предварительный просмотр фотографии" id="imgContainer-img" >
+                    </div>
                   </div>
 
                   <!-- Изменение глубины эффекта, накладываемого на изображение -->
-                  <fieldset class="img-upload__effect-level  effect-level">
-                    <input class="effect-level__value" type="number" name="effect-level" value="20">
+                  <fieldset class="img-upload__effect-level  effect-level hidden">
+                    <input class="effect-level__value" type="number" name="effect-level" value="0">
                     <div class="effect-level__line">
                       <div class="effect-level__pin" tabindex="0">Кнопка изменения глубины эффекта фотографии</div>
                       <div class="effect-level__depth">Глубина эффекта фотографии</div>
@@ -118,8 +123,15 @@
 
                 <!-- Добавление хэш-тегов и комментария к изображению -->
                 <fieldset class="img-upload__text text">
-                  <input class="text__hashtags" name="hashtags" placeholder="#хэш-тег">
-                  <textarea class="text__description" name="description" placeholder="Ваш комментарий..."></textarea>
+                 
+                  <input class="text__hashtags" name="hashtags" placeholder="#хэш-тег" id="input__tags" spellcheck="false" autocomplete="off"><!--Отключаем коррекц. и автозаполнение для тэгов-->
+
+                  <ul class = "error-list"id="tag-error">              
+                  </ul>
+                  <template id = "error-item"><li>Shit happens</li></template>
+                
+                  <textarea class="text__description" name="description" placeholder="Ваш комментарий..." maxlength="140" autocomplete="off"></textarea> <!--Добавлено HTML ограничение на 140 символов-->
+                  <p class="hidden" id="symbol_counter">Введено 0 из 140 символов</p>
                 </fieldset>
 
                 <!-- Кнопка для отправки данных на сервер -->
@@ -232,7 +244,7 @@
   <template id="messages">
     <div class="img-upload__message  img-upload__message--loading">Загружаем...</div>
   </template>
-<script src="js/main.js"></script>
+  <script src="js/main.js"></script>
 
 </body>
 </html>
