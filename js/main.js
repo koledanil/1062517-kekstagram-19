@@ -178,15 +178,15 @@ var formUpldImg = document.querySelector('.img-upload__text');
 var imagePlace = document.querySelector('.pictures');
 
 // PREVIEW_SELECTOR.JS
-// var imgСommentUl = document.querySelector('.social__comments');
-// var imgСommentLi = imgСommentUl.querySelector('.social__comment'); // переменная использована в коде, что закамент
-// var bigPicture = document.querySelector('.big-picture');
-// var imgPicture = bigPicture.querySelector('img'); // переменная использована в коде, что закамент
-// var imgLike = bigPicture.querySelector('.likes-count'); // переменная использована в коде, что закамент
-// var imgComment = bigPicture.querySelector('.comments-count'); // переменная использована в коде, что закамент
-// var imgDescription = bigPicture.querySelector('.social__caption'); // переменная использована в коде, что закамент
-// var commentCounter = document.querySelector('.social__comment-count'); // переменная использована в коде, что закамент
-// var commentsLoader = document.querySelector('.comments-loader'); // переменная использована в коде, что закамент
+var imgСommentUl = document.querySelector('.social__comments');
+var imgСommentLi = imgСommentUl.querySelector('.social__comment'); // переменная использована в коде, что закамент
+var bigPicture = document.querySelector('.big-picture');
+var imgPicture = bigPicture.querySelector('img'); // переменная использована в коде, что закамент
+var imgLike = bigPicture.querySelector('.likes-count'); // переменная использована в коде, что закамент
+var imgComment = bigPicture.querySelector('.comments-count'); // переменная использована в коде, что закамент
+var imgDescription = bigPicture.querySelector('.social__caption'); // переменная использована в коде, что закамент
+var commentCounter = document.querySelector('.social__comment-count'); // переменная использована в коде, что закамент
+var commentsLoader = document.querySelector('.comments-loader'); // переменная использована в коде, что закамент
 
 // //////////////////////////////////////////////////////////////////
 
@@ -723,44 +723,44 @@ window.preventActionHandler = function (evt) {
 })();
 
 
-// // PREVIEW.JS
-// // Функция наполнения одной большой фотки с превьюшки
-// (function () {
-//   // P.2.1 Клонирование и наполннение одной фотки
-//   var getCommentImg = function (data) {
-//     var cloneComment = imgСommentLi.cloneNode(true);
-//     var avatar = cloneComment.querySelector('img');
-//     var comment = cloneComment.querySelector('.social__text');
+// PREVIEW.JS
+// Функция наполнения одной большой фотки с превьюшки
+(function () {
+  // P.2.1 Клонирование и наполннение одной фотки
+  var getCommentImg = function (data) {
+    var cloneComment = imgСommentLi.cloneNode(true);
+    var avatar = cloneComment.querySelector('img');
+    var comment = cloneComment.querySelector('.social__text');
 
-//     avatar.src = data.avatarComment;
-//     avatar.alt = data.name;
-//     comment.textContent = data.text;
+    avatar.src = data.avatarComment;
+    avatar.alt = data.name;
+    comment.textContent = data.text;
 
-//     return cloneComment;
-//   };
+    return cloneComment;
+  };
 
-//   // P.2.2 Отображение большой фотки со всем данными
-//   var showBigPhoto = function (item) {
-//     var fragmenBigPhoto = document.createDocumentFragment(); // сюда запис. детеныши-коментарии
+  // P.2.2 Отображение большой фотки со всем данными
+  var showBigPhoto = function (item) {
+    var fragmenBigPhoto = document.createDocumentFragment(); // сюда запис. детеныши-коментарии
 
-//     (function () {
-//       commentCounter.classList.add('hidden');
-//       commentsLoader.classList.add('hidden');
-//     })(); // функция скрывает кнопку ЕЩЕ КОМЕНТОВ и СЧЕТЧИК
+    (function () {
+      commentCounter.classList.add('hidden');
+      commentsLoader.classList.add('hidden');
+    })(); // функция скрывает кнопку ЕЩЕ КОМЕНТОВ и СЧЕТЧИК
 
-//     bigPicture.classList.remove('hidden'); // отображает окно с большой фоткой
-//     imgPicture.src = item.url;
-//     imgLike.textContent = item.like;
-//     imgComment.textContent = item.comment.length;
-//     imgDescription.textContent = item.description;
+    bigPicture.classList.remove('hidden'); // отображает окно с большой фоткой
+    imgPicture.src = item.url;
+    imgLike.textContent = item.like;
+    imgComment.textContent = item.comment.length;
+    imgDescription.textContent = item.description;
 
-//     for (var i = 0; i < item.comment.length; i++) {
-//       fragmenBigPhoto.appendChild(getCommentImg(item.comment[i]));
-//     } // набиваем детенышами фрагмент
+    for (var i = 0; i < item.comment.length; i++) {
+      fragmenBigPhoto.appendChild(getCommentImg(item.comment[i]));
+    } // набиваем детенышами фрагмент
 
-//     imgСommentUl.innerHTML = ''; // очищаем от шаблона
-//     imgСommentUl.appendChild(fragmenBigPhoto); // вешаем их на место
-//   };
+    imgСommentUl.innerHTML = ''; // очищаем от шаблона
+    imgСommentUl.appendChild(fragmenBigPhoto); // вешаем их на место
+  };
 
-//   showBigPhoto(window.preparedPhoto[0]);
-// })();
+  showBigPhoto(window.preparedPhoto[0]);
+})();
