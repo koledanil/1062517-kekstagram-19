@@ -113,7 +113,7 @@ window.ADD_PHOTO_RULES = {
   msg: {
     errSharp: 'должен начинаться с символа #',
     errRegExp: 'должен быть без специальных символов\n',
-    errLength: 'должен содержать от 2 до 20 символов включая #\n',
+    errLength: 'должен содержать не более 20 символов, включая #\n',
     errAmount: 'должно быть не более 5 тэгов',
     errDuplicate: 'Встречаются одинаковые тэги',
     errToShort: 'тэг не может содержать только #'
@@ -529,7 +529,7 @@ window.preventActionHandler = function (evt) {
     var re = /^[а-яёa-z0-9#]+$/i;
     var checkedTag = {};
     checkedTag.isSharp = tagStorage[0] === '#';
-    checkedTag.maxLength = tagStorage.length > 2 && tagStorage.length < 20;
+    checkedTag.maxLength = tagStorage.length < 20;
     checkedTag.onlySharp = tagStorage.length === 1 && tagStorage === '#';
     // checkedTag.regExp = window.ADD_PHOTO_RULES.UPLD_TAGS.REG_EXP.test(tagStorage.substring(1, (tagStorage.length)));
     checkedTag.regExp = re.test(tagStorage);
