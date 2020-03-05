@@ -146,8 +146,8 @@ var body = document.querySelector('body'); // поиск бади, нужен д
 var clickedElement = document.querySelector('#upload-select-image');
 var dialogBox = document.querySelector('.img-upload__overlay');
 var filePicker = document.querySelector('.img-upload__input');
-var crossButton = document.querySelector('.img-upload__cancel');
-var uploadButton = document.querySelector('#upload-select-image');
+var crossButton = document.querySelector('.cancel');
+var uploadBtnIpload = document.querySelector('#upload-select-image');
 
 // из закрытия окна
 var counterPlace = document.querySelector('#symbol_counter'); // находим каунтер
@@ -179,14 +179,17 @@ var imagePlace = document.querySelector('.pictures');
 
 // PREVIEW_SELECTOR.JS
 var imgСommentUl = document.querySelector('.social__comments');
-var imgСommentLi = imgСommentUl.querySelector('.social__comment'); // переменная использована в коде, что закамент
+var imgСommentLi = imgСommentUl.querySelector('.social__comment');
 var bigPicture = document.querySelector('.big-picture');
-var imgPicture = bigPicture.querySelector('img'); // переменная использована в коде, что закамент
-var imgLike = bigPicture.querySelector('.likes-count'); // переменная использована в коде, что закамент
-var imgComment = bigPicture.querySelector('.comments-count'); // переменная использована в коде, что закамент
-var imgDescription = bigPicture.querySelector('.social__caption'); // переменная использована в коде, что закамент
-var commentCounter = document.querySelector('.social__comment-count'); // переменная использована в коде, что закамент
-var commentsLoader = document.querySelector('.comments-loader'); // переменная использована в коде, что закамент
+var imgPicture = bigPicture.querySelector('img');
+var imgLike = bigPicture.querySelector('.likes-count');
+var imgComment = bigPicture.querySelector('.comments-count');
+var imgDescription = bigPicture.querySelector('.social__caption');
+var commentCounter = document.querySelector('.social__comment-count');
+var commentsLoader = document.querySelector('.comments-loader');
+var sectionPictures = document.querySelector('.pictures');
+var crossBtnUserPic = document.querySelector('.big-picture__cancel');
+var commentUserPhInput = document.querySelector('.social__footer-text');
 
 // //////////////////////////////////////////////////////////////////
 
@@ -269,19 +272,31 @@ showPhotos(window.preparedPhoto);
 
 // UTIL.JS
 // U.1 Делает элемент видимым
-window.showElement = function (element) {
-  element.classList.remove('hidden');
-};
+(function () {
+  window.showElement = function (element) {
+    element.classList.remove('hidden');
+  };
 
-// U.2 Скрывает элемент
-window.hideElement = function (element) {
-  element.classList.add('hidden');
-};
+  // U.2 Скрывает элемент
+  window.hideElement = function (element) {
+    element.classList.add('hidden');
+  };
 
-// U.3 Блокировка действия по умолчанию
-window.preventActionHandler = function (evt) {
-  evt.preventDefault();
-};
+  // U.3 Блокировка действия по умолчанию
+  window.preventActionHandler = function (evt) {
+    evt.preventDefault();
+  };
+
+  // var nameAlert = function (name) { /// ПРИМЕР ИНТЕРФЕЙСА
+  //   alert(name + ' вот');
+  // };
+
+  // window.util = {
+  //   msgName: nameAlert,
+  // };
+})();
+
+// window.util.msgName('Жорж');
 
 // DIALOG.JS
 // D.1 Функция открывает диалоговое окно по изменению поля файл.
@@ -324,7 +339,7 @@ window.preventActionHandler = function (evt) {
   window.hideDialogBox = function () {
     window.hideElement(dialogBox);
     body.classList.remove('modal-open');
-    uploadButton.reset();
+    uploadBtnIpload.reset();
     resetForm();
   };
 
@@ -428,14 +443,17 @@ window.preventActionHandler = function (evt) {
     }
     pin.style.left = pinCoord + 'px'; // меняем положение ползунка
     depth.style.width = pinCoord + 'px'; // меняем положение акцента
-
+    // var effectLevelForm = document.querySelector('.effect-level__value');
     switch (effectType) {
       case 'effects__preview--none':
         imgPreview.style.filter = 'none';
         return;
 
       case 'effects__preview--chrome':
+        // var effectValue = slideOutput / 100;
         imgPreview.style.filter = 'grayscale(' + slideOutput / 100 + ')';
+        // effectLevelForm.value = effectValue;
+        // console.log(effectValue);
         return;
 
       case 'effects__preview--sepia':
@@ -722,11 +740,10 @@ window.preventActionHandler = function (evt) {
 
 })();
 
-
 // PREVIEW.JS
 // Функция наполнения одной большой фотки с превьюшки
 (function () {
-  // P.2.1 Клонирование и наполннение одной фотки
+  //  P.2.1 Клонирование и наполннение одной фотки
   var getCommentImg = function (data) {
     var cloneComment = imgСommentLi.cloneNode(true);
     var avatar = cloneComment.querySelector('img');
@@ -746,6 +763,8 @@ window.preventActionHandler = function (evt) {
     (function () {
       commentCounter.classList.add('hidden');
       commentsLoader.classList.add('hidden');
+      body.classList.add('modal-open');
+
     })(); // функция скрывает кнопку ЕЩЕ КОМЕНТОВ и СЧЕТЧИК
 
     bigPicture.classList.remove('hidden'); // отображает окно с большой фоткой
@@ -762,5 +781,53 @@ window.preventActionHandler = function (evt) {
     imgСommentUl.appendChild(fragmenBigPhoto); // вешаем их на место
   };
 
-  showBigPhoto(window.preparedPhoto[0]);
+  // P.2.3 Поиск фотки по массиву и вывод на экран (запускает функцию P.2.2)
+  var findPhoto = function (evt, condition) { // condition задает с чем сравнивать условие (нужно чтобы работал вызов по enter)
+    for (var i = 0; i < window.preparedPhoto.length; i++) {
+      if (window.preparedPhoto[i].url === condition) {
+        showBigPhoto(window.preparedPhoto[i]);
+      } // end if
+    } // end i
+  };
+
+  // P.2.4 Функция при клике опрделяет таргет и по нему намходит фотку и пок. юзеру (запускает P.2.3)
+  var openClickHandler = function (evt) {
+    if (evt.target.className === 'picture__img') { // picture__likes picture__info picture__info добавлены, чтобы клик на всплывашке с лайками также открывал фотку
+      findPhoto(evt, evt.target.attributes.src.value);
+    }
+  }; // open handler
+
+  // P.2.5 Функция при наж. ЕНТЕР опрделяет таргет и по нему намходит фотку и пок. юзеру (запускает P.2.3)
+  var openEnterHandler = function (evt) {
+    if (evt.key === 'Enter') {
+      findPhoto(evt, evt.target.children[0].attributes[1].textContent);
+    }
+  };
+
+  // P.2.6 Функция при клике закрывает окно
+  var closeClickPicHandler = function () {
+    window.hideElement(bigPicture);
+    body.classList.remove('modal-open');
+    commentUserPhInput.value = ''; // очищает поле комента
+  };
+
+  var closeEscPicHandler = function (evt) {
+    // console.log(evt.target.);
+    switch (true) {
+      case evt.key === 'Escape' && evt.target.type === 'text':
+        commentUserPhInput.blur();
+        return;
+
+      case evt.key === 'Escape':
+        window.hideElement(bigPicture);
+        body.classList.remove('modal-open');
+        commentUserPhInput.value = '';
+        return;
+    }
+  };
+
+  sectionPictures.addEventListener('click', openClickHandler);
+  window.addEventListener('keydown', openEnterHandler);
+  crossBtnUserPic.addEventListener('click', closeClickPicHandler);
+  document.addEventListener('keydown', closeEscPicHandler);
 })();
