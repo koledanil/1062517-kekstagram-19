@@ -161,6 +161,7 @@ var sliderTag = document.querySelector('.img-upload__effect-level');
 var lineEmpty = sliderTag.querySelector('.effect-level__line');
 var depth = sliderTag.querySelector('.effect-level__depth');
 var pin = sliderTag.querySelector('.effect-level__pin');
+var effectLevelForm = document.querySelector('.effect-level__value');
 
 // EFFECT_SELECTRO
 var effectList = document.querySelector('.effects__list');
@@ -251,11 +252,12 @@ var getTemplateFromMarkup = function (tagTemplate, tagInTemplate) {
 // P.1 Записываем данные фотки в разметку для одной шутки
 var fragment = document.createDocumentFragment();
 
-var writeInfoPhoto = function (element) {
+var writeInfoPhoto = function (element, index) {
   var foundTemplate = getTemplateFromMarkup('#picture', '.picture');
   var infoContainer = foundTemplate.querySelector('.picture__info'); // контейнер для коментов и лайков
   var pathPicture = foundTemplate.querySelector('.picture__img');
 
+  foundTemplate.setAttribute('data-id', index);
   infoContainer.querySelector('.picture__likes').textContent = element.like;
   infoContainer.querySelector('.picture__comments').textContent = element.comment.length;
   pathPicture.src = element.url;
@@ -264,7 +266,7 @@ var writeInfoPhoto = function (element) {
 // P.2 На основе P.1 формируем и крепим фотки
 var showPhotos = function () {
   for (var i = 0; i < window.preparedPhoto.length; i++) {
-    fragment.appendChild(writeInfoPhoto(window.preparedPhoto[i]));
+    fragment.appendChild(writeInfoPhoto(window.preparedPhoto[i], i));
   }
   imagePlace.appendChild(fragment);
 };
@@ -286,14 +288,6 @@ showPhotos(window.preparedPhoto);
   window.preventActionHandler = function (evt) {
     evt.preventDefault();
   };
-
-  // var nameAlert = function (name) { /// ПРИМЕР ИНТЕРФЕЙСА
-  //   alert(name + ' вот');
-  // };
-
-  // window.util = {
-  //   msgName: nameAlert,
-  // };
 })();
 
 // window.util.msgName('Жорж');
@@ -443,36 +437,44 @@ showPhotos(window.preparedPhoto);
     }
     pin.style.left = pinCoord + 'px'; // меняем положение ползунка
     depth.style.width = pinCoord + 'px'; // меняем положение акцента
-    // var effectLevelForm = document.querySelector('.effect-level__value');
+    var effectValue;
     switch (effectType) {
       case 'effects__preview--none':
         imgPreview.style.filter = 'none';
+        effectLevelForm.value = 0;
         return;
 
       case 'effects__preview--chrome':
-        // var effectValue = slideOutput / 100;
-        imgPreview.style.filter = 'grayscale(' + slideOutput / 100 + ')';
-        // effectLevelForm.value = effectValue;
-        // console.log(effectValue);
+        effectValue = slideOutput / 100;
+        imgPreview.style.filter = 'grayscale(' + effectValue + ')';
+        effectLevelForm.value = effectValue;
+
         return;
 
       case 'effects__preview--sepia':
-        imgPreview.style.filter = 'sepia(' + slideOutput / 100 + ')';
+        effectValue = slideOutput / 100;
+        imgPreview.style.filter = 'sepia(' + effectValue + ')';
+        effectLevelForm.value = effectValue;
         return;
 
       case 'effects__preview--marvin':
         imgPreview.style.filter = 'invert(' + slideOutput + '%)';
+        effectLevelForm.value = slideOutput;
         return;
 
       case 'effects__preview--phobos':
-        imgPreview.style.filter = 'blur(' + (slideOutput / 10) / 3 + 'px)';
+        effectValue = (slideOutput / 10) / 3;
+        imgPreview.style.filter = 'blur(' + effectValue + 'px)';
+        effectLevelForm.value = effectValue;
         return;
 
       case 'effects__preview--heat':
         if (slideOutput < 1) { // условие ограничивает минимальное значение 1 (а не 0, как стандартно выдает ползунок). Эффект не прнимает 0
-          slideOutput = 1;
+          effectValue = 1;
         }
-        imgPreview.style.filter = 'brightness(' + (slideOutput / 100 * 2) + 1 + ')';
+        effectValue = (slideOutput / 100 * 2) + 1;
+        imgPreview.style.filter = 'brightness(' + effectValue + ')';
+        effectLevelForm.value = effectValue;
         return;
     }
 
@@ -503,15 +505,44 @@ showPhotos(window.preparedPhoto);
     var eventTarget = evt.target;
     if (eventTarget.value !== 'none') {
       imgPreview.classList.add('effects__preview--' + eventTarget.value);
+
       if (sliderTag.classList.contains !== 'hidden') {
         window.showElement(sliderTag);
+
+        switch (true) {
+          case (eventTarget.value === 'chrome'):
+            effectLevelForm.value = 1;
+            return;
+
+          case (eventTarget.value === 'sepia'):
+            effectLevelForm.value = 1;
+            return;
+
+          case (eventTarget.value === 'marvin'):
+            effectLevelForm.value = 100;
+            return;
+
+          case (eventTarget.value === 'phobos'):
+            effectLevelForm.value = 3;
+            return;
+
+          case (eventTarget.value === 'heat'):
+            effectLevelForm.value = 3;
+            return;
+        }
+        // ^^^ свитч устанавливает значения для кейса когда ты эффект выбрал (сепия например) и сразу нажал отправить
+        // в это случае на сервер уйдет название эффекта и макс значение. Если ползунок будет двигаться, то соотв.
+        // что значение эффекта будет другим (см SL.1)
       }
     } else {
       window.hideElement(sliderTag);
+      effectLevelForm.value = 0;
     }
   };
   effectList.addEventListener('change', applyEffectsHandler);
 })();
+
+// var effectLevelForm = document.querySelector('.effect-level__value');
 
 // HASHTAG.JS
 // Валидацмя тегов
@@ -574,13 +605,6 @@ showPhotos(window.preparedPhoto);
     // var tagErrPlaceUl = document.querySelector('#tag-error'); // мамка ошибок
     var errArray = []; // массив с перечнем дошибок для каждого тэга
 
-    // if (enteredTags.length === 0) {
-    //   tagErrPlaceUl.innerHTML = '';
-    //   window.ADD_PHOTO_RULES.special.counterErrTagTitle = 0;
-    //   tagInput.classList.remove('border-error');
-    //   window.validityTag = true;
-    //   console.log('Очистила гkjrfkmyfz фн');
-    // } else {
     if (findDuplicate(enteredTags)) { // проверяем на дубликаты и записываем значение в массив.
       // проверка идет первой, чтобы юзер сразу видел есть дубликаты.
       window.validityTag = false;
@@ -596,7 +620,6 @@ showPhotos(window.preparedPhoto);
       errArray.push(window.ADD_PHOTO_RULES.msg.errAmount);
     }
     for (var i = 0; i < enteredTags.length; i++) { // цикл запускает проверку тэгов массива
-
 
       var checkedTag = checkTag(enteredTags[i]); // вот и стартанула фукнция H.2
       if (enteredTags[i].trim().length > 0 && checkedTag.isSharp !== true || checkedTag.maxLength !== true
@@ -716,7 +739,6 @@ showPhotos(window.preparedPhoto);
 
   // S.2 Выводит количество ошибок в заголовок окна
   // Данная функция предназначена для отображения к-ва ошибок в поле теги и комент в ЗАГОЛОВКЕ СТРАНИЦЫ
-  // var formUpldImg = document.querySelector('.img-upload__text');
   var errCounterTitle = function () {
 
     if (window.ADD_PHOTO_RULES.special.counterErrTagTitle > 0 || window.ADD_PHOTO_RULES.special.counterErrAreaTitle > 0) { // если значение не нулевое (то есть есть ошибки), выполняется выввод в заголовк
@@ -782,27 +804,13 @@ showPhotos(window.preparedPhoto);
   };
 
   // P.2.3 Поиск фотки по массиву и вывод на экран (запускает функцию P.2.2)
-  var findPhoto = function (evt, condition) { // condition задает с чем сравнивать условие (нужно чтобы работал вызов по enter)
-    for (var i = 0; i < window.preparedPhoto.length; i++) {
-      if (window.preparedPhoto[i].url === condition) {
-        showBigPhoto(window.preparedPhoto[i]);
-      } // end if
-    } // end i
-  };
-
-  // P.2.4 Функция при клике опрделяет таргет и по нему намходит фотку и пок. юзеру (запускает P.2.3)
   var openClickHandler = function (evt) {
-    if (evt.target.className === 'picture__img') { // picture__likes picture__info picture__info добавлены, чтобы клик на всплывашке с лайками также открывал фотку
-      findPhoto(evt, evt.target.attributes.src.value);
+    var pictureContainer = evt.target.closest('.picture');
+    if (pictureContainer) { // picture__likes picture__info picture__info добавлены, чтобы клик на всплывашке с лайками также открывал фотку
+      var pictureId = pictureContainer.getAttribute('data-id');
+      showBigPhoto(window.preparedPhoto[pictureId]);
     }
   }; // open handler
-
-  // P.2.5 Функция при наж. ЕНТЕР опрделяет таргет и по нему намходит фотку и пок. юзеру (запускает P.2.3)
-  var openEnterHandler = function (evt) {
-    if (evt.key === 'Enter') {
-      findPhoto(evt, evt.target.children[0].attributes[1].textContent);
-    }
-  };
 
   // P.2.6 Функция при клике закрывает окно
   var closeClickPicHandler = function () {
@@ -827,7 +835,6 @@ showPhotos(window.preparedPhoto);
   };
 
   sectionPictures.addEventListener('click', openClickHandler);
-  window.addEventListener('keydown', openEnterHandler);
   crossBtnUserPic.addEventListener('click', closeClickPicHandler);
   document.addEventListener('keydown', closeEscPicHandler);
 })();
