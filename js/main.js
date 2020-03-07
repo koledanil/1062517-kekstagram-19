@@ -2,9 +2,7 @@
 // V.3 Поиск элементов разметки для кода
 // SCALE_SELECTOR
 
-var lineEmpty = window.selector.sliderTag.querySelector('.effect-level__line');
-var depth = window.selector.sliderTag.querySelector('.effect-level__depth');
-var pin = window.selector.sliderTag.querySelector('.effect-level__pin');
+
 var effectLevelForm = document.querySelector('.effect-level__value');
 
 // EFFECT_SELECTRO
@@ -36,97 +34,6 @@ var sectionPictures = document.querySelector('.pictures');
 var crossBtnUserPic = document.querySelector('.big-picture__cancel');
 var commentUserPhInput = document.querySelector('.social__footer-text');
 
-// //////////////////////////////////////////////////////////////////
-
-// SLIDER.JS
-// Полузнок эффектов
-// SL.1  Функция оживляет слайдер и в зависимости от значений min/max выдает число при движении
-(function () {
-  pin.removeAttribute('style');
-  depth.removeAttribute('style');
-  var limitMovementX;
-  var pinCoord;
-  var slideOutput;
-  var effectType;
-
-  var movePinHandler = function (evt) {
-    limitMovementX = {
-      min: 0,
-      max: lineEmpty.offsetLeft + lineEmpty.offsetWidth - pin.offsetWidth
-    };
-    pinCoord = pin.offsetLeft + evt.movementX;
-    if (pinCoord < limitMovementX.min) {
-      pinCoord = limitMovementX.min;
-    }
-    if (pinCoord >= limitMovementX.max) {
-      pinCoord = limitMovementX.max;
-    }
-    slideOutput = pinCoord * 100 / limitMovementX.max;
-    if (slideOutput < 0) {
-      slideOutput = 0;
-    }
-    pin.style.left = pinCoord + 'px'; // меняем положение ползунка
-    depth.style.width = pinCoord + 'px'; // меняем положение акцента
-    var effectValue;
-    switch (effectType) {
-      case 'effects__preview--none':
-        window.selector.imgPreview.style.filter = 'none';
-        effectLevelForm.value = 0;
-        return;
-
-      case 'effects__preview--chrome':
-        effectValue = slideOutput / 100;
-        window.selector.imgPreview.style.filter = 'grayscale(' + effectValue + ')';
-        effectLevelForm.value = effectValue;
-
-        return;
-
-      case 'effects__preview--sepia':
-        effectValue = slideOutput / 100;
-        window.selector.imgPreview.style.filter = 'sepia(' + effectValue + ')';
-        effectLevelForm.value = effectValue;
-        return;
-
-      case 'effects__preview--marvin':
-        window.selector.imgPreview.style.filter = 'invert(' + slideOutput + '%)';
-        effectLevelForm.value = slideOutput;
-        return;
-
-      case 'effects__preview--phobos':
-        effectValue = (slideOutput / 10) / 3;
-        window.selector.imgPreview.style.filter = 'blur(' + effectValue + 'px)';
-        effectLevelForm.value = effectValue;
-        return;
-
-      case 'effects__preview--heat':
-        if (slideOutput < 1) { // условие ограничивает минимальное значение 1 (а не 0, как стандартно выдает ползунок). Эффект не прнимает 0
-          effectValue = 1;
-        }
-        effectValue = (slideOutput / 100 * 2) + 1;
-        window.selector.imgPreview.style.filter = 'brightness(' + effectValue + ')';
-        effectLevelForm.value = effectValue;
-        return;
-    }
-
-  };
-  var pinMouseUpHandler = function () {
-    document.removeEventListener('mousemove', movePinHandler);
-    document.removeEventListener('mouseup', pinMouseUpHandler);
-  };
-
-  var preventActionHandler = function (evt) {
-    evt.preventDefault();
-  };
-
-  pin.addEventListener('mousedown', function () {
-    effectType = window.selector.imgPreview.getAttribute('class');
-
-
-    pin.addEventListener('dragstart', preventActionHandler);
-    document.addEventListener('mousemove', movePinHandler);
-    document.addEventListener('mouseup', pinMouseUpHandler);
-  });
-})();
 
 // EFFECTS.JS
 // E.1 Переключает эффекты и применяет их к фото
@@ -134,8 +41,8 @@ var commentUserPhInput = document.querySelector('.social__footer-text');
   var applyEffectsHandler = function (evt) {
     window.selector.imgPreview.removeAttribute('class');
     window.selector.imgPreview.style.filter = '';
-    pin.style.left = 453 + 'px';
-    depth.style.width = 453 + 'px';
+    window.selector.pin.style.left = 453 + 'px';
+    window.selector.depth.style.width = 453 + 'px';
     var eventTarget = evt.target;
     if (eventTarget.value !== 'none') {
       window.selector.imgPreview.classList.add('effects__preview--' + eventTarget.value);

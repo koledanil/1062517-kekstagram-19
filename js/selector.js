@@ -19,5 +19,11 @@ window.selector = {
   crossButton: document.querySelector('.cancel'),
   effectPreview: document.querySelectorAll('.effects__radio'),
   zoomStorage: document.querySelector('.scale__control--value'),
-  zoomButtons: document.querySelector('.img-upload__scale')
+  zoomButtons: document.querySelector('.img-upload__scale'),
+  pin: document.querySelector('.effect-level__pin'),
+  depth: document.querySelector('.effect-level__depth'),
+  lineEmpty: document.querySelector('.effect-level__line'),
+  effectLevelForm: document.querySelector('.effect-level__value')
+
+
 };
