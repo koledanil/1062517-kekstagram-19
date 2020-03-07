@@ -3,12 +3,10 @@
 // Очищает форму закгрузки после нажатия на ESC
 (function () {
   window.resetUploadForm = function () {
-    // переменные imgPreview zoomOutButton zoomInButton --- scale_selector.js
-    // переменные counterPlace tagErrPlaceUl tagInput textArea --- DIALOG_SELECTOR.JS
     window.selector.imgPreview.removeAttribute('class');
     window.selector.counterPlace.innerHTML = 'Введено 0 из 140 символов';
     window.selector.counterPlace.classList.add('hidden');
-    window.counterSymbol = 0;
+    window.constant.ADD_PHOTO_RULES.special.counterSymbol = 0;
 
     window.selector.imgPreview.style = 'transform: 0'; // сбиваем масштаб фотки
     window.selector.zoomOutButton.disabled = false; // сбиваем псевдо с увелич, чтоб кнопка стала активной

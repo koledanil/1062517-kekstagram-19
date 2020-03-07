@@ -16,7 +16,8 @@
 
     pin: document.querySelector('.effect-level__pin'),
     depth: document.querySelector('.effect-level__depth'),
-    effectLevelForm: document.querySelector('.effect-level__value')
+    effectLevelForm: document.querySelector('.effect-level__value'),
+    textArea: document.querySelector('.text__description')
   };
 })();
 
