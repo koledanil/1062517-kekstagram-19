@@ -63,47 +63,6 @@ var commentUserPhInput = document.querySelector('.social__footer-text');
 
 // //////////////////////////////////////////////////////////////////
 
-// DATAGEN.JS
-// Данные, которые используются для отображения фоток и так далее.
-(function () {
-  // D.1 Создает массив КОММЕНТАРИЕВ (аватар автора, текст и имя), который потом будет записан в D.2 строка 240
-  var createComment = function () {
-    var commentStorage = [];
-    for (var i = 0; i < window.util.getRandom(window.constant.PHOTO_RULES.COMMENT.MIN, window.constant.PHOTO_RULES.COMMENT.MAX); i++) {
-      var randomAvatar = window.util.getRandom(window.constant.PHOTO_RULES.NAME_AVATAR.MIN, window.constant.PHOTO_RULES.NAME_AVATAR.MAX);
-      var randomText = window.util.getRandom(0, window.constant.PHOTO_RULES.COMMENT.MAX_COMMENT_TEMPLATE);
-      var randomName = window.util.getRandom(0, window.constant.PHOTO_RULES.NAME_AVATAR.MAX_NAME_TEMPLATE);
-      commentStorage [i] = {
-        avatarComment: 'img/avatar-' + randomAvatar + '.svg',
-        text: window.placeholderData.photoComment[randomText],
-        name: window.placeholderData.nameTemplate[randomName]
-      }; // end comments [i]
-    } // end for
-    return commentStorage;
-  };
-
-  // D.2 Создает финальный массив для фотки (урл, опис, лайки, коменты (вызывает функцию D.1))
-  var getPhoto = function () {
-    var photoStorage = [];
-    for (var i = 0; i < window.constant.PHOTO_RULES.PHOTO.COUNT; i++) {
-      var randomLike = window.util.getRandom(window.constant.PHOTO_RULES.PHOTO.LIKE.MIN, window.constant.PHOTO_RULES.PHOTO.LIKE.MAX);
-      var randomDescription = window.util.getRandom(0, window.constant.PHOTO_RULES.PHOTO.DECRIPTION_AMOUNT);
-      var randomAvatar = window.util.getRandom(window.constant.PHOTO_RULES.NAME_AVATAR.MIN, window.constant.PHOTO_RULES.NAME_AVATAR.MAX);
-
-      photoStorage [i] = {
-        url: 'photos/' + (i + 1) + '.jpg',
-        description: window.placeholderData.photoDescription[randomDescription],
-        like: randomLike,
-        avatarOwner: 'img/avatar-' + randomAvatar + '.svg',
-        comment: createComment()
-      };
-    } // end for
-    return photoStorage;
-  };
-
-  window.preparedPhoto = getPhoto();
-})(); // end iife
-
 // PHOTPAGE.JS
 // P.1 Записываем данные фотки в разметку для одной шутки
 var fragment = document.createDocumentFragment();
@@ -121,15 +80,12 @@ var writeInfoPhoto = function (element, index) {
 };
 // P.2 На основе P.1 формируем и крепим фотки
 var showPhotos = function () {
-  for (var i = 0; i < window.preparedPhoto.length; i++) {
-    fragment.appendChild(writeInfoPhoto(window.preparedPhoto[i], i));
+  for (var i = 0; i < window.infoGenerator.getPhoto.length; i++) {
+    fragment.appendChild(writeInfoPhoto(window.infoGenerator.getPhoto[i], i));
   }
   imagePlace.appendChild(fragment);
 };
-showPhotos(window.preparedPhoto);
-
-
-// window.util.msgName('Жорж');
+showPhotos(window.infoGenerator.getPhoto);
 
 // DIALOG.JS
 // D.1 Функция открывает диалоговое окно по изменению поля файл.
@@ -649,7 +605,7 @@ showPhotos(window.preparedPhoto);
     var pictureContainer = evt.target.closest('.picture');
     if (pictureContainer) { // picture__likes picture__info picture__info добавлены, чтобы клик на всплывашке с лайками также открывал фотку
       var pictureId = pictureContainer.getAttribute('data-id');
-      showBigPhoto(window.preparedPhoto[pictureId]);
+      showBigPhoto(window.infoGenerator.getPhoto[pictureId]);
     }
   }; // open handler
 
