@@ -17,7 +17,13 @@
     window.selector.body.classList.remove('modal-open');
     window.selector.uploadBtn.reset();
     window.resetUploadForm();
-    // window.removeListener();
+    window.scale.removeListener(); // удаляет слуш. увеличения масштаба
+    window.comment.removeListener(); // удаляет ВСЕХ слушателей для комента
+    window.effect.removeListener(); // удаляет ВСЕХ слушателей для effect
+    window.hashtag.removeListener(); // удаляет ВСЕХ слушателей для tag
+    window.submit.removeListener(); // удаляет ВСЕХ слушателей для submit
+    window.titleError.removeListener(); // удаляет ВСЕХ слушателей для titleError
+    window.slider.removeListener(); // удаляет ВСЕХ слушателей для slider
   };
 
   // D.1.2 Хэндлер для закртыия по ESC

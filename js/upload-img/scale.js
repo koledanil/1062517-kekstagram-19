@@ -38,10 +38,16 @@
         return;
     } // switch
   };
-  // window.removeListener = function () {
-  //   zoomButtons.removeEventListener('click', scaleImageHandler);
-  //   alert('я удален');
-  // };
-
   zoomButtons.addEventListener('click', scaleImageHandler);
+
+  //SC.2 Удаляем листенере
+  var removeListener = function () {
+    zoomButtons.removeEventListener('click', scaleImageHandler);
+  };
+  
+  /// OUTPUT
+  window.scale = {
+    removeListener: removeListener
+  }
+  
 })(); // end iife s1

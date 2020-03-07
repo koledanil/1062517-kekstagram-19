@@ -65,6 +65,7 @@
     bigPicture.classList.add('hidden');
     window.selector.body.classList.remove('modal-open');
     commentUserPhInput.value = ''; // очищает поле комента
+    removeListener();
   };
 
   // UP.1.4 Функция при Esc закрывает (если фокус в коменте, то первый нажатие Esc === снятие фокуса)
@@ -79,9 +80,17 @@
         bigPicture.classList.add('hidden');
         window.selector.body.classList.remove('modal-open');
         commentUserPhInput.value = '';
+        removeListener();
         return;
     }
   };
+
+  var removeListener = function () {
+    window.selector.imgPlace.removeEventListener('click', openClickHandler);
+    crossBtnUserPic.removeEventListener('click', closeClickPicHandler);
+    document.removeEventListener('keydown', closeEscPicHandler);
+  };
+
 
   window.selector.imgPlace.addEventListener('click', openClickHandler);
   crossBtnUserPic.addEventListener('click', closeClickPicHandler);

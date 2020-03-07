@@ -41,7 +41,20 @@
       window.constant.ADD_PHOTO_RULES.special.counterErrAreaTitle = 0; // затираем количество ощибок в заголовке
     }
   };
+
   window.selector.textArea.addEventListener('focus', showCounterHandler); // Показывает счетчик символов при фокусе
   window.selector.textArea.addEventListener('keyup', checkLengthTextAreaHandler); // Считает символы при вводе
   window.selector.textArea.addEventListener('blur', hideCounterHandler); // Прячет счетчик при потери фокуса
+
+   // Т.2.4 Функция будет запкскаться из файла Даилог, чтобы затирать при закрытии этих слушателей
+   var removeListener = function () {
+    window.selector.textArea.removeEventListener('focus', showCounterHandler); // Показывает счетчик символов при фокусе
+    window.selector.textArea.removeEventListener('keyup', checkLengthTextAreaHandler); // Считает символы при вводе
+    window.selector.textArea.removeEventListener('blur', hideCounterHandler); // Прячет счетчик при потери фокуса
+  };
+
+    // OUTPUT
+    window.comment = {
+      removeListener: removeListener
+    }
 })();

@@ -9,4 +9,14 @@
     }
   };
   submitButton.addEventListener('click', checkRules);
+
+  //S.2 Удаляем листенера
+ var removeListener = function () {
+  submitButton.removeEventListener('click', checkRules);
+}
+
+// OUTPUT
+window.submit ={
+  removeListener: removeListener
+}
 })();

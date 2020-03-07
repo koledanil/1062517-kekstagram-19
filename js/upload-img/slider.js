@@ -88,4 +88,17 @@
     document.addEventListener('mousemove', movePinHandler);
     document.addEventListener('mouseup', pinMouseUpHandler);
   });
+
+
+   //TR.2 Удаляем листенере
+   var removeListener = function () {
+    window.selector.pin.removeEventListener('dragstart', preventActionHandler);
+    document.removeEventListener('mousemove', movePinHandler);
+    document.removeEventListener('mouseup', pinMouseUpHandler);
+  };
+  
+  /// OUTPUT
+  window.slider = {
+    removeListener: removeListener
+  }
 })();
