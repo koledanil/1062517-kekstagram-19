@@ -1,9 +1,9 @@
 'use strict';
-
+// открыти и закрытие окна
 (function () {
-  var dialogBox = document.querySelector('.img-upload__overlay'); // только диалог
-  var crossButton = document.querySelector('.cancel');// диалог
-  var effectPreview = document.querySelectorAll('.effects__radio') // диалог
+  var dialogBox = document.querySelector('.img-upload__overlay');
+  var crossButton = document.querySelector('.cancel');
+  var effectPreview = document.querySelectorAll('.effects__radio');
 
   // D.1 Функция открывает диалоговое окно по изменению поля файл.
   var showDialogBoxHandler = function () {
@@ -11,12 +11,13 @@
     window.selector.body.classList.add('modal-open');
   };
 
-// D.1.1 Запускает закрытие окна
+  // D.1.1 Запускает закрытие окна
   var hideDialogBox = function () {
     dialogBox.classList.add('hidden');
     window.selector.body.classList.remove('modal-open');
     window.selector.uploadBtn.reset();
     window.resetUploadForm();
+    // window.removeListener();
   };
 
   // D.1.2 Хэндлер для закртыия по ESC
@@ -44,7 +45,7 @@
     }
   };
 
-  // D.1.3 Хэндлер для закртыия по rkbre
+  // D.1.3 Хэндлер для закртыия по клику
   var closeClickHandler = function () {
     hideDialogBox();
   };

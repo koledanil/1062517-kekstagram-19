@@ -16,7 +16,7 @@
         zoomStorage.value = newValaue + '%';
         scaleValue = newValaue / 100;
         window.selector.imgPreview.style = 'transform: scale(' + scaleValue + ')';
-        if (parseInt(window.selector.zoomStorage.value, 10) === window.constant.ADD_PHOTO_RULES.ZOOM.MIN) {
+        if (parseInt(zoomStorage.value, 10) === window.constant.ADD_PHOTO_RULES.ZOOM.MIN) {
           window.selector.zoomOutButton.disabled = true;
         }
         if (parseInt(zoomStorage.value, 10) < window.constant.ADD_PHOTO_RULES.ZOOM.MAX) {
@@ -38,6 +38,10 @@
         return;
     } // switch
   };
+  // window.removeListener = function () {
+  //   zoomButtons.removeEventListener('click', scaleImageHandler);
+  //   alert('я удален');
+  // };
 
   zoomButtons.addEventListener('click', scaleImageHandler);
 })(); // end iife s1
