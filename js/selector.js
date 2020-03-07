@@ -23,7 +23,8 @@ window.selector = {
   pin: document.querySelector('.effect-level__pin'),
   depth: document.querySelector('.effect-level__depth'),
   lineEmpty: document.querySelector('.effect-level__line'),
-  effectLevelForm: document.querySelector('.effect-level__value')
+  effectLevelForm: document.querySelector('.effect-level__value'),
+  effectList: document.querySelector('.effects__list')
 
 
 };

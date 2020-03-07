@@ -1,13 +1,6 @@
 'use strict';
 // V.3 Поиск элементов разметки для кода
 // SCALE_SELECTOR
-
-
-var effectLevelForm = document.querySelector('.effect-level__value');
-
-// EFFECT_SELECTRO
-var effectList = document.querySelector('.effects__list');
-
 // TAG_SELECTOR
 var tagErrTemplate = document.querySelector('#error-item').content.querySelector('li'); // детеныши ошибок
 
@@ -37,51 +30,7 @@ var commentUserPhInput = document.querySelector('.social__footer-text');
 
 // EFFECTS.JS
 // E.1 Переключает эффекты и применяет их к фото
-(function () {
-  var applyEffectsHandler = function (evt) {
-    window.selector.imgPreview.removeAttribute('class');
-    window.selector.imgPreview.style.filter = '';
-    window.selector.pin.style.left = 453 + 'px';
-    window.selector.depth.style.width = 453 + 'px';
-    var eventTarget = evt.target;
-    if (eventTarget.value !== 'none') {
-      window.selector.imgPreview.classList.add('effects__preview--' + eventTarget.value);
 
-      if (window.selector.sliderTag.classList.contains !== 'hidden') {
-        window.selector.sliderTag.classList.remove('hidden');
-
-        switch (true) {
-          case (eventTarget.value === 'chrome'):
-            effectLevelForm.value = 1;
-            return;
-
-          case (eventTarget.value === 'sepia'):
-            effectLevelForm.value = 1;
-            return;
-
-          case (eventTarget.value === 'marvin'):
-            effectLevelForm.value = 100;
-            return;
-
-          case (eventTarget.value === 'phobos'):
-            effectLevelForm.value = 3;
-            return;
-
-          case (eventTarget.value === 'heat'):
-            effectLevelForm.value = 3;
-            return;
-        }
-        // ^^^ свитч устанавливает значения для кейса когда ты эффект выбрал (сепия например) и сразу нажал отправить
-        // в это случае на сервер уйдет название эффекта и макс значение. Если ползунок будет двигаться, то соотв.
-        // что значение эффекта будет другим (см SL.1)
-      }
-    } else {
-      window.selector.sliderTag.classList.add('hidden');
-      effectLevelForm.value = 0;
-    }
-  };
-  effectList.addEventListener('change', applyEffectsHandler);
-})();
 
 // var effectLevelForm = document.querySelector('.effect-level__value');
 
