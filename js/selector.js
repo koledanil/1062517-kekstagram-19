@@ -17,5 +17,7 @@ window.selector = {
   sliderTag: document.querySelector('.img-upload__effect-level'),
   uploadBtn: document.querySelector('#upload-select-image'),
   crossButton: document.querySelector('.cancel'),
-  effectPreview: document.querySelectorAll('.effects__radio')
+  effectPreview: document.querySelectorAll('.effects__radio'),
+  zoomStorage: document.querySelector('.scale__control--value'),
+  zoomButtons: document.querySelector('.img-upload__scale')
 };

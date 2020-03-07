@@ -2,11 +2,6 @@
 // V.3 Поиск элементов разметки для кода
 // SCALE_SELECTOR
 
-// Находим тэги увеличения масштаба
-var zoomButtons = document.querySelector('.img-upload__scale'); // родитель кнопок
-var zoomStorage = document.querySelector('.scale__control--value'); // отображает значение масштаба
-
-
 var lineEmpty = window.selector.sliderTag.querySelector('.effect-level__line');
 var depth = window.selector.sliderTag.querySelector('.effect-level__depth');
 var pin = window.selector.sliderTag.querySelector('.effect-level__pin');
@@ -42,48 +37,6 @@ var crossBtnUserPic = document.querySelector('.big-picture__cancel');
 var commentUserPhInput = document.querySelector('.social__footer-text');
 
 // //////////////////////////////////////////////////////////////////
-
-// SCALE.JS
-// Изменение масштаба изобаржения
-(function () {
-  var newValaue;
-  var scaleValue;
-  window.selector.zoomInButton.disabled = true; // октлючаем кнопку зума при 100%
-
-  // SC.2 Изменяем масштаб изображения туда и сюда
-  var scaleImage = function (evt) {
-    switch (true) {
-      case evt.target.className === 'scale__control  scale__control--smaller':
-        newValaue = parseInt(zoomStorage.value, 10) - window.constant.ADD_PHOTO_RULES.ZOOM.STEP;
-        zoomStorage.value = newValaue + '%';
-        scaleValue = newValaue / 100;
-        window.selector.imgPreview.style = 'transform: scale(' + scaleValue + ')';
-        if (parseInt(zoomStorage.value, 10) === window.constant.ADD_PHOTO_RULES.ZOOM.MIN) {
-          window.selector.zoomOutButton.disabled = true;
-        }
-        if (parseInt(zoomStorage.value, 10) < window.constant.ADD_PHOTO_RULES.ZOOM.MAX) {
-          window.selector.zoomInButton.disabled = false;
-        }
-        return;
-
-      case evt.target.className === 'scale__control  scale__control--bigger':
-        newValaue = parseInt(zoomStorage.value, 10) + window.constant.ADD_PHOTO_RULES.ZOOM.STEP;
-        zoomStorage.value = newValaue + '%';
-        scaleValue = newValaue / 100;
-        window.selector.imgPreview.style = 'transform: scale(' + scaleValue + ')';
-        if (parseInt(zoomStorage.value, 10) === window.constant.ADD_PHOTO_RULES.ZOOM.MAX) {
-          window.selector.zoomInButton.disabled = true;
-        }
-        if (parseInt(zoomStorage.value, 10) > window.constant.ADD_PHOTO_RULES.ZOOM.MIN) {
-          window.selector.zoomOutButton.disabled = false;
-        }
-        return;
-    } // switch
-  };
-
-  zoomButtons.addEventListener('click', scaleImage);
-  // window.addEventListener('mousedown', preventDragImage); // отключает случайное выделение фотки
-})(); // end iife s1
 
 // SLIDER.JS
 // Полузнок эффектов

@@ -61,7 +61,7 @@
       special: {
         counterErrAreaTitle: 0,
         counterErrTagTitle: 0,
-        ORIGINAL_TITLE: '',
+        ORIGINAL_TITLE: document.title,
         // ^^^ Здесь содержится:
         // 1. каунтер ошибок в инпуте тэгов
         // 2. каунтер ошибок в textarea (она у нас там одна)

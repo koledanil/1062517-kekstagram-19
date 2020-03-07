@@ -3,7 +3,7 @@
 // Очищает форму закгрузки после нажатия на ESC
 
 (function () {
-  var resetForm = function () {
+  window.resetUploadForm = function () {
     // переменные imgPreview zoomOutButton zoomInButton --- scale_selector.js
     // переменные counterPlace tagErrPlaceUl tagInput textArea --- DIALOG_SELECTOR.JS
     window.selector.imgPreview.removeAttribute('class');
@@ -21,14 +21,12 @@
     window.constant.ADD_PHOTO_RULES.special.validityTextArea = true; // обнуляем флаг для комента, необходимо для S.1
     document.title = window.constant.ADD_PHOTO_RULES.special.ORIGINAL_TITLE; // возвращаем исходное значение тайтла, использ в S.2
     window.selector.tagInput.classList.remove('border-error');
-    window.selector.innerHTML = ''; // затираем мамку ошибок (фн.H.3)
+    window.selector.textArea.classList.remove('border-error');
+    window.selector.counterPlace.classList.remove('counter-error');
+    window.selector.tagErrPlaceUl.innerHTML = ''; // затираем мамку ошибок (фн.H.3)
 
     window.selector.zoomInButton.disabled = true; // лочим зум.
 
     window.selector.sliderTag.classList.add('hidden'); // скрываем ползунок эффекта
   };
-
-  // OUTPUT
-  window.resetUploadForm = resetForm();
-
 })();
