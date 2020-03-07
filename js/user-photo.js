@@ -1,6 +1,5 @@
 'use strict';
-// PREVIEW.JS
-// Функция наполнения одной большой фотки с превьюшки
+// Открытие одной фотки по клику на главной странице
 (function () {
   var imgСommentUl = document.querySelector('.social__comments');
   var imgСommentLi = imgСommentUl.querySelector('.social__comment');
@@ -14,7 +13,7 @@
   var crossBtnUserPic = document.querySelector('.big-picture__cancel');
   var commentUserPhInput = document.querySelector('.social__footer-text');
 
-  //  P.2.1 Клонирование и наполннение одной фотки
+  //  UP.1 Клонирование и наполннение одной фотки
   var getCommentImg = function (data) {
     var cloneComment = imgСommentLi.cloneNode(true);
     var avatar = cloneComment.querySelector('img');
@@ -27,7 +26,7 @@
     return cloneComment;
   };
 
-  // P.2.2 Отображение большой фотки со всем данными
+  // UP.1.1 Отображение большой фотки со всем данными
   var showBigPhoto = function (item) {
     var fragmenBigPhoto = document.createDocumentFragment(); // сюда запис. детеныши-коментарии
 
@@ -52,7 +51,7 @@
     imgСommentUl.appendChild(fragmenBigPhoto); // вешаем их на место
   };
 
-  // P.2.3 Поиск фотки по массиву и вывод на экран (запускает функцию P.2.2)
+  // UP.1.2 Поиск фотки по массиву и вывод на экран (запускает функцию P.2.2)
   var openClickHandler = function (evt) {
     var pictureContainer = evt.target.closest('.picture');
     if (pictureContainer) { // picture__likes picture__info picture__info добавлены, чтобы клик на всплывашке с лайками также открывал фотку
@@ -61,13 +60,14 @@
     }
   }; // open handler
 
-  // P.2.6 Функция при клике закрывает окно
+  // UP.1.3 Функция при клике закрывает окно
   var closeClickPicHandler = function () {
     bigPicture.classList.add('hidden');
     window.selector.body.classList.remove('modal-open');
     commentUserPhInput.value = ''; // очищает поле комента
   };
 
+  // UP.1.4 Функция при Esc закрывает (если фокус в коменте, то первый нажатие Esc === снятие фокуса)
   var closeEscPicHandler = function (evt) {
     // console.log(evt.target.);
     switch (true) {
