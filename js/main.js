@@ -1,135 +1,4 @@
 'use strict';
-// 0.2 Объект с наборами заготовок для коментов и описаний фоток
-var placeholderData = {
-  nameTemplate: ['Чебупели', 'Жмых', 'Шоколадный заяц', 'Жорж', 'Ося', 'Насос', 'Дизель', 'Апанасовна', 'Шпротик'],
-
-  photoComment: ['Всё отлично!',
-    'В целом всё неплохо. Но не всё.',
-    'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
-    'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
-    'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
-    'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!',
-    'Я просто выгляжу как лось, а в душе я бабочка.',
-    'Все это видели?! Ибо я отказываюсь это повторять!',
-    'Меня вообще-то сложно удивить... О! Синяя машина!',
-    'Я сидел тихо, мирно. Потом проголодался. Дальше, как в тумане.',
-    'Странно, тут заперто... Как будто нас уже ждали.',
-    'Не пытайся сложить слова в предложения — не твоё это.',
-    'Оставь меня, старушка, я в печали…',
-    'Я, пожалуй, пойду. Потому что, знаете... хочу быть подальше отсюда.',
-    'Как тебя вообще занесло в Испанский монастырь?',
-    'Соблюдай акт воздержания против звуков.',
-    'Как задолбали эти тупые правила: не есть кота, не бить посуду, не есть кота.',
-    'Надо будет Любе сказать, чтоб наркотики пересчитала!',
-    'И ты, очевидно, не так меня понял, раз так быстро согласился.'
-  ],
-
-  photoDescription: ['Давно хочу написать вирус. С чего начать?',
-    'Главное посередине не встретиться',
-    'У меня такие зубы, что приходится говорить вместо я вылечил - я починил.',
-    '- понимаешь, похоже на то, что я ей симпатичен. Ну а она мне... как это будет, наоборот...',
-    'не могу избавиться от ощущения что наговнокодил',
-    'Мой Т9 считает меня женщиной приличной, но прожорливой, поэтому, когда я пишу «садо-мазо», заботливо поправляет меня на «сало-мало».',
-    'Даёшь сурдопереводчика в нижнем углу экрана! Пускай жестами текст передает.',
-    'Порадуй меня. Или хотя бы не сильно расстрой.',
-    'Общительный я... и пьющий.',
-    'Реальный мир для тех, кто не может представить что-то получше.',
-    'Давно хочу написать вирус. С чего начать?',
-    'Ты поможешь мне, а я за это приму помощь от тебя!',
-    'Как много интересного вы говорите! Как жаль, что это меня мало интересует.',
-    'Не стоит горевать. Люди постоянно умирают. Как знать, может и ты завтра проснешься мертвым.',
-    'Иногда я лежу в постели и думаю, что ничто не заставит меня встать. А потом чувствую, как подо мной становится мокро, и понимаю, что ошибался.',
-    'За алкоголь! Причину и решение всех проблем.',
-    'Психиатр нам не нужен. Мы и так знаем, что наш ребенок со сдвигом.',
-    'Мардж, не хочу тебя пугать, но, кажется, я тебя люблю...',
-    'Я сделаю для тебя все, что угодно... если это не слишком сложно.',
-    'Если ты счастлив и осознаешь это, выругайся.',
-    'В католицизме больше глупых правил, чем в видеопрокате.',
-    'Радиация убивает только тех, кто ее боится.',
-    'Я белый мужчина от 18 до 49. И все слушают меня, какую бы ахинею я ни нес.',
-    'Попытка — первый шаг к провалу.',
-    'Атомный реактор — как женщина. Нужно только прочитать инструкцию и вовремя нажать на правильную кнопку.',
-    'Психиатр нам ни к чему. Мы и сами знаем, что ребенок у нас со сдвигом.',
-    'Пение — это низшая форма общения.',
-    'В спорте главное не победа. Главное — чтобы удалось напиться!',
-    'Всю мою жизнь я мечтал об одном — достичь всех своих целей.',
-    'Не может ведь бог успевать повсюду, правда?',
-    'Не бывает невкусных пончиков.',
-    'Можно работать на нескольких работах одновременно и все равно быть лентяем.',
-    'Я не стану лукавить: быть отцом непросто. Не то что матерью.',
-    'Всегда лучше наблюдать за процессом, чем делать что-то самому.',
-    'В моем доме мы подчиняемся только законам термодинамики.',
-    'Жизнь — это просто куча всякой фигни, которая происходит.',
-    'Во Франции никто не зовет меня «жирным придурком». Здесь я гурман!',
-    'Дети — те же обезьяны. Только шума от них больше.',
-    'Я вижу улыбки своих детей. И понимаю, что они затеяли что-то недоброе.'
-  ]
-};
-// VAR.JS
-// Содержит глобальные штуки
-// V.1 Массив правил для генерации фоток на главной
-window.PHOTO_RULES = {
-  PHOTO: {
-    COUNT: 25,
-    DECRIPTION_AMOUNT: 10,
-
-    LIKE: {
-      MIN: 15,
-      MAX: 200
-    }
-  },
-
-  NAME_AVATAR: {
-    MIN: 1,
-    MAX: 6,
-    MAX_NAME_TEMPLATE: 6
-  },
-
-  COMMENT: {
-    MIN: 1,
-    MAX: 5,
-    MAX_COMMENT_TEMPLATE: 10,
-  },
-};
-
-// V.2 Массив содержит правила для сайта window.ADD_PHOTO_RULES
-window.ADD_PHOTO_RULES = {
-  UPLD_COMMENTS: {
-    MIN_LENGTH: 0,
-    MAX_LENGTH: 140
-  },
-  UPLD_TAGS: {
-    DIVIDER_SYMBOL: '#',
-    REG_EXP: /^[а-яёa-z0-9]+$/i,
-    MIN_LENGTH: 3,
-    MAX_LENGTH: 20,
-    MAX_AMOUNT_TAG: 5
-  },
-  ZOOM: {
-    MIN: 25,
-    MAX: 100,
-    STEP: 25
-  },
-  msg: {
-    errSharp: 'должен начинаться с символа #',
-    errRegExp: 'должен быть без специальных символов\n',
-    errLength: 'должен содержать не более 20 символов, включая #\n',
-    errAmount: 'должно быть не более 5 тэгов',
-    errDuplicate: 'Встречаются одинаковые тэги',
-    errToShort: 'тэг не может содержать только #'
-  },
-  special: {
-    counterErrAreaTitle: 0,
-    counterErrTagTitle: 0,
-    ORIGINAL_TITLE: ''
-    // ^^^ Здесь содержится:
-    // 1. каунтер ошибок в инпуте тэгов
-    // 2. каунтер ошибок в textarea (она у нас там одна)
-    // 3. Оригинальное название страницы. Его мы возвращаем по закрытию формы или исправлении всех ошибок
-    // нужны для работы S.2
-  }
-};
-
 // V.3 Поиск элементов разметки для кода
 // SCALE_SELECTOR
 // Находим тэги увеличения масштаба
@@ -213,14 +82,14 @@ var getTemplateFromMarkup = function (tagTemplate, tagInTemplate) {
   // D.1 Создает массив КОММЕНТАРИЕВ (аватар автора, текст и имя), который потом будет записан в D.2 строка 240
   var createComment = function () {
     var commentStorage = [];
-    for (var i = 0; i < getRandomNumber(window.PHOTO_RULES.COMMENT.MIN, window.PHOTO_RULES.COMMENT.MAX); i++) {
-      var randomAvatar = getRandomNumber(window.PHOTO_RULES.NAME_AVATAR.MIN, window.PHOTO_RULES.NAME_AVATAR.MAX);
-      var randomText = getRandomNumber(0, window.PHOTO_RULES.COMMENT.MAX_COMMENT_TEMPLATE);
-      var randomName = getRandomNumber(0, window.PHOTO_RULES.NAME_AVATAR.MAX_NAME_TEMPLATE);
+    for (var i = 0; i < getRandomNumber(window.constant.PHOTO_RULES.COMMENT.MIN, window.constant.PHOTO_RULES.COMMENT.MAX); i++) {
+      var randomAvatar = getRandomNumber(window.constant.PHOTO_RULES.NAME_AVATAR.MIN, window.constant.PHOTO_RULES.NAME_AVATAR.MAX);
+      var randomText = getRandomNumber(0, window.constant.PHOTO_RULES.COMMENT.MAX_COMMENT_TEMPLATE);
+      var randomName = getRandomNumber(0, window.constant.PHOTO_RULES.NAME_AVATAR.MAX_NAME_TEMPLATE);
       commentStorage [i] = {
         avatarComment: 'img/avatar-' + randomAvatar + '.svg',
-        text: placeholderData.photoComment[randomText],
-        name: placeholderData.nameTemplate[randomName]
+        text: window.placeholderData.photoComment[randomText],
+        name: window.placeholderData.nameTemplate[randomName]
       }; // end comments [i]
     } // end for
     return commentStorage;
@@ -229,14 +98,14 @@ var getTemplateFromMarkup = function (tagTemplate, tagInTemplate) {
   // D.2 Создает финальный массив для фотки (урл, опис, лайки, коменты (вызывает функцию D.1))
   var getPhoto = function () {
     var photoStorage = [];
-    for (var i = 0; i < window.PHOTO_RULES.PHOTO.COUNT; i++) {
-      var randomLike = getRandomNumber(window.PHOTO_RULES.PHOTO.LIKE.MIN, window.PHOTO_RULES.PHOTO.LIKE.MAX);
-      var randomDescription = getRandomNumber(0, window.PHOTO_RULES.PHOTO.DECRIPTION_AMOUNT);
-      var randomAvatar = getRandomNumber(window.PHOTO_RULES.NAME_AVATAR.MIN, window.PHOTO_RULES.NAME_AVATAR.MAX);
+    for (var i = 0; i < window.constant.PHOTO_RULES.PHOTO.COUNT; i++) {
+      var randomLike = getRandomNumber(window.constant.PHOTO_RULES.PHOTO.LIKE.MIN, window.constant.PHOTO_RULES.PHOTO.LIKE.MAX);
+      var randomDescription = getRandomNumber(0, window.constant.PHOTO_RULES.PHOTO.DECRIPTION_AMOUNT);
+      var randomAvatar = getRandomNumber(window.constant.PHOTO_RULES.NAME_AVATAR.MIN, window.constant.PHOTO_RULES.NAME_AVATAR.MAX);
 
       photoStorage [i] = {
         url: 'photos/' + (i + 1) + '.jpg',
-        description: placeholderData.photoDescription[randomDescription],
+        description: window.placeholderData.photoDescription[randomDescription],
         like: randomLike,
         avatarOwner: 'img/avatar-' + randomAvatar + '.svg',
         comment: createComment()
@@ -319,9 +188,9 @@ showPhotos(window.preparedPhoto);
 
     textArea.classList.remove('border-error'); // убираем обводку  текстового поля
 
-    window.validityTag = true; // обнуляем флаг для инпута тэгов, необходимо для S.1
-    window.validityTextArea = true; // обнуляем флаг для комента, необходимо для S.1
-    document.title = window.ADD_PHOTO_RULES.special.ORIGINAL_TITLE; // возвращаем исходное значение тайтла, использ в S.2
+    window.constant.ADD_PHOTO_RULES.special.validityTag = true; // обнуляем флаг для инпута тэгов, необходимо для S.1
+    window.constant.ADD_PHOTO_RULES.special.validityTextArea = true; // обнуляем флаг для комента, необходимо для S.1
+    document.title = window.constant.ADD_PHOTO_RULES.special.ORIGINAL_TITLE; // возвращаем исходное значение тайтла, использ в S.2
     tagInput.classList.remove('border-error');
     tagErrPlaceUl.innerHTML = ''; // затираем мамку ошибок (фн.H.3)
 
@@ -377,27 +246,27 @@ showPhotos(window.preparedPhoto);
   var scaleImage = function (evt) {
     switch (true) {
       case evt.target.className === 'scale__control  scale__control--smaller':
-        newValaue = parseInt(zoomStorage.value, 10) - window.ADD_PHOTO_RULES.ZOOM.STEP;
+        newValaue = parseInt(zoomStorage.value, 10) - window.constant.ADD_PHOTO_RULES.ZOOM.STEP;
         zoomStorage.value = newValaue + '%';
         scaleValue = newValaue / 100;
         imgPreview.style = 'transform: scale(' + scaleValue + ')';
-        if (parseInt(zoomStorage.value, 10) === window.ADD_PHOTO_RULES.ZOOM.MIN) {
+        if (parseInt(zoomStorage.value, 10) === window.constant.ADD_PHOTO_RULES.ZOOM.MIN) {
           zoomOutButton.disabled = true;
         }
-        if (parseInt(zoomStorage.value, 10) < window.ADD_PHOTO_RULES.ZOOM.MAX) {
+        if (parseInt(zoomStorage.value, 10) < window.constant.ADD_PHOTO_RULES.ZOOM.MAX) {
           zoomInButton.disabled = false;
         }
         return;
 
       case evt.target.className === 'scale__control  scale__control--bigger':
-        newValaue = parseInt(zoomStorage.value, 10) + window.ADD_PHOTO_RULES.ZOOM.STEP;
+        newValaue = parseInt(zoomStorage.value, 10) + window.constant.ADD_PHOTO_RULES.ZOOM.STEP;
         zoomStorage.value = newValaue + '%';
         scaleValue = newValaue / 100;
         imgPreview.style = 'transform: scale(' + scaleValue + ')';
-        if (parseInt(zoomStorage.value, 10) === window.ADD_PHOTO_RULES.ZOOM.MAX) {
+        if (parseInt(zoomStorage.value, 10) === window.constant.ADD_PHOTO_RULES.ZOOM.MAX) {
           zoomInButton.disabled = true;
         }
-        if (parseInt(zoomStorage.value, 10) > window.ADD_PHOTO_RULES.ZOOM.MIN) {
+        if (parseInt(zoomStorage.value, 10) > window.constant.ADD_PHOTO_RULES.ZOOM.MIN) {
           zoomOutButton.disabled = false;
         }
         return;
@@ -547,8 +416,8 @@ showPhotos(window.preparedPhoto);
 // HASHTAG.JS
 // Валидацмя тегов
 (function () {
-  window.validityTag = true;
-  window.ADD_PHOTO_RULES.special.ORIGINAL_TITLE = document.title;
+  window.constant.ADD_PHOTO_RULES.special.validityTag = true;
+  window.constant.ADD_PHOTO_RULES.special.ORIGINAL_TITLE = document.title;
   // ^^^сохраняем в объект название страницы, оно будет использовано когда пользователь исправит
   // все ошибки и нам надо будет вернуть старое название страницы. Для работы S.2
 
@@ -575,13 +444,11 @@ showPhotos(window.preparedPhoto);
 
   // H.2 Функция проверяет каждый тег на ошибки характ. для 1 тэга. Проверка к-ва тэгов и дубликатов идет отдельно
   var checkTag = function (tagStorage) {
-    var re = /^[а-яёa-z0-9#]+$/i;
     var checkedTag = {};
     checkedTag.isSharp = tagStorage[0] === '#';
     checkedTag.maxLength = tagStorage.length < 20;
     checkedTag.onlySharp = tagStorage.length === 1 && tagStorage === '#';
-    // checkedTag.regExp = window.ADD_PHOTO_RULES.UPLD_TAGS.REG_EXP.test(tagStorage.substring(1, (tagStorage.length)));
-    checkedTag.regExp = re.test(tagStorage);
+    checkedTag.regExp = window.constant.ADD_PHOTO_RULES.UPLD_TAGS.REG_EXP.test(tagStorage);
     return checkedTag;
   };
 
@@ -589,9 +456,9 @@ showPhotos(window.preparedPhoto);
   // ==== H.3.1 Функция обнуляет эффекты ошибок, затирает разметку и меняет флаг валидности
   var resetTags = function () {
     tagErrPlaceUl.innerHTML = '';
-    window.ADD_PHOTO_RULES.special.counterErrTagTitle = 0;
+    window.constant.ADD_PHOTO_RULES.special.counterErrTagTitle = 0;
     tagInput.classList.remove('border-error');
-    window.validityTag = true;
+    window.constant.ADD_PHOTO_RULES.special.validityTag = true;
   };
 
   var checkAllTags = function () {
@@ -607,17 +474,17 @@ showPhotos(window.preparedPhoto);
 
     if (findDuplicate(enteredTags)) { // проверяем на дубликаты и записываем значение в массив.
       // проверка идет первой, чтобы юзер сразу видел есть дубликаты.
-      window.validityTag = false;
-      errArray.push(window.ADD_PHOTO_RULES.msg.errDuplicate);
-      window.ADD_PHOTO_RULES.special.counterErrTagTitle = window.ADD_PHOTO_RULES.special.counterErrTagTitle + 1;
+      window.constant.ADD_PHOTO_RULES.special.validityTag = false;
+      errArray.push(window.constant.ADD_PHOTO_RULES.msg.errDuplicate);
+      window.constant.ADD_PHOTO_RULES.special.counterErrTagTitle = window.constant.ADD_PHOTO_RULES.special.counterErrTagTitle + 1;
     } else {
-      window.ADD_PHOTO_RULES.special.counterErrTagTitle = window.ADD_PHOTO_RULES.special.counterErrTagTitle - 1;
-      window.validityTag = true;
+      window.constant.ADD_PHOTO_RULES.special.counterErrTagTitle = window.constant.ADD_PHOTO_RULES.special.counterErrTagTitle - 1;
+      window.constant.ADD_PHOTO_RULES.special.validityTag = true;
     }
 
     // проверка идет второй, чтобы также сразу его обрадывать.
     if (enteredTags.length > 5) {
-      errArray.push(window.ADD_PHOTO_RULES.msg.errAmount);
+      errArray.push(window.constant.ADD_PHOTO_RULES.msg.errAmount);
     }
     for (var i = 0; i < enteredTags.length; i++) { // цикл запускает проверку тэгов массива
 
@@ -630,22 +497,22 @@ showPhotos(window.preparedPhoto);
                                         || checkedTag.onlySharp !== false
                                         || checkedTag.regExp !== true) {
         tagErrPlaceUl.innerHTML = ''; // затирает мамку ошибок
-        window.validityTag = false; // ставит флаг о том что невалид и форма не отправится
+        window.constant.ADD_PHOTO_RULES.special.validityTag = false; // ставит флаг о том что невалид и форма не отправится
 
         if (checkedTag.isSharp !== true && checkedTag !== '') {
-          (errArray.push(enteredTags[i] + ' ' + window.ADD_PHOTO_RULES.msg.errSharp));
+          (errArray.push(enteredTags[i] + ' ' + window.constant.ADD_PHOTO_RULES.msg.errSharp));
         } // если нет решетки записываем ошибку и имя тэга
 
         if (checkedTag.maxLength !== true) {
-          errArray.push(enteredTags[i] + ' ' + window.ADD_PHOTO_RULES.msg.errLength);
+          errArray.push(enteredTags[i] + ' ' + window.constant.ADD_PHOTO_RULES.msg.errLength);
         } // если тэг длиннее нормы
 
         if (checkedTag.regExp !== true) {
-          errArray.push(enteredTags[i] + ' ' + window.ADD_PHOTO_RULES.msg.errRegExp);
+          errArray.push(enteredTags[i] + ' ' + window.constant.ADD_PHOTO_RULES.msg.errRegExp);
         } // если регулярка пролетела
 
         if (checkedTag.onlySharp !== false) {
-          errArray.push(enteredTags[i] + ' ' + window.ADD_PHOTO_RULES.msg.errToShort);
+          errArray.push(enteredTags[i] + ' ' + window.constant.ADD_PHOTO_RULES.msg.errToShort);
         } // если только решетка и все
 
         // ^^^Даннаый фор предназначен для того, чтобы понятно отобразить юзеру:
@@ -653,7 +520,7 @@ showPhotos(window.preparedPhoto);
         // 2. в каких тэгах они есть
         // То бишь чтобы избежать такой стиуации что по одной ошибки вывводится, и после исправления одной идет другая
         // и пользователь не может понять сколько ошибок всего.
-        window.ADD_PHOTO_RULES.special.counterErrTagTitle = errArray.length; // вносим длинну тэга в значение в объекте, чтобы отобр. в тайтле S.2
+        window.constant.ADD_PHOTO_RULES.special.counterErrTagTitle = errArray.length; // вносим длинну тэга в значение в объекте, чтобы отобр. в тайтле S.2
       }
     } // end for var i
     for (var m = 0; m < errArray.length; m++) {
@@ -685,7 +552,7 @@ showPhotos(window.preparedPhoto);
 (function () {
   // Т.2 Контроль длины поля ввода
   counterPlace.classList.add('text__counter'); // присваивет стиль каунтера по умолчанию
-  window.validityTextArea = true;
+  window.constant.ADD_PHOTO_RULES.special.validityTextArea = true;
 
   window.counterSymbol = 0;
   // Т.2.1 Отображает каунтер
@@ -708,19 +575,19 @@ showPhotos(window.preparedPhoto);
       textArea.classList.remove('border-error');
     }
 
-    if (window.counterSymbol >= window.ADD_PHOTO_RULES.UPLD_COMMENTS.MAX_LENGTH) {
+    if (window.counterSymbol >= window.constant.ADD_PHOTO_RULES.UPLD_COMMENTS.MAX_LENGTH) {
       counterPlace.classList.add('counter-error');
       counterPlace.textContent = 'Достигли лимит в 140 символов 😶';
-      window.ADD_PHOTO_RULES.special.counterErrAreaTitle = 1; // используется для отображения количества ошибок в заголовке S.2
+      window.constant.ADD_PHOTO_RULES.special.counterErrAreaTitle = 1; // используется для отображения количества ошибок в заголовке S.2
       textArea.classList.add('border-error');
-      window.validityTextArea = false;
+      window.constant.ADD_PHOTO_RULES.special.validityTextArea = false;
 
     } else {
       // counterPlace.removeAttribute('class');
       counterPlace.classList.remove('counter-error');
       textArea.classList.remove('border-error');
-      window.validityTextArea = true;
-      window.ADD_PHOTO_RULES.special.counterErrAreaTitle = 0; // затираем количество ощибок в заголовке
+      window.constant.ADD_PHOTO_RULES.special.validityTextArea = true;
+      window.constant.ADD_PHOTO_RULES.special.counterErrAreaTitle = 0; // затираем количество ощибок в заголовке
     }
   };
   textArea.addEventListener('focus', showCounterHandler); // Показывает счетчик символов при фокусе
@@ -731,7 +598,7 @@ showPhotos(window.preparedPhoto);
   // SUBMIT.JS
   // S.1 Функция проверяет состояние проверки двух полей, и разрешает / запрещает отправку формы
   var checkRules = function (evt) {
-    if (window.validityTextArea === false || window.validityTag === false) {
+    if (window.constant.ADD_PHOTO_RULES.special.validityTextArea === false || window.constant.ADD_PHOTO_RULES.special.validityTag === false) {
       evt.preventDefault();
     }
   };
@@ -741,8 +608,8 @@ showPhotos(window.preparedPhoto);
   // Данная функция предназначена для отображения к-ва ошибок в поле теги и комент в ЗАГОЛОВКЕ СТРАНИЦЫ
   var errCounterTitle = function () {
 
-    if (window.ADD_PHOTO_RULES.special.counterErrTagTitle > 0 || window.ADD_PHOTO_RULES.special.counterErrAreaTitle > 0) { // если значение не нулевое (то есть есть ошибки), выполняется выввод в заголовк
-      var sumErr = window.ADD_PHOTO_RULES.special.counterErrTagTitle + window.ADD_PHOTO_RULES.special.counterErrAreaTitle;
+    if (window.constant.ADD_PHOTO_RULES.special.counterErrTagTitle > 0 || window.constant.ADD_PHOTO_RULES.special.counterErrAreaTitle > 0) { // если значение не нулевое (то есть есть ошибки), выполняется выввод в заголовк
+      var sumErr = window.constant.ADD_PHOTO_RULES.special.counterErrTagTitle + window.constant.ADD_PHOTO_RULES.special.counterErrAreaTitle;
       var endWord = '';
       if (sumErr === 1) {
         endWord = 'а';
@@ -751,10 +618,10 @@ showPhotos(window.preparedPhoto);
       } else if (sumErr >= 5) {
         endWord = 'ок';
       }
-      document.title = '[' + sumErr + ' ошиб' + endWord + ']' + ' ' + window.ADD_PHOTO_RULES.special.ORIGINAL_TITLE;
+      document.title = '[' + sumErr + ' ошиб' + endWord + ']' + ' ' + window.constant.ADD_PHOTO_RULES.special.ORIGINAL_TITLE;
 
     } else {
-      document.title = window.ADD_PHOTO_RULES.special.ORIGINAL_TITLE; // обнуляем заголовок если ошибок нет.
+      document.title = window.constant.ADD_PHOTO_RULES.special.ORIGINAL_TITLE; // обнуляем заголовок если ошибок нет.
     }
   };
 
