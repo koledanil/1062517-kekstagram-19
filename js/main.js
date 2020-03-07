@@ -45,7 +45,7 @@ var submitButton = document.querySelector('#upload-submit');
 var formUpldImg = document.querySelector('.img-upload__text');
 
 // PHOTO_PAGE
-var imagePlace = document.querySelector('.pictures');
+
 
 // PREVIEW_SELECTOR.JS
 var imgСommentUl = document.querySelector('.social__comments');
@@ -62,30 +62,6 @@ var crossBtnUserPic = document.querySelector('.big-picture__cancel');
 var commentUserPhInput = document.querySelector('.social__footer-text');
 
 // //////////////////////////////////////////////////////////////////
-
-// PHOTPAGE.JS
-// P.1 Записываем данные фотки в разметку для одной шутки
-var fragment = document.createDocumentFragment();
-
-var writeInfoPhoto = function (element, index) {
-  var foundTemplate = window.util.getTemplate('#picture', '.picture');
-  var infoContainer = foundTemplate.querySelector('.picture__info'); // контейнер для коментов и лайков
-  var pathPicture = foundTemplate.querySelector('.picture__img');
-
-  foundTemplate.setAttribute('data-id', index);
-  infoContainer.querySelector('.picture__likes').textContent = element.like;
-  infoContainer.querySelector('.picture__comments').textContent = element.comment.length;
-  pathPicture.src = element.url;
-  return foundTemplate;
-};
-// P.2 На основе P.1 формируем и крепим фотки
-var showPhotos = function () {
-  for (var i = 0; i < window.infoGenerator.getPhoto.length; i++) {
-    fragment.appendChild(writeInfoPhoto(window.infoGenerator.getPhoto[i], i));
-  }
-  imagePlace.appendChild(fragment);
-};
-showPhotos(window.infoGenerator.getPhoto);
 
 // DIALOG.JS
 // D.1 Функция открывает диалоговое окно по изменению поля файл.
