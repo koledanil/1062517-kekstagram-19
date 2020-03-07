@@ -40,14 +40,14 @@
   };
   zoomButtons.addEventListener('click', scaleImageHandler);
 
-  //SC.2 Удаляем листенере
+  // SC.2 Удаляем листенере
   var removeListener = function () {
     zoomButtons.removeEventListener('click', scaleImageHandler);
   };
-  
-  /// OUTPUT
+
+  // / OUTPUT
   window.scale = {
     removeListener: removeListener
-  }
-  
+  };
+
 })(); // end iife s1

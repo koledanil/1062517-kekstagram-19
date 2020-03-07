@@ -24,13 +24,13 @@
 
   formUpldImg.addEventListener('change', errCounterTitle);
 
-    //TR.2 Удаляем листенере
-    var removeListener = function () {
-      formUpldImg.removeEventListener('change', errCounterTitle);
-    };
-    
-    /// OUTPUT
-    window.titleError = {
-      removeListener: removeListener
-    }
+  // TR.2 Удаляем листенере
+  var removeListener = function () {
+    formUpldImg.removeEventListener('change', errCounterTitle);
+  };
+
+  // / OUTPUT
+  window.titleError = {
+    removeListener: removeListener
+  };
 })();

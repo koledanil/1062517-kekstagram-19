@@ -2,8 +2,8 @@
 // переключение между эффектами фотки
 (function () {
   var effectList = document.querySelector('.effects__list');
-  
-  //E.1 Применение эффекта
+
+  // E.1 Применение эффекта
   var applyEffectsHandler = function (evt) {
     window.selector.imgPreview.removeAttribute('class');
     window.selector.imgPreview.style.filter = '';
@@ -48,13 +48,13 @@
   };
   effectList.addEventListener('change', applyEffectsHandler);
 
-  //E.2 Удаляем листенера
+  // E.2 Удаляем листенера
   var removeListener = function () {
     effectList.removeEventListener('change', applyEffectsHandler);
-  }
+  };
 
   // OUTPUT
-  window.effect ={
+  window.effect = {
     removeListener: removeListener
-  }
+  };
 })();

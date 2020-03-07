@@ -117,14 +117,14 @@
 
   window.selector.tagInput.addEventListener('change', checkAllTags);
 
- //H.4 Удаляем листенера
- var removeListener = function () {
-  window.selector.tagInput.removeEventListener('change', checkAllTags);
-}
+  // H.4 Удаляем листенера
+  var removeListener = function () {
+    window.selector.tagInput.removeEventListener('change', checkAllTags);
+  };
 
-// OUTPUT
-window.hashtag ={
-  removeListener: removeListener
-}
+  // OUTPUT
+  window.hashtag = {
+    removeListener: removeListener
+  };
 
 })(); // finished IIFE
