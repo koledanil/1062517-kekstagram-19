@@ -1,35 +1,15 @@
 'use strict';
 // V.3 Поиск элементов разметки для кода
 // SCALE_SELECTOR
+
 // Находим тэги увеличения масштаба
-var imgPreview = document.querySelector('.img-upload__preview').querySelector('img'); // изображение
 var zoomButtons = document.querySelector('.img-upload__scale'); // родитель кнопок
 var zoomStorage = document.querySelector('.scale__control--value'); // отображает значение масштаба
-var zoomOutButton = document.querySelector('.scale__control--smaller'); // уменьшаем масштаб
-var zoomInButton = document.querySelector('.scale__control--bigger'); // увеличиваем масштаб
 
 
-// DIALOG_SELECTOR
-// Находим тэги увеличения масштаба
-var body = document.querySelector('body'); // поиск бади, нужен для блокировки скролла
-var clickedElement = document.querySelector('#upload-select-image');
-var dialogBox = document.querySelector('.img-upload__overlay');
-var filePicker = document.querySelector('.img-upload__input');
-var crossButton = document.querySelector('.cancel');
-var uploadBtnIpload = document.querySelector('#upload-select-image');
-
-// из закрытия окна
-var counterPlace = document.querySelector('#symbol_counter'); // находим каунтер
-var tagErrPlaceUl = document.querySelector('#tag-error');// находим тэг для ошибок заполнения поля тэг
-var tagInput = document.querySelector('.text__hashtags');
-var textArea = document.querySelector('.text__description');
-var effectPreview = document.querySelectorAll('.effects__radio');
-
-// SLIDER_SELECTOR
-var sliderTag = document.querySelector('.img-upload__effect-level');
-var lineEmpty = sliderTag.querySelector('.effect-level__line');
-var depth = sliderTag.querySelector('.effect-level__depth');
-var pin = sliderTag.querySelector('.effect-level__pin');
+var lineEmpty = window.selector.sliderTag.querySelector('.effect-level__line');
+var depth = window.selector.sliderTag.querySelector('.effect-level__depth');
+var pin = window.selector.sliderTag.querySelector('.effect-level__pin');
 var effectLevelForm = document.querySelector('.effect-level__value');
 
 // EFFECT_SELECTRO
@@ -63,86 +43,12 @@ var commentUserPhInput = document.querySelector('.social__footer-text');
 
 // //////////////////////////////////////////////////////////////////
 
-// DIALOG.JS
-// D.1 Функция открывает диалоговое окно по изменению поля файл.
-(function () {
-  var showDialogBoxHandler = function () {
-    dialogBox.classList.remove('hidden');
-    body.classList.add('modal-open');
-    filePicker.blur();
-  };
-  clickedElement.addEventListener('change', showDialogBoxHandler);
-})();
-
-// D.2 Функция закрывает диалоговое окно по клику на керстик и ESC
-(function () {
-  var resetForm = function () {
-    // переменные imgPreview zoomOutButton zoomInButton --- scale_selector.js
-    // переменные counterPlace tagErrPlaceUl tagInput textArea --- DIALOG_SELECTOR.JS
-    imgPreview.removeAttribute('class');
-    counterPlace.innerHTML = 'Введено 0 из 140 символов';
-    counterPlace.classList.add('hidden');
-    window.counterSymbol = 0;
-
-    imgPreview.style = 'transform: 0'; // сбиваем масштаб фотки
-    zoomOutButton.disabled = false; // сбиваем псевдо с увелич, чтоб кнопка стала активной
-    zoomInButton.disabled = false;// сбиваем псевдо с уменьше, чтоб кнопка стала активной
-
-    textArea.classList.remove('border-error'); // убираем обводку  текстового поля
-
-    window.constant.ADD_PHOTO_RULES.special.validityTag = true; // обнуляем флаг для инпута тэгов, необходимо для S.1
-    window.constant.ADD_PHOTO_RULES.special.validityTextArea = true; // обнуляем флаг для комента, необходимо для S.1
-    document.title = window.constant.ADD_PHOTO_RULES.special.ORIGINAL_TITLE; // возвращаем исходное значение тайтла, использ в S.2
-    tagInput.classList.remove('border-error');
-    tagErrPlaceUl.innerHTML = ''; // затираем мамку ошибок (фн.H.3)
-
-    zoomInButton.disabled = true; // лочим зум.
-
-    sliderTag.classList.add('hidden'); // скрываем ползунок эффекта
-  };
-
-  window.hideDialogBox = function () {
-    dialogBox.classList.add('hidden');
-    body.classList.remove('modal-open');
-    uploadBtnIpload.reset();
-    resetForm();
-  };
-
-  var closeEscHandler = function (evt) {
-    switch (true) {
-      case evt.key === 'Escape' && evt.target.type === 'radio':
-        for (var i = 0; i < effectPreview.length; i++) {
-          if (effectPreview[i].checked) {
-            effectPreview[i].blur();
-          }
-        }
-        return;
-
-      case evt.key === 'Escape' && evt.target.type === 'text':
-        tagInput.blur();
-        return;
-
-      case evt.key === 'Escape' && evt.target.type === 'textarea':
-        textArea.blur();
-        return;
-      case evt.key === 'Escape':
-        window.hideDialogBox();
-        resetForm();
-        return;
-    }
-  };
-
-  document.addEventListener('keydown', closeEscHandler);
-  crossButton.addEventListener('click', window.hideDialogBox);
-})();
-
-
 // SCALE.JS
 // Изменение масштаба изобаржения
 (function () {
   var newValaue;
   var scaleValue;
-  zoomInButton.disabled = true; // октлючаем кнопку зума при 100%
+  window.selector.zoomInButton.disabled = true; // октлючаем кнопку зума при 100%
 
   // SC.2 Изменяем масштаб изображения туда и сюда
   var scaleImage = function (evt) {
@@ -151,12 +57,12 @@ var commentUserPhInput = document.querySelector('.social__footer-text');
         newValaue = parseInt(zoomStorage.value, 10) - window.constant.ADD_PHOTO_RULES.ZOOM.STEP;
         zoomStorage.value = newValaue + '%';
         scaleValue = newValaue / 100;
-        imgPreview.style = 'transform: scale(' + scaleValue + ')';
+        window.selector.imgPreview.style = 'transform: scale(' + scaleValue + ')';
         if (parseInt(zoomStorage.value, 10) === window.constant.ADD_PHOTO_RULES.ZOOM.MIN) {
-          zoomOutButton.disabled = true;
+          window.selector.zoomOutButton.disabled = true;
         }
         if (parseInt(zoomStorage.value, 10) < window.constant.ADD_PHOTO_RULES.ZOOM.MAX) {
-          zoomInButton.disabled = false;
+          window.selector.zoomInButton.disabled = false;
         }
         return;
 
@@ -164,12 +70,12 @@ var commentUserPhInput = document.querySelector('.social__footer-text');
         newValaue = parseInt(zoomStorage.value, 10) + window.constant.ADD_PHOTO_RULES.ZOOM.STEP;
         zoomStorage.value = newValaue + '%';
         scaleValue = newValaue / 100;
-        imgPreview.style = 'transform: scale(' + scaleValue + ')';
+        window.selector.imgPreview.style = 'transform: scale(' + scaleValue + ')';
         if (parseInt(zoomStorage.value, 10) === window.constant.ADD_PHOTO_RULES.ZOOM.MAX) {
-          zoomInButton.disabled = true;
+          window.selector.zoomInButton.disabled = true;
         }
         if (parseInt(zoomStorage.value, 10) > window.constant.ADD_PHOTO_RULES.ZOOM.MIN) {
-          zoomOutButton.disabled = false;
+          window.selector.zoomOutButton.disabled = false;
         }
         return;
     } // switch
@@ -211,31 +117,31 @@ var commentUserPhInput = document.querySelector('.social__footer-text');
     var effectValue;
     switch (effectType) {
       case 'effects__preview--none':
-        imgPreview.style.filter = 'none';
+        window.selector.imgPreview.style.filter = 'none';
         effectLevelForm.value = 0;
         return;
 
       case 'effects__preview--chrome':
         effectValue = slideOutput / 100;
-        imgPreview.style.filter = 'grayscale(' + effectValue + ')';
+        window.selector.imgPreview.style.filter = 'grayscale(' + effectValue + ')';
         effectLevelForm.value = effectValue;
 
         return;
 
       case 'effects__preview--sepia':
         effectValue = slideOutput / 100;
-        imgPreview.style.filter = 'sepia(' + effectValue + ')';
+        window.selector.imgPreview.style.filter = 'sepia(' + effectValue + ')';
         effectLevelForm.value = effectValue;
         return;
 
       case 'effects__preview--marvin':
-        imgPreview.style.filter = 'invert(' + slideOutput + '%)';
+        window.selector.imgPreview.style.filter = 'invert(' + slideOutput + '%)';
         effectLevelForm.value = slideOutput;
         return;
 
       case 'effects__preview--phobos':
         effectValue = (slideOutput / 10) / 3;
-        imgPreview.style.filter = 'blur(' + effectValue + 'px)';
+        window.selector.imgPreview.style.filter = 'blur(' + effectValue + 'px)';
         effectLevelForm.value = effectValue;
         return;
 
@@ -244,7 +150,7 @@ var commentUserPhInput = document.querySelector('.social__footer-text');
           effectValue = 1;
         }
         effectValue = (slideOutput / 100 * 2) + 1;
-        imgPreview.style.filter = 'brightness(' + effectValue + ')';
+        window.selector.imgPreview.style.filter = 'brightness(' + effectValue + ')';
         effectLevelForm.value = effectValue;
         return;
     }
@@ -260,7 +166,7 @@ var commentUserPhInput = document.querySelector('.social__footer-text');
   };
 
   pin.addEventListener('mousedown', function () {
-    effectType = imgPreview.getAttribute('class');
+    effectType = window.selector.imgPreview.getAttribute('class');
 
 
     pin.addEventListener('dragstart', preventActionHandler);
@@ -273,16 +179,16 @@ var commentUserPhInput = document.querySelector('.social__footer-text');
 // E.1 Переключает эффекты и применяет их к фото
 (function () {
   var applyEffectsHandler = function (evt) {
-    imgPreview.removeAttribute('class');
-    imgPreview.style.filter = '';
+    window.selector.imgPreview.removeAttribute('class');
+    window.selector.imgPreview.style.filter = '';
     pin.style.left = 453 + 'px';
     depth.style.width = 453 + 'px';
     var eventTarget = evt.target;
     if (eventTarget.value !== 'none') {
-      imgPreview.classList.add('effects__preview--' + eventTarget.value);
+      window.selector.imgPreview.classList.add('effects__preview--' + eventTarget.value);
 
-      if (sliderTag.classList.contains !== 'hidden') {
-        sliderTag.classList.remove('hidden');
+      if (window.selector.sliderTag.classList.contains !== 'hidden') {
+        window.selector.sliderTag.classList.remove('hidden');
 
         switch (true) {
           case (eventTarget.value === 'chrome'):
@@ -310,7 +216,7 @@ var commentUserPhInput = document.querySelector('.social__footer-text');
         // что значение эффекта будет другим (см SL.1)
       }
     } else {
-      sliderTag.classList.add('hidden');
+      window.selector.sliderTag.classList.add('hidden');
       effectLevelForm.value = 0;
     }
   };
@@ -361,15 +267,15 @@ var commentUserPhInput = document.querySelector('.social__footer-text');
   // H.3 Функция првоеряет каждый тэг на ошибки согласно H.2
   // ==== H.3.1 Функция обнуляет эффекты ошибок, затирает разметку и меняет флаг валидности
   var resetTags = function () {
-    tagErrPlaceUl.innerHTML = '';
+    window.selector.tagErrPlaceUl.innerHTML = '';
     window.constant.ADD_PHOTO_RULES.special.counterErrTagTitle = 0;
-    tagInput.classList.remove('border-error');
+    window.selector.tagInput.classList.remove('border-error');
     window.constant.ADD_PHOTO_RULES.special.validityTag = true;
   };
 
   var checkAllTags = function () {
     resetTags();
-    var enteredTags = tagInput.value.toLowerCase().split(' ').filter(function (item) {
+    var enteredTags = window.selector.tagInput.value.toLowerCase().split(' ').filter(function (item) {
       return item !== '';
 
     });
@@ -402,7 +308,7 @@ var commentUserPhInput = document.querySelector('.social__footer-text');
       // Если это все выполняется то пойдет наполнение тэга ошибок
                                         || checkedTag.onlySharp !== false
                                         || checkedTag.regExp !== true) {
-        tagErrPlaceUl.innerHTML = ''; // затирает мамку ошибок
+        window.selector.tagErrPlaceUl.innerHTML = ''; // затирает мамку ошибок
         window.constant.ADD_PHOTO_RULES.special.validityTag = false; // ставит флаг о том что невалид и форма не отправится
 
         if (checkedTag.isSharp !== true && checkedTag !== '') {
@@ -433,13 +339,13 @@ var commentUserPhInput = document.querySelector('.social__footer-text');
       var clonedElement = tagErrTemplate.cloneNode(true);
       clonedElement.textContent = errArray[m];
       clonedElement.classList.add('error-list__item');
-      tagErrPlaceUl.appendChild(clonedElement);
-      tagInput.classList.add('border-error');
+      window.selector.tagErrPlaceUl.appendChild(clonedElement);
+      window.selector.tagInput.classList.add('border-error');
     }
     // }
   }; // end check all tags
 
-  tagInput.addEventListener('change', checkAllTags);
+  window.selector.tagInput.addEventListener('change', checkAllTags);
 
 })(); // finished IIFE
 
@@ -451,54 +357,54 @@ var commentUserPhInput = document.querySelector('.social__footer-text');
     evt.target.style.height = (evt.target.scrollHeight) + 'px';
   };
 
-  textArea.setAttribute('style', 'height:' + (textArea.scrollHeight) + 'px;overflow-y:auto;' + 'resize: vertical');
-  textArea.addEventListener('input', inputHandler, false);
+  window.selector.textArea.setAttribute('style', 'height:' + (window.selector.textArea.scrollHeight) + 'px;overflow-y:auto;' + 'resize: vertical');
+  window.selector.textArea.addEventListener('input', inputHandler, false);
 })();
 
 (function () {
   // Т.2 Контроль длины поля ввода
-  counterPlace.classList.add('text__counter'); // присваивет стиль каунтера по умолчанию
+  window.selector.counterPlace.classList.add('text__counter'); // присваивет стиль каунтера по умолчанию
   window.constant.ADD_PHOTO_RULES.special.validityTextArea = true;
 
   window.counterSymbol = 0;
   // Т.2.1 Отображает каунтер
   var showCounterHandler = function () {
-    counterPlace.classList.remove('hidden');
+    window.selector.counterPlace.classList.remove('hidden');
   };
   // Т.2.2 Убирает каунтер
   var hideCounterHandler = function () {
     if (window.counterSymbol === undefined || window.counterSymbol === 0) {
-      counterPlace.classList.add('hidden');
+      window.selector.counterPlace.classList.add('hidden');
     }
   };
   // Т.2.3 Считает символы в тексте
   var checkLengthTextAreaHandler = function () {
-    counterPlace.classList.remove('hidden');
-    window.counterSymbol = textArea.value.length;
-    counterPlace.classList.add('counter__default');
-    counterPlace.textContent = 'Введено ' + window.counterSymbol + ' из' + ' 140 символов';
+    window.selector.counterPlace.classList.remove('hidden');
+    window.counterSymbol = window.selector.textArea.value.length;
+    window.selector.counterPlace.classList.add('counter__default');
+    window.selector.counterPlace.textContent = 'Введено ' + window.counterSymbol + ' из' + ' 140 символов';
     if (window.counterSymbol === 0) {
-      textArea.classList.remove('border-error');
+      window.selector.textArea.classList.remove('border-error');
     }
 
     if (window.counterSymbol >= window.constant.ADD_PHOTO_RULES.UPLD_COMMENTS.MAX_LENGTH) {
-      counterPlace.classList.add('counter-error');
-      counterPlace.textContent = 'Достигли лимит в 140 символов 😶';
+      window.selector.counterPlace.classList.add('counter-error');
+      window.selector.counterPlace.textContent = 'Достигли лимит в 140 символов 😶';
       window.constant.ADD_PHOTO_RULES.special.counterErrAreaTitle = 1; // используется для отображения количества ошибок в заголовке S.2
-      textArea.classList.add('border-error');
+      window.selector.textArea.classList.add('border-error');
       window.constant.ADD_PHOTO_RULES.special.validityTextArea = false;
 
     } else {
       // counterPlace.removeAttribute('class');
-      counterPlace.classList.remove('counter-error');
-      textArea.classList.remove('border-error');
+      window.selector.counterPlace.classList.remove('counter-error');
+      window.selector.textArea.classList.remove('border-error');
       window.constant.ADD_PHOTO_RULES.special.validityTextArea = true;
       window.constant.ADD_PHOTO_RULES.special.counterErrAreaTitle = 0; // затираем количество ощибок в заголовке
     }
   };
-  textArea.addEventListener('focus', showCounterHandler); // Показывает счетчик символов при фокусе
-  textArea.addEventListener('keyup', checkLengthTextAreaHandler); // Считает символы при вводе
-  textArea.addEventListener('blur', hideCounterHandler); // Прячет счетчик при потери фокуса
+  window.selector.textArea.addEventListener('focus', showCounterHandler); // Показывает счетчик символов при фокусе
+  window.selector.textArea.addEventListener('keyup', checkLengthTextAreaHandler); // Считает символы при вводе
+  window.selector.textArea.addEventListener('blur', hideCounterHandler); // Прячет счетчик при потери фокуса
 
 
   // SUBMIT.JS
@@ -558,7 +464,7 @@ var commentUserPhInput = document.querySelector('.social__footer-text');
     (function () {
       commentCounter.classList.add('hidden');
       commentsLoader.classList.add('hidden');
-      body.classList.add('modal-open');
+      window.selector.body.classList.add('modal-open');
 
     })(); // функция скрывает кнопку ЕЩЕ КОМЕНТОВ и СЧЕТЧИК
 
@@ -588,7 +494,7 @@ var commentUserPhInput = document.querySelector('.social__footer-text');
   // P.2.6 Функция при клике закрывает окно
   var closeClickPicHandler = function () {
     bigPicture.classList.add('hidden');
-    body.classList.remove('modal-open');
+    window.selector.body.classList.remove('modal-open');
     commentUserPhInput.value = ''; // очищает поле комента
   };
 
@@ -601,7 +507,7 @@ var commentUserPhInput = document.querySelector('.social__footer-text');
 
       case evt.key === 'Escape':
         bigPicture.classList.add('hidden');
-        body.classList.remove('modal-open');
+        window.selector.body.classList.remove('modal-open');
         commentUserPhInput.value = '';
         return;
     }
