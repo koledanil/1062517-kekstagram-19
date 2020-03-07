@@ -50,12 +50,13 @@
 
   // SL.2 Двжиение слайдера туда сюда и вызвов функции SL.1 (строка 73)
   var movePinHandler = function (evt) {
+    var lineEmpty = document.querySelector('.effect-level__line');
     var limitMovementX;
     var pinCoord;
     var slideOutput;
     limitMovementX = {
       min: 0,
-      max: window.selector.lineEmpty.offsetLeft + window.selector.lineEmpty.offsetWidth - window.selector.pin.offsetWidth
+      max: lineEmpty.offsetLeft + lineEmpty.offsetWidth - window.selector.pin.offsetWidth
     };
     pinCoord = window.selector.pin.offsetLeft + evt.movementX;
     if (pinCoord < limitMovementX.min) {

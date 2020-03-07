@@ -2,6 +2,8 @@
 // Данная функция предназначена для отображения к-ва ошибок в поле теги и комент в ЗАГОЛОВКЕ СТРАНИЦЫ
 (function () {
 // TR.1 Выводит количество ошибок в заголовок окна
+  var formUpldImg = document.querySelector('.img-upload__text');
+
   var errCounterTitle = function () {
     if (window.constant.ADD_PHOTO_RULES.special.counterErrTagTitle > 0 || window.constant.ADD_PHOTO_RULES.special.counterErrAreaTitle > 0) { // если значение не нулевое (то есть есть ошибки), выполняется выввод в заголовк
       var sumErr = window.constant.ADD_PHOTO_RULES.special.counterErrTagTitle + window.constant.ADD_PHOTO_RULES.special.counterErrAreaTitle;
@@ -20,5 +22,5 @@
     }
   };
 
-  window.selector.formUpldImg.addEventListener('change', errCounterTitle);
+  formUpldImg.addEventListener('change', errCounterTitle);
 })();

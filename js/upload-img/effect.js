@@ -1,6 +1,7 @@
 'use strict';
 // переключение между эффектами фотки
 (function () {
+  var effectList = document.querySelector('.effects__list');
   var applyEffectsHandler = function (evt) {
     window.selector.imgPreview.removeAttribute('class');
     window.selector.imgPreview.style.filter = '';
@@ -43,5 +44,5 @@
       window.selector.effectLevelForm.value = 0;
     }
   };
-  window.selector.effectList.addEventListener('change', applyEffectsHandler);
+  effectList.addEventListener('change', applyEffectsHandler);
 })();

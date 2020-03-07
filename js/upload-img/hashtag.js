@@ -48,13 +48,12 @@
 
   var checkAllTags = function () {
     resetTags();
+    var tagErrTemplate = document.querySelector('#error-item').content.querySelector('li');
     var enteredTags = window.selector.tagInput.value.toLowerCase().split(' ').filter(function (item) {
       return item !== '';
 
     });
 
-    // var tagErrTemplate = document.querySelector('#error-item').content.querySelector('li'); // детеныши ошибок
-    // var tagErrPlaceUl = document.querySelector('#tag-error'); // мамка ошибок
     var errArray = []; // массив с перечнем дошибок для каждого тэга
 
     if (findDuplicate(enteredTags)) { // проверяем на дубликаты и записываем значение в массив.
@@ -107,7 +106,7 @@
       }
     } // end for var i
     for (var m = 0; m < errArray.length; m++) {
-      var clonedElement = window.selector.tagErrTemplate.cloneNode(true);
+      var clonedElement = tagErrTemplate.cloneNode(true);
       clonedElement.textContent = errArray[m];
       clonedElement.classList.add('error-list__item');
       window.selector.tagErrPlaceUl.appendChild(clonedElement);
