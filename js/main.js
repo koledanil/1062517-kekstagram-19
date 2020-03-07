@@ -63,29 +63,16 @@ var commentUserPhInput = document.querySelector('.social__footer-text');
 
 // //////////////////////////////////////////////////////////////////
 
-// C.1 генератор случайных чисел в зад. диапазане
-var getRandomNumber = function (min, max) {
-  var randomNumberLastName = min + Math.random() * (max + 1 - min);
-  return Math.floor(randomNumberLastName);
-};
-
-// С.2 Функция нахождения темплейта и нужного тега в нем
-var getTemplateFromMarkup = function (tagTemplate, tagInTemplate) {
-  var foundTemplatePhoto = document.querySelector(tagTemplate).content.querySelector(tagInTemplate);
-  var templatePhoto = foundTemplatePhoto.cloneNode(true);
-  return templatePhoto;
-};
-
 // DATAGEN.JS
 // Данные, которые используются для отображения фоток и так далее.
 (function () {
   // D.1 Создает массив КОММЕНТАРИЕВ (аватар автора, текст и имя), который потом будет записан в D.2 строка 240
   var createComment = function () {
     var commentStorage = [];
-    for (var i = 0; i < getRandomNumber(window.constant.PHOTO_RULES.COMMENT.MIN, window.constant.PHOTO_RULES.COMMENT.MAX); i++) {
-      var randomAvatar = getRandomNumber(window.constant.PHOTO_RULES.NAME_AVATAR.MIN, window.constant.PHOTO_RULES.NAME_AVATAR.MAX);
-      var randomText = getRandomNumber(0, window.constant.PHOTO_RULES.COMMENT.MAX_COMMENT_TEMPLATE);
-      var randomName = getRandomNumber(0, window.constant.PHOTO_RULES.NAME_AVATAR.MAX_NAME_TEMPLATE);
+    for (var i = 0; i < window.util.getRandom(window.constant.PHOTO_RULES.COMMENT.MIN, window.constant.PHOTO_RULES.COMMENT.MAX); i++) {
+      var randomAvatar = window.util.getRandom(window.constant.PHOTO_RULES.NAME_AVATAR.MIN, window.constant.PHOTO_RULES.NAME_AVATAR.MAX);
+      var randomText = window.util.getRandom(0, window.constant.PHOTO_RULES.COMMENT.MAX_COMMENT_TEMPLATE);
+      var randomName = window.util.getRandom(0, window.constant.PHOTO_RULES.NAME_AVATAR.MAX_NAME_TEMPLATE);
       commentStorage [i] = {
         avatarComment: 'img/avatar-' + randomAvatar + '.svg',
         text: window.placeholderData.photoComment[randomText],
@@ -99,9 +86,9 @@ var getTemplateFromMarkup = function (tagTemplate, tagInTemplate) {
   var getPhoto = function () {
     var photoStorage = [];
     for (var i = 0; i < window.constant.PHOTO_RULES.PHOTO.COUNT; i++) {
-      var randomLike = getRandomNumber(window.constant.PHOTO_RULES.PHOTO.LIKE.MIN, window.constant.PHOTO_RULES.PHOTO.LIKE.MAX);
-      var randomDescription = getRandomNumber(0, window.constant.PHOTO_RULES.PHOTO.DECRIPTION_AMOUNT);
-      var randomAvatar = getRandomNumber(window.constant.PHOTO_RULES.NAME_AVATAR.MIN, window.constant.PHOTO_RULES.NAME_AVATAR.MAX);
+      var randomLike = window.util.getRandom(window.constant.PHOTO_RULES.PHOTO.LIKE.MIN, window.constant.PHOTO_RULES.PHOTO.LIKE.MAX);
+      var randomDescription = window.util.getRandom(0, window.constant.PHOTO_RULES.PHOTO.DECRIPTION_AMOUNT);
+      var randomAvatar = window.util.getRandom(window.constant.PHOTO_RULES.NAME_AVATAR.MIN, window.constant.PHOTO_RULES.NAME_AVATAR.MAX);
 
       photoStorage [i] = {
         url: 'photos/' + (i + 1) + '.jpg',
@@ -122,7 +109,7 @@ var getTemplateFromMarkup = function (tagTemplate, tagInTemplate) {
 var fragment = document.createDocumentFragment();
 
 var writeInfoPhoto = function (element, index) {
-  var foundTemplate = getTemplateFromMarkup('#picture', '.picture');
+  var foundTemplate = window.util.getTemplate('#picture', '.picture');
   var infoContainer = foundTemplate.querySelector('.picture__info'); // контейнер для коментов и лайков
   var pathPicture = foundTemplate.querySelector('.picture__img');
 
@@ -141,23 +128,6 @@ var showPhotos = function () {
 };
 showPhotos(window.preparedPhoto);
 
-// UTIL.JS
-// U.1 Делает элемент видимым
-(function () {
-  window.showElement = function (element) {
-    element.classList.remove('hidden');
-  };
-
-  // U.2 Скрывает элемент
-  window.hideElement = function (element) {
-    element.classList.add('hidden');
-  };
-
-  // U.3 Блокировка действия по умолчанию
-  window.preventActionHandler = function (evt) {
-    evt.preventDefault();
-  };
-})();
 
 // window.util.msgName('Жорж');
 
@@ -165,7 +135,7 @@ showPhotos(window.preparedPhoto);
 // D.1 Функция открывает диалоговое окно по изменению поля файл.
 (function () {
   var showDialogBoxHandler = function () {
-    window.showElement(dialogBox);
+    dialogBox.classList.remove('hidden');
     body.classList.add('modal-open');
     filePicker.blur();
   };
@@ -200,7 +170,7 @@ showPhotos(window.preparedPhoto);
   };
 
   window.hideDialogBox = function () {
-    window.hideElement(dialogBox);
+    dialogBox.classList.add('hidden');
     body.classList.remove('modal-open');
     uploadBtnIpload.reset();
     resetForm();
@@ -353,11 +323,15 @@ showPhotos(window.preparedPhoto);
     document.removeEventListener('mouseup', pinMouseUpHandler);
   };
 
+  var preventActionHandler = function (evt) {
+    evt.preventDefault();
+  };
+
   pin.addEventListener('mousedown', function () {
     effectType = imgPreview.getAttribute('class');
 
 
-    pin.addEventListener('dragstart', window.preventActionHandler);
+    pin.addEventListener('dragstart', preventActionHandler);
     document.addEventListener('mousemove', movePinHandler);
     document.addEventListener('mouseup', pinMouseUpHandler);
   });
@@ -376,7 +350,7 @@ showPhotos(window.preparedPhoto);
       imgPreview.classList.add('effects__preview--' + eventTarget.value);
 
       if (sliderTag.classList.contains !== 'hidden') {
-        window.showElement(sliderTag);
+        sliderTag.classList.remove('hidden');
 
         switch (true) {
           case (eventTarget.value === 'chrome'):
@@ -404,7 +378,7 @@ showPhotos(window.preparedPhoto);
         // что значение эффекта будет другим (см SL.1)
       }
     } else {
-      window.hideElement(sliderTag);
+      sliderTag.classList.add('hidden');
       effectLevelForm.value = 0;
     }
   };
@@ -557,17 +531,17 @@ showPhotos(window.preparedPhoto);
   window.counterSymbol = 0;
   // Т.2.1 Отображает каунтер
   var showCounterHandler = function () {
-    window.showElement(counterPlace);
+    counterPlace.classList.remove('hidden');
   };
   // Т.2.2 Убирает каунтер
   var hideCounterHandler = function () {
     if (window.counterSymbol === undefined || window.counterSymbol === 0) {
-      window.hideElement(counterPlace);
+      counterPlace.classList.add('hidden');
     }
   };
   // Т.2.3 Считает символы в тексте
   var checkLengthTextAreaHandler = function () {
-    window.showElement(counterPlace);
+    counterPlace.classList.remove('hidden');
     window.counterSymbol = textArea.value.length;
     counterPlace.classList.add('counter__default');
     counterPlace.textContent = 'Введено ' + window.counterSymbol + ' из' + ' 140 символов';
@@ -681,7 +655,7 @@ showPhotos(window.preparedPhoto);
 
   // P.2.6 Функция при клике закрывает окно
   var closeClickPicHandler = function () {
-    window.hideElement(bigPicture);
+    bigPicture.classList.add('hidden');
     body.classList.remove('modal-open');
     commentUserPhInput.value = ''; // очищает поле комента
   };
@@ -694,7 +668,7 @@ showPhotos(window.preparedPhoto);
         return;
 
       case evt.key === 'Escape':
-        window.hideElement(bigPicture);
+        bigPicture.classList.add('hidden');
         body.classList.remove('modal-open');
         commentUserPhInput.value = '';
         return;
