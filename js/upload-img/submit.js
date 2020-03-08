@@ -3,16 +3,17 @@
 // S.1 Функция проверяет состояние проверки двух полей, и разрешает / запрещает отправку формы
 (function () {
   var submitButton = document.querySelector('#upload-submit');
-  var checkRules = function (evt) {
-    if (window.constant.ADD_PHOTO_RULES.special.validityTextArea === false || window.constant.ADD_PHOTO_RULES.special.validityTag === false) {
+
+  var checkRulesHandler = function (evt) {
+    if (window.variable.validityTextArea === false || window.variable.validityTag === false) {
       evt.preventDefault();
     }
   };
-  submitButton.addEventListener('click', checkRules);
+  submitButton.addEventListener('click', checkRulesHandler);
 
   // S.2 Удаляем листенера
   var removeListener = function () {
-    submitButton.removeEventListener('click', checkRules);
+    submitButton.removeEventListener('click', checkRulesHandler);
   };
 
   // OUTPUT

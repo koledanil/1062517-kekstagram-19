@@ -30,12 +30,9 @@
   var showBigPhoto = function (item) {
     var fragmenBigPhoto = document.createDocumentFragment(); // сюда запис. детеныши-коментарии
 
-    (function () {
-      commentCounter.classList.add('hidden');
-      commentsLoader.classList.add('hidden');
-      window.selector.body.classList.add('modal-open');
-
-    })(); // функция скрывает кнопку ЕЩЕ КОМЕНТОВ и СЧЕТЧИК
+    commentCounter.classList.add('hidden');
+    commentsLoader.classList.add('hidden');
+    window.selector.body.classList.add('modal-open');
 
     bigPicture.classList.remove('hidden'); // отображает окно с большой фоткой
     imgPicture.src = item.url;

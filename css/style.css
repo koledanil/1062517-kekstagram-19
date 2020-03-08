@@ -1461,9 +1461,12 @@ margin-bottom: 0px;
   width: 450px;
   margin-top: 5px;
   padding-left: 10px;
+  padding-right: 10px;
   padding-top: 5px;
   padding-bottom: 5px;
   border-radius: 5px;
+  word-wrap: break-word; 
+  /* ^^^ На случай если кто-то введет ооочень длинный текст в инпут */
 
   list-style: none;
   background-color:red;

@@ -1,10 +1,7 @@
 'use strict';
 // валидация хэш-тэгов
 (function () {
-  window.constant.ADD_PHOTO_RULES.special.validityTag = true;
-  window.constant.ADD_PHOTO_RULES.special.ORIGINAL_TITLE = document.title;
-  // ^^^сохраняем в объект название страницы, оно будет использовано когда пользователь исправит
-  // все ошибки и нам надо будет вернуть старое название страницы. Для работы S.2
+  window.variable.validityTag = true;
 
   // H.1 Поиск дубликатов внутри массива и возвращение False или true, знак
   var findDuplicate = function (arr) {
@@ -30,10 +27,10 @@
   // H.2 Функция проверяет каждый тег на ошибки характ. для 1 тэга. Проверка к-ва тэгов и дубликатов идет отдельно
   var checkTag = function (tagStorage) {
     var checkedTag = {};
-    checkedTag.isSharp = tagStorage[0] === '#';
-    checkedTag.maxLength = tagStorage.length < 20;
-    checkedTag.onlySharp = tagStorage.length === 1 && tagStorage === '#';
-    checkedTag.regExp = window.constant.ADD_PHOTO_RULES.UPLD_TAGS.REG_EXP.test(tagStorage);
+    checkedTag.isSharp = tagStorage[0] === window.constant.ADD_PHOTO_RULES.UPLD_TAGS.DIVIDER_SYMBOL;
+    checkedTag.maxLength = tagStorage.length < window.constant.ADD_PHOTO_RULES.UPLD_TAGS.MAX_LENGTH;
+    checkedTag.onlySharp = tagStorage === '#';
+    checkedTag.regExp = window.constant.ADD_PHOTO_RULES.UPLD_TAGS.REG_EXP.test(tagStorage.slice(1, (tagStorage.length)));
     return checkedTag;
   };
 
@@ -41,70 +38,42 @@
   // ==== H.3.1 Функция обнуляет эффекты ошибок, затирает разметку и меняет флаг валидности
   var resetTags = function () {
     window.selector.tagErrPlaceUl.innerHTML = '';
-    window.constant.ADD_PHOTO_RULES.special.counterErrTagTitle = 0;
+    window.variable.counterErrTagTitle = 0;
     window.selector.tagInput.classList.remove('border-error');
-    window.constant.ADD_PHOTO_RULES.special.validityTag = true;
+    window.variable.validityTag = true;
   };
 
+  // H.4 Подбираем окончание слова
+  var chooseEndWord = function (errLength) {
+    var endWord = '';
+    if (errLength >= 2) {
+      endWord = 'а';
+    }
+
+    if (errLength >= 5) {
+      endWord = 'ов';
+    }
+    return endWord;
+  };
+
+  // H.5 Проверяем все тэги
   var checkAllTags = function () {
     resetTags();
     var tagErrTemplate = document.querySelector('#error-item').content.querySelector('li');
-    var enteredTags = window.selector.tagInput.value.toLowerCase().split(' ').filter(function (item) {
-      return item !== '';
-
-    });
-
     var errArray = []; // массив с перечнем дошибок для каждого тэга
 
-    if (findDuplicate(enteredTags)) { // проверяем на дубликаты и записываем значение в массив.
-      // проверка идет первой, чтобы юзер сразу видел есть дубликаты.
-      window.constant.ADD_PHOTO_RULES.special.validityTag = false;
-      errArray.push(window.constant.ADD_PHOTO_RULES.msg.errDuplicate);
-    } else {
-      window.constant.ADD_PHOTO_RULES.special.validityTag = true;
-    }
+    var enteredTags = window.selector.tagInput.value.toLowerCase().split(' ').filter(function (item) {
+      return item !== '';
+    });
 
-    // проверка идет второй, чтобы также сразу его обрадывать.
-    if (enteredTags.length > 5) {
-      errArray.push(window.constant.ADD_PHOTO_RULES.msg.errAmount);
-    }
-    for (var i = 0; i < enteredTags.length; i++) { // цикл запускает проверку тэгов массива
+    checkDublicate(enteredTags, errArray); // повтор тэгов
+    checkAmountTags(enteredTags, errArray); // макс кол-во тэгов
+    checkErrors(enteredTags, errArray); // считывание ошибок и запсись месседжей в массив
+    showError(errArray, tagErrTemplate); // вывод ошибок наружу
+  }; // end check all tags
 
-      var checkedTag = checkTag(enteredTags[i]); // вот и стартанула фукнция H.2
-      if (enteredTags[i].trim().length > 0 && checkedTag.isSharp !== true || checkedTag.maxLength !== true
-      //  В данном условии записана глобальная проверка:
-      //  1. Она начинается если итый тыг больше нуля
-      //  2. Через или описаны все варианты ошибок, которые могут встретиться (на основании H.2)
-      // Если это все выполняется то пойдет наполнение тэга ошибок
-                                            || checkedTag.onlySharp !== false
-                                            || checkedTag.regExp !== true) {
-        window.selector.tagErrPlaceUl.innerHTML = ''; // затирает мамку ошибок
-        window.constant.ADD_PHOTO_RULES.special.validityTag = false; // ставит флаг о том что невалид и форма не отправится
-
-        if (checkedTag.isSharp !== true && checkedTag !== '') {
-          (errArray.push(enteredTags[i] + ' ' + window.constant.ADD_PHOTO_RULES.msg.errSharp));
-        } // если нет решетки записываем ошибку и имя тэга
-
-        if (checkedTag.maxLength !== true) {
-          errArray.push(enteredTags[i] + ' ' + window.constant.ADD_PHOTO_RULES.msg.errLength);
-        } // если тэг длиннее нормы
-
-        if (checkedTag.regExp !== true) {
-          errArray.push(enteredTags[i] + ' ' + window.constant.ADD_PHOTO_RULES.msg.errRegExp);
-        } // если регулярка пролетела
-
-        if (checkedTag.onlySharp !== false) {
-          errArray.push(enteredTags[i] + ' ' + window.constant.ADD_PHOTO_RULES.msg.errToShort);
-        } // если только решетка и все
-
-        // ^^^Даннаый фор предназначен для того, чтобы понятно отобразить юзеру:
-        // 1. какие ошибки есть
-        // 2. в каких тэгах они есть
-        // То бишь чтобы избежать такой стиуации что по одной ошибки вывводится, и после исправления одной идет другая
-        // и пользователь не может понять сколько ошибок всего.
-        window.constant.ADD_PHOTO_RULES.special.counterErrTagTitle = errArray.length; // вносим длинну тэга в значение в объекте, чтобы отобр. в тайтле S.2
-      }
-    } // end for var i
+  // H.6 выводим ошибки в разметку
+  var showError = function (errArray, tagErrTemplate) {
     for (var m = 0; m < errArray.length; m++) {
       var clonedElement = tagErrTemplate.cloneNode(true);
       clonedElement.textContent = errArray[m];
@@ -112,12 +81,61 @@
       window.selector.tagErrPlaceUl.appendChild(clonedElement);
       window.selector.tagInput.classList.add('border-error');
     }
-    // }
-  }; // end check all tags
+  };
+
+  // H.7 запускаем проверку дубликатов и записываем ошиюку если есть
+  var checkDublicate = function (enteredTags, errArray) {
+    if (findDuplicate(enteredTags)) { // проверяем на дубликаты и записываем значение в массив.
+    // проверка идет первой, чтобы юзер сразу видел есть дубликаты.
+      window.variable.validityTag = false;
+      errArray.push(window.constant.ADD_PHOTO_RULES.MSG.ERR_DUBLICATE);
+    } else {
+      window.variable.validityTag = true;
+    }
+  };
+
+  // H.8 Проверка на макс кол тэгов
+  var checkAmountTags = function (enteredTags, errArray) {
+    if (enteredTags.length > window.constant.ADD_PHOTO_RULES.UPLD_TAGS.MAX_AMOUNT_TAG) {
+      errArray.push(window.constant.ADD_PHOTO_RULES.MSG.ERR_AMOUNT + (enteredTags.length - window.constant.ADD_PHOTO_RULES.UPLD_TAGS.MAX_AMOUNT_TAG) + ' тэг' + chooseEndWord(enteredTags.length - window.constant.ADD_PHOTO_RULES.UPLD_TAGS.MAX_AMOUNT_TAG));
+    }
+  };
+
+  // H.9 Проверка в цикле
+  var checkErrors = function (enteredTags, errArray) {
+    for (var i = 0; i < enteredTags.length; i++) { // цикл запускает проверку тэгов массива
+      var checkedTag = checkTag(enteredTags[i]); // вот и стартанула фукнция H.2
+      if (enteredTags[i].trim().length > 0 && checkedTag.isSharp !== true || checkedTag.maxLength !== true
+
+                                            || checkedTag.onlySharp !== false
+                                            || checkedTag.regExp !== false) {
+        window.selector.tagErrPlaceUl.innerHTML = ''; // затирает мамку ошибок
+        window.variable.validityTag = false; // ставит флаг о том что невалид и форма не отправится
+
+        if (checkedTag.isSharp !== true && checkedTag !== '') {
+          (errArray.push(enteredTags[i] + ' ' + window.constant.ADD_PHOTO_RULES.MSG.ERR_SHARP));
+        } // если нет решетки записываем ошибку и имя тэга
+
+        if (checkedTag.maxLength !== true) {
+          errArray.push(enteredTags[i] + ' ' + window.constant.ADD_PHOTO_RULES.MSG.ERR_LENGTH);
+        } // если тэг длиннее нормы
+
+        if (checkedTag.regExp !== false) {
+          errArray.push(enteredTags[i] + ' ' + window.constant.ADD_PHOTO_RULES.MSG.ERR_REGEXP);
+        } // если регулярка пролетела
+
+        if (checkedTag.onlySharp !== false) {
+          errArray.push(enteredTags[i] + ' ' + window.constant.ADD_PHOTO_RULES.MSG.ERR_VERY_SHORT);
+        } // если только решетка и все
+
+        window.variable.counterErrTagTitle = errArray.length; // вносим длинну тэга в значение в объекте, чтобы отобр. в тайтле S.2
+      }
+    } // end for var i
+  };
 
   window.selector.tagInput.addEventListener('change', checkAllTags);
 
-  // H.4 Удаляем листенера
+  // H.6 Удаляем листенера
   var removeListener = function () {
     window.selector.tagInput.removeEventListener('change', checkAllTags);
   };
