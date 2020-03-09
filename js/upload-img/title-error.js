@@ -1,25 +1,62 @@
 'use strict';
 // Данная функция предназначена для отображения к-ва ошибок в поле теги и комент в ЗАГОЛОВКЕ СТРАНИЦЫ
 (function () {
-// TR.1 Выводит количество ошибок в заголовок окна
-  var formUpldImg = document.querySelector('.img-upload__text');
 
+  var formUpldImg = document.querySelector('.img-upload__text');
+  var sumErr;
+  var pageTitle;
+  var intervalId;
+
+  // TR.1 Выводит количество ошибок в заголовок окна
   var showErrCounterTitleHandler = function () {
     if (window.variable.counterErrTagTitle > 0 || window.variable.counterErrAreaTitle > 0) { // если значение не нулевое (то есть есть ошибки), выполняется выввод в заголовк
-      var sumErr = window.variable.counterErrTagTitle + window.variable.counterErrAreaTitle;
-      var endWord = '';
-      if (sumErr === 1) {
-        endWord = 'а';
-      } else if (sumErr >= 2 && sumErr <= 4) {
-        endWord = 'ки';
-      } else if (sumErr >= 5) {
-        endWord = 'ок';
-      }
-      document.title = '[' + sumErr + ' ошиб' + endWord + ']' + ' ' + window.constant.ADD_PHOTO_RULES.ORIGINAL_TITLE;
-
+      sumErr = window.variable.counterErrTagTitle + window.variable.counterErrAreaTitle;
+      pageTitle = '[' + sumErr + ' ошиб' + chooseEndWord(sumErr) + ']' + ' ' + window.constant.ADD_PHOTO_RULES.ORIGINAL_TITLE;
+      document.title = '[' + sumErr + ' ошиб' + chooseEndWord(sumErr) + ']' + ' ' + window.constant.ADD_PHOTO_RULES.ORIGINAL_TITLE;
+      document.addEventListener('visibilitychange', checkTabHandler);
     } else {
       document.title = window.constant.ADD_PHOTO_RULES.ORIGINAL_TITLE; // обнуляем заголовок если ошибок нет.
+      document.removeEventListener('visibilitychange', checkTabHandler);
     }
+  };
+
+  // TR.2 Определяем окончание слова
+  var chooseEndWord = function () {
+    var endWord = '';
+    if (sumErr === 1) {
+      endWord = 'ка';
+    } else if (sumErr >= 2 && sumErr <= 4) {
+      endWord = 'ки';
+    } else if (sumErr >= 5) {
+      endWord = 'ок';
+    }
+    return endWord;
+  };
+
+  // TR.3 Если пользователь в другой вкладке и есть ошибки, то название будет мерцать
+  //  ДЕМКА https://drive.google.com/file/d/1rMQHR-7RD8oB0VsQtkCJfoSLok65MDsk/view
+  var checkTabHandler = function () {
+    if (document.hidden) {
+      showErrIfHidden(document.title);
+    } else {
+      clearInterval(intervalId);
+      document.title = pageTitle;
+    }
+  };
+
+  // TR.4 заставляет мигать текст в заголовке
+  var showErrIfHidden = function () {
+    var firstTxt = '(!)' + pageTitle;
+    var secondTxt = pageTitle;
+    var switchTitle = function () {
+      if (document.title === secondTxt) {
+        document.title = firstTxt;
+      } else {
+        document.title = secondTxt;
+      }
+    };
+    intervalId = setInterval(switchTitle, 700);
+    return intervalId;
   };
 
   formUpldImg.addEventListener('change', showErrCounterTitleHandler);

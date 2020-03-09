@@ -15,37 +15,41 @@
 
       if (window.selector.sliderTag.classList.contains !== 'hidden') {
         window.selector.sliderTag.classList.remove('hidden');
+        chooseMaxLvl(eventTarget.value); // run E.2
 
-        switch (true) {
-          case (eventTarget.value === 'chrome'):
-            window.selector.effectLevelForm.value = 1;
-            return;
-
-          case (eventTarget.value === 'sepia'):
-            window.selector.effectLevelForm.value = 1;
-            return;
-
-          case (eventTarget.value === 'marvin'):
-            window.selector.effectLevelForm.value = 100;
-            return;
-
-          case (eventTarget.value === 'phobos'):
-            window.selector.effectLevelForm.value = 3;
-            return;
-
-          case (eventTarget.value === 'heat'):
-            window.selector.effectLevelForm.value = 3;
-            return;
-        }
-        // ^^^ свитч устанавливает значения для кейса когда ты эффект выбрал (сепия например) и сразу нажал отправить
-        // в это случае на сервер уйдет название эффекта и макс значение. Если ползунок будет двигаться, то соотв.
-        // что значение эффекта будет другим (см SL.1)
       }
     } else {
       window.selector.sliderTag.classList.add('hidden');
       window.selector.effectLevelForm.value = 0;
     }
   };
+
+  // E.2 записываем макс значение эффекта для выбора
+  // Обраб. кейс, когда пользователь просто вкл. эффект и не двинул ползунок и нажал отправить. В этом. сл. эт. Фн отпавит эти значения
+  var chooseMaxLvl = function (effectName) {
+    switch (true) {
+      case (effectName === 'chrome'):
+        window.selector.effectLevelForm.value = 1;
+        return;
+
+      case (effectName === 'sepia'):
+        window.selector.effectLevelForm.value = 1;
+        return;
+
+      case (effectName === 'marvin'):
+        window.selector.effectLevelForm.value = 100;
+        return;
+
+      case (effectName === 'phobos'):
+        window.selector.effectLevelForm.value = 3;
+        return;
+
+      case (effectName === 'heat'):
+        window.selector.effectLevelForm.value = 3;
+        return;
+    }
+  };
+
   effectList.addEventListener('change', applyEffectsHandler);
 
   // E.2 Удаляем листенера
