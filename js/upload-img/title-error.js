@@ -55,7 +55,7 @@
         document.title = secondTxt;
       }
     };
-    intervalId = setInterval(switchTitle, 1100);
+    intervalId = setInterval(switchTitle, 600);
     return intervalId;
   };
 
