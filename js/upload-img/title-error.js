@@ -46,7 +46,7 @@
 
   // TR.4 заставляет мигать текст в заголовке
   var showErrIfHidden = function () {
-    var firstTxt = '(!!!)' + pageTitle;
+    var firstTxt = '(!!!) ' + pageTitle;
     var secondTxt = pageTitle;
     var switchTitle = function () {
       if (document.title === secondTxt) {
