@@ -65,12 +65,12 @@
   };
 
   // UP.1.3 Закрытие при клике
-  var closeClickPicHandler = function () {
+  var closeClickPhotoHandler = function () {
     closePhoto();
   };
 
   // UP.1.4 Функция при Esc закрывает (если фокус в коменте, то первый нажатие Esc === снятие фокуса)
-  var closeEscPicHandler = function (evt) {
+  var closeEscPhotoHandler = function (evt) {
     // console.log(evt.target.);
     switch (true) {
       case evt.key === 'Escape' && evt.target.type === 'text':
@@ -84,6 +84,6 @@
   };
 
   window.selector.imgPlace.addEventListener('click', openClickHandler);
-  crossBtnUserPic.addEventListener('click', closeClickPicHandler);
-  document.addEventListener('keydown', closeEscPicHandler);
+  crossBtnUserPic.addEventListener('click', closeClickPhotoHandler);
+  document.addEventListener('keydown', closeEscPhotoHandler);
 })();
