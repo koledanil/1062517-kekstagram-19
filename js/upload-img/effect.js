@@ -50,15 +50,21 @@
     }
   };
 
-  effectList.addEventListener('change', applyEffectsHandler);
 
-  // E.2 Удаляем листенера
+  // E.1 Добавляем листенер
+  var addEvtListener = function () {
+    effectList.addEventListener('change', applyEffectsHandler);
+  };
+
+
+  // E.2 Удаляем листенер
   var removeListener = function () {
     effectList.removeEventListener('change', applyEffectsHandler);
   };
 
   // OUTPUT
   window.effect = {
+    addEvtListener: addEvtListener,
     removeListener: removeListener
   };
 })();

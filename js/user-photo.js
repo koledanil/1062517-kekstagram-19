@@ -57,12 +57,16 @@
     }
   }; // open handler
 
-  // UP.1.3 Функция при клике закрывает окно
-  var closeClickPicHandler = function () {
+  // UP.1.3 Закрывает окно
+  var closePhoto = function () {
     bigPicture.classList.add('hidden');
     window.selector.body.classList.remove('modal-open');
     commentUserPhInput.value = ''; // очищает поле комента
-    removeListener();
+  };
+
+  // UP.1.3 Закрытие при клике
+  var closeClickPicHandler = function () {
+    closePhoto();
   };
 
   // UP.1.4 Функция при Esc закрывает (если фокус в коменте, то первый нажатие Esc === снятие фокуса)
@@ -74,20 +78,10 @@
         return;
 
       case evt.key === 'Escape':
-        bigPicture.classList.add('hidden');
-        window.selector.body.classList.remove('modal-open');
-        commentUserPhInput.value = '';
-        removeListener();
+        closePhoto();
         return;
     }
   };
-
-  var removeListener = function () {
-    window.selector.imgPlace.removeEventListener('click', openClickHandler);
-    crossBtnUserPic.removeEventListener('click', closeClickPicHandler);
-    document.removeEventListener('keydown', closeEscPicHandler);
-  };
-
 
   window.selector.imgPlace.addEventListener('click', openClickHandler);
   crossBtnUserPic.addEventListener('click', closeClickPicHandler);

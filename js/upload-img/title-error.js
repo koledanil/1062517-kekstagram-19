@@ -59,7 +59,10 @@
     return intervalId;
   };
 
-  formUpldImg.addEventListener('change', showErrCounterTitleHandler);
+  // TR.2 Добавляем листенере
+  var addEvtListener = function () {
+    formUpldImg.addEventListener('change', showErrCounterTitleHandler);
+  };
 
   // TR.2 Удаляем листенере
   var removeListener = function () {
@@ -68,6 +71,7 @@
 
   // / OUTPUT
   window.titleError = {
-    removeListener: removeListener
+    removeListener: removeListener,
+    addEvtListener: addEvtListener
   };
 })();

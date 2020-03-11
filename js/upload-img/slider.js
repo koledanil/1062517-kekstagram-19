@@ -83,22 +83,25 @@
     evt.preventDefault();
   };
 
-  window.selector.pin.addEventListener('mousedown', function () {
+  var startListHandler = function () {
     window.selector.pin.addEventListener('dragstart', preventActionHandler);
     document.addEventListener('mousemove', movePinHandler);
     document.addEventListener('mouseup', pinMouseUpHandler);
-  });
+  };
 
+  // SL.1 Добавляем листенер
+  var addEvtListener = function () {
+    window.selector.pin.addEventListener('mousedown', startListHandler);
+  };
 
-  // TR.2 Удаляем листенере
+  // SL.2 Удаляем листенере
   var removeListener = function () {
-    window.selector.pin.removeEventListener('dragstart', preventActionHandler);
-    document.removeEventListener('mousemove', movePinHandler);
-    document.removeEventListener('mouseup', pinMouseUpHandler);
+    window.selector.pin.addEventListener('mousedown', startListHandler);
   };
 
   // / OUTPUT
   window.slider = {
+    addEvtListener: addEvtListener,
     removeListener: removeListener
   };
 })();

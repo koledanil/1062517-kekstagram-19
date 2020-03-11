@@ -9,7 +9,11 @@
       evt.preventDefault();
     }
   };
-  submitButton.addEventListener('click', checkRulesHandler);
+
+  // S.1 Добавляем листенер
+  var addEvtListener = function () {
+    submitButton.addEventListener('click', checkRulesHandler);
+  };
 
   // S.2 Удаляем листенера
   var removeListener = function () {
@@ -18,6 +22,7 @@
 
   // OUTPUT
   window.submit = {
+    addEvtListener: addEvtListener,
     removeListener: removeListener
   };
 })();

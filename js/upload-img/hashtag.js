@@ -133,7 +133,10 @@
     } // end for var i
   };
 
-  window.selector.tagInput.addEventListener('change', checkAllTags);
+  // H.5 Добавляем листенере
+  var addEvtListener = function () {
+    window.selector.tagInput.addEventListener('change', checkAllTags);
+  };
 
   // H.6 Удаляем листенера
   var removeListener = function () {
@@ -142,7 +145,8 @@
 
   // OUTPUT
   window.hashtag = {
-    removeListener: removeListener
+    removeListener: removeListener,
+    addEvtListener: addEvtListener
   };
 
 })(); // finished IIFE

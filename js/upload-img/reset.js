@@ -25,5 +25,17 @@
     window.selector.zoomInButton.disabled = true; // лочим зум.
 
     window.selector.sliderTag.classList.add('hidden'); // скрываем ползунок эффекта
+
+    // удалятор слушателей
+    window.scale.removeListener();
+    window.comment.removeListener();
+    window.effect.removeListener();
+    window.hashtag.removeListener();
+    window.submit.removeListener();
+    window.titleError.removeListener();
+    window.slider.removeListener();
+
+    // очищаем значение поля
+    window.selector.uploadBtn.reset();
   };
 })();

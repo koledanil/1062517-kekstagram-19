@@ -9,21 +9,24 @@
   var showDialogBoxHandler = function () {
     dialogBox.classList.remove('hidden');
     window.selector.body.classList.add('modal-open');
+    startListener();
+
+    // запускаем слушателей
+    window.effect.addEvtListener();
+    window.comment.addEvtListener();
+    window.titleError.addEvtListener();
+    window.hashtag.addEvtListener();
+    window.scale.addEvtListener();
+    window.slider.addEvtListener();
+    window.submit.addEvtListener();
   };
 
   // D.1.1 Запускает закрытие окна
   var hideDialogBox = function () {
     dialogBox.classList.add('hidden');
     window.selector.body.classList.remove('modal-open');
-    window.selector.uploadBtn.reset();
     window.resetUploadForm();
-    // window.scale.removeListener(); // удаляет слуш. увеличения масштаба
-    // window.comment.removeListener(); // удаляет ВСЕХ слушателей для комента
-    // window.effect.removeListener(); // удаляет ВСЕХ слушателей для effect
-    // window.hashtag.removeListener(); // удаляет ВСЕХ слушателей для tag
-    // window.submit.removeListener(); // удаляет ВСЕХ слушателей для submit
-    // window.titleError.removeListener(); // удаляет ВСЕХ слушателей для titleError
-    // window.slider.removeListener(); // удаляет ВСЕХ слушателей для slider
+    removeListener();
   };
 
   // D.1.2 Хэндлер для закртыия по ESC
@@ -31,7 +34,7 @@
   var closeEscHandler = function (evt) {
     switch (true) {
       case evt.key === 'Escape' && evt.target.type === 'radio':
-        for (var i = 0; i < window.selector.effectPreview.length; i++) {
+        for (var i = 0; i < effectPreview.length; i++) {
           if (effectPreview[i].checked) {
             effectPreview[i].blur();
           }
@@ -55,8 +58,16 @@
   var closeClickHandler = function () {
     hideDialogBox();
   };
-
   window.selector.uploadBtn.addEventListener('change', showDialogBoxHandler);
-  document.addEventListener('keydown', closeEscHandler);
-  crossButton.addEventListener('click', closeClickHandler);
+
+  var startListener = function () {
+    document.addEventListener('keydown', closeEscHandler);
+    crossButton.addEventListener('click', closeClickHandler);
+  };
+
+  var removeListener = function () {
+    document.removeEventListener('keydown', closeEscHandler);
+    crossButton.removeEventListener('click', closeClickHandler);
+  };
+
 })();
