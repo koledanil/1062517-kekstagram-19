@@ -38,7 +38,7 @@
 
             <!-- Изначальное состояние поля для загрузки изображения -->
             <fieldset class="img-upload__start">
-              <input type="file" id="upload-file" class="img-upload__input  visually-hidden" name="filename" required>
+              <input type="file" id="upload-file" class="img-upload__input  visually-hidden" name="filename" accept="image/jpeg,image/png,image/gif" required>
               <label for="upload-file" class="img-upload__label  img-upload__control">Загрузить</label>
             </fieldset>
 
@@ -62,7 +62,7 @@
 
                   <!-- Изменение глубины эффекта, накладываемого на изображение -->
                   <fieldset class="img-upload__effect-level  effect-level hidden">
-                    <input class="effect-level__value" type="number" name="effect-level" value="0">
+                    <input class="effect-level__value" type="number" name="effect-level" value="0" step="any">
                     <div class="effect-level__line">
                       <div class="effect-level__pin" tabindex="0">Кнопка изменения глубины эффекта фотографии</div>
                       <div class="effect-level__depth">Глубина эффекта фотографии</div>
@@ -153,7 +153,7 @@
 
         <!-- Просмотр изображения -->
         <div class="big-picture__img">
-          <img src="img/logo-background-3.jpg" alt="Девушка в купальнике" width="600" height="600">
+          <img src="" alt="Девушка в купальнике" width="600" height="600">
         </div>
 
         <!-- Информация об изображении. Подпись, комментарии, количество лайков -->
@@ -217,6 +217,7 @@
         <span class="picture__comments"></span>
         <span class="picture__likes"></span>
       </p>
+    
     </a>
   </template>
 
@@ -244,7 +245,57 @@
   <template id="messages">
     <div class="img-upload__message  img-upload__message--loading">Загружаем...</div>
   </template>
-  <script src="js/main.js"></script>
+  
+  <script src="js/data/data.js"></script> 
+  <!-- ^^^ placeholders for img -->
 
+  <script src="js/data/constant.js"></script> 
+  <!-- ^^^ constants for showing photos and uploading images by users-->
+
+  <script src="js/data/variable.js"></script> 
+  <!-- ^^^ vars which are used in diff. places-->
+
+  <script src="js/selector.js"></script> 
+  <!-- ^^^ all selectors in one place-->
+
+  <script src="js/util.js"></script> 
+  <!-- ^^^ useful tool -- get random number, find template-->
+
+  <script src="js/generator.js"></script> 
+  <!-- ^^^ prepare arr with all data wich we need for 1 photo (url, desc, comment etc.) -->
+
+  <script src="js/gallery.js"></script> 
+  <!-- ^^^ photo gallery on the main page -->
+
+  <script src="js/upload-img/reset.js"></script> 
+  <!-- ^^^ reset upload form -->
+
+  <script src="js/upload-img/scale.js"></script> 
+  <!-- ^^^ scale an image -->
+ 
+  <script src="js/upload-img/slider.js"></script> 
+  <!-- ^^^ slider for changing effect level -->
+
+  <script src="js/upload-img/effect.js"></script> 
+  <!-- ^^^ switch between diff. effects -->
+
+  <script src="js/upload-img/hashtag.js"></script> 
+  <!-- ^^^ tags validation -->
+
+  <script src="js/upload-img/comment.js"></script> 
+  <!-- ^^^ comment validation -->
+
+  <script src="js/upload-img/submit.js"></script> 
+  <!-- ^^^ comment validation -->
+
+  <script src="js/upload-img/title-error.js"></script> 
+  <!-- ^^^ show err it page title -->
+
+  <script src="js/upload-img/dialog.js"></script> 
+  <!-- ^^^ show upload form -->
+  
+
+  <script src="js/user-photo.js"></script> 
+  <!-- ^^^ show a user photo by clicking on it -->
 </body>
 </html>
