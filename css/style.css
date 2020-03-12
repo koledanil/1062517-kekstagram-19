@@ -1392,7 +1392,7 @@ img {
 
 .error__button,
 .success__button {
-  padding: 5px 10px;
+  padding: 15px 80px;
 
   color: #ffffff;
   text-transform: uppercase;
@@ -1528,6 +1528,11 @@ margin-bottom: 0px;
           transform: translateX(-50%);
 }
 
+.timer-msg {
+  font-size: 16px;
+  color: #a3912a;
+  text-transform: initial;
+}
 
 /* Адаптивности чуток
    ========================================================================== */

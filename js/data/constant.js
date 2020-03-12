@@ -59,8 +59,9 @@
         ERR_MAX_CHARACTER: 'Достигли лимит в 140 символов. 😶'
       },
 
-
-      ORIGINAL_TITLE: document.title
+      ORIGINAL_TITLE: document.title,
+      URL_UPLD: 'https://js.dump.academy/kekstagram',
+      TIME_CLOSE_MSG: 12
     } // end ADD_PHOTO_RULES
   };// end window.constant
 })(); // end iief

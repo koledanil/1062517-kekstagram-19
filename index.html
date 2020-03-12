@@ -191,6 +191,7 @@
         <!-- Кнопка для выхода из полноэкранного просмотра изображения -->
         <button type="reset" class="big-picture__cancel  cancel" id="picture-cancel">Закрыть</button>
       </div>
+      
     </section>
   </main>
 
@@ -235,8 +236,10 @@
   <template id="success">
     <section class="success">
       <div class="success__inner">
+        
         <h2 class="success__title">Изображение успешно загружено</h2>
         <button type="button" class="success__button">Круто!</button>
+        <p class="timer-msg"></p>
       </div>
     </section>
   </template>
@@ -255,8 +258,17 @@
   <script src="js/data/variable.js"></script> 
   <!-- ^^^ vars which are used in diff. places-->
 
+  <script src="js/data/load.js"></script> 
+  <!-- ^^^ interatcion with the server-->
+
+  <script src="js/data/upload.js"></script> 
+  <!-- ^^^ submit an user's photo-->
+
   <script src="js/selector.js"></script> 
   <!-- ^^^ all selectors in one place-->
+
+  <script src="js/message/done.js"></script> 
+  <!-- ^^^ all messages in the one place-->
 
   <script src="js/util.js"></script> 
   <!-- ^^^ useful tool -- get random number, find template-->

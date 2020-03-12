@@ -70,4 +70,9 @@
     crossButton.removeEventListener('click', closeClickHandler);
   };
 
+  // OUTPUT
+  window.dialog = {
+    hideDialogBox: hideDialogBox
+  };
+
 })();
