@@ -38,7 +38,7 @@
 
             <!-- Изначальное состояние поля для загрузки изображения -->
             <fieldset class="img-upload__start">
-              <input type="file" id="upload-file" class="img-upload__input  visually-hidden" name="filename" accept="image/jpeg,image/png,image/gif" required>
+              <input type="file" id="upload-file" class="img-upload__input  visually-hidden" name="filename" required>
               <label for="upload-file" class="img-upload__label  img-upload__control">Загрузить</label>
             </fieldset>
 
@@ -228,6 +228,7 @@
       <div class="error__inner">
         <h2 class="error__title">Ошибка загрузки файла</h2>
         <button type="button" class="error__button">Загрузить другой файл</button>
+        <p class="timer-msg"></p>
       </div>
     </section>
   </template>
