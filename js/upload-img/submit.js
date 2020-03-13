@@ -2,30 +2,27 @@
 // Функцция проверяет помечены ли тэги и/или комент как невалидные. Если так то форма не отправляется
 // S.1 Функция проверяет состояние проверки двух полей, и разрешает / запрещает отправку формы
 (function () {
-  var submitButton = document.querySelector('#upload-submit');
   var uplaodForm = document.querySelector('.img-upload__form');
-
+  // S.1 Проверяем флаги для поля тэгов и поля коментов
   var checkRulesHandler = function (evt) {
     if (window.variable.validityTextArea === false || window.variable.validityTag === false) {
       evt.preventDefault();
     } else {
       evt.preventDefault();
       window.upload(new FormData(uplaodForm), function () {
-        window.dialog.hideDialogBox();
-        window.done.show();
-
+        window.dialog.hide();
       });
     }
   };
 
-  // S.1 Добавляем листенер
+  // S.2 Добавляем листенер
   var addEvtListener = function () {
-    submitButton.addEventListener('click', checkRulesHandler);
+    window.selector.submitBtn.addEventListener('click', checkRulesHandler);
   };
 
-  // S.2 Удаляем листенера
+  // S.3 Удаляем листенера
   var removeListener = function () {
-    submitButton.removeEventListener('click', checkRulesHandler);
+    window.selector.submitBtn.removeEventListener('click', checkRulesHandler);
   };
 
   // OUTPUT

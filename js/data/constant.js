@@ -61,7 +61,8 @@
 
       ORIGINAL_TITLE: document.title,
       URL_UPLD: 'https://js.dump.academy/kekstagram',
-      TIME_CLOSE_MSG: 12
+      TIME_CLOSE_MSG: 12,
+      XHR_TIMEOUT: 10000
     } // end ADD_PHOTO_RULES
   };// end window.constant
 })(); // end iief

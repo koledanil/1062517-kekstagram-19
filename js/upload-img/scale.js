@@ -4,10 +4,7 @@
   var newValaue;
   var scaleValue;
   window.selector.zoomInButton.disabled = true; // октлючаем кнопку зума при 100%
-
   var zoomStorage = document.querySelector('.scale__control--value');
-  var zoomButtons = document.querySelector('.img-upload__scale');
-
   // SC.1 Изменяем масштаб изображения туда и сюда
   var scaleImageHandler = function (evt) {
     switch (true) {
@@ -41,12 +38,12 @@
 
   // SC.1 Добавляем листенер
   var addEvtListener = function () {
-    zoomButtons.addEventListener('click', scaleImageHandler);
+    window.selector.zoomButtons.addEventListener('click', scaleImageHandler);
   };
 
   // SC.2 Удаляем листенере
   var removeListener = function () {
-    zoomButtons.removeEventListener('click', scaleImageHandler);
+    window.selector.zoomButtons.removeEventListener('click', scaleImageHandler);
   };
 
   // / OUTPUT

@@ -2,11 +2,14 @@
 // открыти и закрытие окна
 (function () {
   var dialogBox = document.querySelector('.img-upload__overlay');
-  var crossButton = document.querySelector('.cancel');
   var effectPreview = document.querySelectorAll('.effects__radio');
 
   // D.1 Функция открывает диалоговое окно по изменению поля файл.
   var showDialogBoxHandler = function () {
+    showDialog();
+  };
+
+  var showDialog = function () {
     dialogBox.classList.remove('hidden');
     window.selector.body.classList.add('modal-open');
     startListener();
@@ -22,11 +25,15 @@
   };
 
   // D.1.1 Запускает закрытие окна
-  var hideDialogBox = function () {
+  var hide = function () {
     dialogBox.classList.add('hidden');
     window.selector.body.classList.remove('modal-open');
     window.resetUploadForm();
     removeListener();
+    window.setdisabled.activeBtnSendXhr(window.selector.submitBtn);
+    window.setdisabled.setActiveEffectPreview();
+    window.setdisabled.setAcitveOtherControls();
+    window.selector.timeoutMsg.remove();
   };
 
   // D.1.2 Хэндлер для закртыия по ESC
@@ -49,30 +56,29 @@
         window.selector.textArea.blur();
         return;
       case evt.key === 'Escape':
-        hideDialogBox();
+        hide();
         return;
     }
   };
 
   // D.1.3 Хэндлер для закртыия по клику
   var closeClickHandler = function () {
-    hideDialogBox();
+    hide();
   };
   window.selector.uploadBtn.addEventListener('change', showDialogBoxHandler);
 
   var startListener = function () {
     document.addEventListener('keydown', closeEscHandler);
-    crossButton.addEventListener('click', closeClickHandler);
+    window.selector.crossButtonUpld.addEventListener('click', closeClickHandler);
   };
 
   var removeListener = function () {
     document.removeEventListener('keydown', closeEscHandler);
-    crossButton.removeEventListener('click', closeClickHandler);
+    window.selector.crossButtonUpld.removeEventListener('click', closeClickHandler);
   };
 
   // OUTPUT
   window.dialog = {
-    hideDialogBox: hideDialogBox
+    hide: hide
   };
-
 })();

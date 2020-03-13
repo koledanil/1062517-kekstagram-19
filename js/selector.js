@@ -14,6 +14,14 @@
     sliderTag: document.querySelector('.img-upload__effect-level'),
     uploadBtn: document.querySelector('#upload-select-image'),
 
+    submitBtn: document.querySelector('#upload-submit'),
+    effectRadio: document.querySelectorAll('.rd'),
+    effectPrw: document.querySelectorAll('.effects__label'),
+
+    zoomButtons: document.querySelector('.img-upload__scale'),
+
+    crossButtonUpld: document.querySelector('.img-upload__cancel'),
+
     pin: document.querySelector('.effect-level__pin'),
     depth: document.querySelector('.effect-level__depth'),
     effectLevelForm: document.querySelector('.effect-level__value'),
@@ -23,8 +31,16 @@
     donePlace: document.querySelector('.img-upload__form'),
     doneBtn: document.querySelector('#success').content.querySelector('.success__button'),
     doneCounter: document.querySelector('#success').content.querySelector('.timer-msg'),
+
+    errFileMsg: document.querySelector('#error').content.querySelector('.error'),
+    errFilePlace: document.querySelector('.img-upload__form'),
+    errFileBtn: document.querySelector('#error').content.querySelector('.error__button'),
+
+    timeoutMsg: document.querySelector('#nonModalErr').content.querySelector('.non-modal-err'),
+    timeoutPlace: document.querySelector('.img-upload__overlay'),
+    tiemoutBtn: document.querySelector('#nonModalErr').content.querySelector('.non-modal-err__btn-retry'),
+
+    imgContainer: document.querySelector('#imgContainer-img'),
+    scaleContainer: document.querySelector('.img-upload__scale')
   };
-
 })();
-
-

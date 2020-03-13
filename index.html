@@ -11,7 +11,6 @@
 
 <body>
   <main>
-
     <!-- Фильтрация изображений от других пользователей -->
     <section class="img-filters  img-filters--inactive  container">
       <h2 class="img-filters__title  visually-hidden">Фильтр фотографий</h2>
@@ -41,7 +40,6 @@
               <input type="file" id="upload-file" class="img-upload__input  visually-hidden" name="filename" required>
               <label for="upload-file" class="img-upload__label  img-upload__control">Загрузить</label>
             </fieldset>
-
             <!-- Форма редактирования изображения -->
             <div class="img-upload__overlay  hidden">
               <div class="img-upload__wrapper">
@@ -70,50 +68,50 @@
                   </fieldset>
 
                   <!-- Кнопка для закрытия формы редактирования изображения -->
-                  <button type="reset" class="img-upload__cancel  cancel" id="upload-cancel">Закрыть</button>
+                  <button type="reset" class="img-upload__cancel  cancel cancel--active" id="upload-cancel">Закрыть</button>
                 </div>
 
                 <!-- Наложение эффекта на изображение -->
                 <fieldset class="img-upload__effects  effects">
                   <ul class="effects__list">
                     <li class="effects__item">
-                      <input type="radio" class="effects__radio  visually-hidden" name="effect" id="effect-none" value="none" checked>
-                      <label for="effect-none" class="effects__label">
+                      <input type="radio" class="effects__radio  visually-hidden rd" name="effect" id="effect-none" value="none" checked>
+                      <label for="effect-none" class="effects__label effects__label--hover">
                         <span class="effects__preview  effects__preview--none">Превью фото без эффекта</span>
                         Оригинал
                       </label>
                     </li>
                     <li class="effects__item">
-                      <input type="radio" class="effects__radio  visually-hidden" name="effect" id="effect-chrome" value="chrome">
-                      <label for="effect-chrome" class="effects__label">
+                      <input type="radio" class="effects__radio  visually-hidden rd" name="effect" id="effect-chrome" value="chrome">
+                      <label for="effect-chrome" class="effects__label effects__label--hover">
                         <span class="effects__preview  effects__preview--chrome">Превью эффекта Хром</span>
                         Хром
                       </label>
                     </li>
                     <li class="effects__item">
-                      <input type="radio" class="effects__radio  visually-hidden" name="effect" id="effect-sepia" value="sepia">
-                      <label for="effect-sepia" class="effects__label">
+                      <input type="radio" class="effects__radio  visually-hidden rd" name="effect" id="effect-sepia" value="sepia">
+                      <label for="effect-sepia" class="effects__label effects__label--hover">
                         <span class="effects__preview  effects__preview--sepia">Превью эффекта Сепия</span>
                         Сепия
                       </label>
                     </li>
                     <li class="effects__item">
-                      <input type="radio" class="effects__radio  visually-hidden" name="effect" id="effect-marvin" value="marvin">
-                      <label for="effect-marvin" class="effects__label">
+                      <input type="radio" class="effects__radio  visually-hidden rd" name="effect" id="effect-marvin" value="marvin">
+                      <label for="effect-marvin" class="effects__label effects__label--hover">
                         <span class="effects__preview  effects__preview--marvin">Превью эффекта Марвин</span>
                         Марвин
                       </label>
                     </li>
                     <li class="effects__item">
-                      <input type="radio" class="effects__radio  visually-hidden" name="effect" id="effect-phobos" value="phobos">
-                      <label for="effect-phobos" class="effects__label">
+                      <input type="radio" class="effects__radio  visually-hidden rd" name="effect" id="effect-phobos" value="phobos">
+                      <label for="effect-phobos" class="effects__label effects__label--hover">
                         <span class="effects__preview  effects__preview--phobos">Превью эффекта Фобос</span>
                         Фобос
                       </label>
                     </li>
                     <li class="effects__item">
-                      <input type="radio" class="effects__radio  visually-hidden" name="effect" id="effect-heat" value="heat">
-                      <label for="effect-heat" class="effects__label">
+                      <input type="radio" class="effects__radio  visually-hidden rd" name="effect" id="effect-heat" value="heat">
+                      <label for="effect-heat" class="effects__label effects__label--hover">
                         <span class="effects__preview  effects__preview--heat">Превью эффекта Зной</span>
                         Зной
                       </label>
@@ -147,7 +145,9 @@
     </section>
 
     <!-- Полноэкранный показ изображения -->
+    
     <section class="big-picture  overlay  hidden">
+
       <h2 class="big-picture__title  visually-hidden">Просмотр фотографии</h2>
       <div class="big-picture__preview">
 
@@ -237,12 +237,20 @@
   <template id="success">
     <section class="success">
       <div class="success__inner">
-        
         <h2 class="success__title">Изображение успешно загружено</h2>
         <button type="button" class="success__button">Круто!</button>
         <p class="timer-msg"></p>
       </div>
     </section>
+  </template>
+
+  <!-- Немодальная ошибка -->
+  <template id="nonModalErr">
+    <section class="non-modal-err">
+      <p class="banner-err"><span class="banner-err__text">Текст ошибки</span><span class="non-modal-err__btn-retry">
+        <button type="submit" class="non-modal-err__button">Попробовать еще раз</button></span></p>
+    </section>
+
   </template>
 
   <!-- Экран загрузки изображения -->
@@ -269,7 +277,16 @@
   <!-- ^^^ all selectors in one place-->
 
   <script src="js/message/done.js"></script> 
-  <!-- ^^^ all messages in the one place-->
+  <!-- ^^^ showing done msg-->
+
+  <script src="js/message/error-file.js"></script> 
+  <!-- ^^^ show wrong file format-->
+
+  <script src="js/message/time-err.js"></script> 
+  <!-- ^^^ show timeout err-->
+
+  <script src="js/message/set-disabled.js"></script> 
+  <!-- ^^^ set disabled state for all controls on the page-->
 
   <script src="js/util.js"></script> 
   <!-- ^^^ useful tool -- get random number, find template-->

@@ -16,9 +16,24 @@
     return Math.floor(randomNumber);
   };
 
+  // U.3 Выбор окончания слова
+  var chooseEndWord = function (time) {
+    var endWord = '';
+    if (time === 1) {
+      endWord = 'у';
+    } else if (time >= 2 && time <= 4) {
+      endWord = 'ы';
+    } else if (time >= 5 || time === 0) {
+      endWord = '';
+    }
+    return endWord;
+  };
+
+
   // OUTPUT
   window.util = {
     getRandom: getRandom,
-    getTemplate: getTemplate
+    getTemplate: getTemplate,
+    chooseEndWord: chooseEndWord
   };
 })();
