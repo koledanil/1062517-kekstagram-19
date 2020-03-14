@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 'use strict';
 // Открытие одной фотки по клику на главной странице
 (function () {
@@ -13,49 +14,46 @@
   var crossBtnUserPic = document.querySelector('.big-picture__cancel');
   var commentUserPhInput = document.querySelector('.social__footer-text');
 
-  //  UP.1 Клонирование и наполннение одной фотки
-  var getCommentImg = function (data) {
+  var getCommentImg = function (item) {
+
     var cloneComment = imgСommentLi.cloneNode(true);
     var avatar = cloneComment.querySelector('img');
     var comment = cloneComment.querySelector('.social__text');
-
-    avatar.src = data.avatarComment;
-    avatar.alt = data.name;
-    comment.textContent = data.text;
-
+    avatar.src = item.avatar;
+    avatar.alt = item.name;
+    comment.textContent = item.message;
     return cloneComment;
   };
 
-  // UP.1.1 Отображение большой фотки со всем данными
   var showBigPhoto = function (item) {
-    var fragmenBigPhoto = document.createDocumentFragment(); // сюда запис. детеныши-коментарии
-
+    var fragmenBigPhoto = document.createDocumentFragment();
+    bigPicture.classList.remove('hidden');
     commentCounter.classList.add('hidden');
     commentsLoader.classList.add('hidden');
-    window.selector.body.classList.add('modal-open');
-
-    bigPicture.classList.remove('hidden'); // отображает окно с большой фоткой
     imgPicture.src = item.url;
-    imgLike.textContent = item.like;
-    imgComment.textContent = item.comment.length;
+    imgLike.textContent = item.likes;
+    imgComment.textContent = item.comments.length;
     imgDescription.textContent = item.description;
 
-    for (var i = 0; i < item.comment.length; i++) {
-      fragmenBigPhoto.appendChild(getCommentImg(item.comment[i]));
+    for (var i = 0; i < item.comments.length; i++) {
+      fragmenBigPhoto.appendChild(getCommentImg(item.comments[i]));
     } // набиваем детенышами фрагмент
 
     imgСommentUl.innerHTML = ''; // очищаем от шаблона
     imgСommentUl.appendChild(fragmenBigPhoto); // вешаем их на место
   };
 
-  // UP.1.2 Поиск фотки по массиву и вывод на экран (запускает функцию P.2.2)
   var openClickHandler = function (evt) {
-    var pictureContainer = evt.target.closest('.picture');
-    if (pictureContainer) { // picture__likes picture__info picture__info добавлены, чтобы клик на всплывашке с лайками также открывал фотку
-      var pictureId = pictureContainer.getAttribute('data-id');
-      showBigPhoto(window.infoGenerator.getPhoto[pictureId]);
-    }
+    window.load(function (resultResponse) {
+      var pictureContainer = evt.target.closest('.picture');
+      console.log(pictureContainer);
+      if (pictureContainer) {
+        var pictureId = pictureContainer.getAttribute('data-id');
+        showBigPhoto(resultResponse[pictureId]);
+      }
+    });
   }; // open handler
+
 
   // UP.1.3 Закрывает окно
   var closePhoto = function () {
@@ -83,7 +81,7 @@
     }
   };
 
-  window.selector.imgPlace.addEventListener('click', openClickHandler);
+  document.addEventListener('click', openClickHandler);
   crossBtnUserPic.addEventListener('click', closeClickPhotoHandler);
   document.addEventListener('keydown', closeEscPhotoHandler);
 })();

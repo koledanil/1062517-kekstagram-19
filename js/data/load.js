@@ -1,12 +1,25 @@
 /* eslint-disable no-console */
 'use strict';
-// var xhr = new XMLHttpRequest();
+(function () {
+  window.load = function (onSuccess) {
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'json';
 
-// xhr.addEventListener('load', function (evt) {
-//   console.log(evt.target === xhr);
-//   console.log(xhr.status);
-// });
+    xhr.addEventListener('load', function () {
+      var resultResponse = xhr.response;
+      onSuccess(resultResponse);
 
+      // switch (true) {
+      //   case xhr.status === 106:
+      //     return;
+      //   case xhr.status === 400:
+      //     window.errorFile.show();
+      //     return;
+      // }
+    });
 
-// xhr.open('GET', 'https://js.dump.academy/kekstagram/data');
-// xhr.send();
+    xhr.open('GET', 'https://js.dump.academy/kekstagram/data');
+    xhr.send();
+  };
+
+})();

@@ -5,11 +5,14 @@
     window.selector.timeoutPlace.appendChild(window.selector.timeoutMsg);
     window.selector.timeoutMsg.querySelector('.banner-err__text').textContent = 'Не удалось загрузить изобаржение, так как сервер не отвечает.';
     window.setdisabled.activeBtnSendXhr(window.selector.submitBtn);
+    window.setdisabled.setActiveEffectPreview();
+    window.setdisabled.setAcitveOtherControls();
+    document.title = '[Ошибка! Сервер не отвечает] ' + window.constant.ADD_PHOTO_RULES.ORIGINAL_TITLE;
+
     window.addEventListener('click', function (evt) {
       var btnContainer = evt.target.closest('.banner-err');
 
       if (btnContainer) {
-
         document.title = '[Загрузка...] ' + window.constant.ADD_PHOTO_RULES.ORIGINAL_TITLE;
         evt.preventDefault();
         window.selector.timeoutMsg.remove();

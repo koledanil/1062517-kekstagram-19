@@ -1567,7 +1567,7 @@ margin-bottom: 0px;
   display: flex;
   justify-content: center;
   z-index:99999999; 
- position: absolute;
+ position: fixed;
  top: -14px;
   align-items: center;
   background-color: red;

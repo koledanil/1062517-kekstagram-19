@@ -17,7 +17,6 @@
           window.errorFile.show();
           return;
       }
-      console.log(xhr.status);
     });
 
     xhr.open('POST', 'https://js.dump.academy/kekstagram');
