@@ -50,6 +50,12 @@
 
     showMorePhoto: document.querySelector('.social__comments-loader'),
     showedAmountComments: document.querySelector('.showed-comments'),
-    noCommentsAvaiable: document.querySelector('.no-comments')
+    noCommentsAvaiable: document.querySelector('.no-comments'),
+
+    filterContainer: document.querySelector('.img-filters'),
+    defaultFilter: document.querySelector('#filter-default'),
+    randomFilter: document.querySelector('#filter-random'),
+    discFilter: document.querySelector('#filter-discussed'),
+    filterArray: document.querySelector('.img-filters__form')
   };
 })();

@@ -247,6 +247,10 @@ img {
 
 .picture {
   position: relative;
+  display: block;
+  width: 182px;
+  height: 182px;
+  background-color: rgb(139, 139, 139);
   line-height: 0;
 }
 
