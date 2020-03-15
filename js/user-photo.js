@@ -10,8 +10,6 @@
   var fewPhoto = document.querySelector('.few-photo');
   var manyPhoto = document.querySelector('.many-photo');
   var imgDescription = window.selector.bigPicture.querySelector('.social__caption');
-  // var commentCounter = document.querySelector('.social__comment-count');
-  // var commentsLoader = document.querySelector('.comments-loader');
   var crossBtnUserPic = document.querySelector('.big-picture__cancel');
   var commentUserPhInput = document.querySelector('.social__footer-text');
 
@@ -31,6 +29,7 @@
   var showBigPhoto = function (item) {
     var fragmenBigPhoto = document.createDocumentFragment();
     window.selector.bigPicture.classList.remove('hidden');
+    window.selector.body.classList.add('modal-open');
     // commentCounter.classList.add('hidden');
     // commentsLoader.classList.add('hidden');
     imgPicture.src = item.url;
@@ -38,12 +37,18 @@
     imgLike.textContent = item.likes;
     imgComment.textContent = item.comments.length;
     imgDescription.textContent = item.description;
+    showMore(item, fragmenBigPhoto);
+  };
+
+  // UP.3 Функция которая заставляет работаь кнопку загрузить еще
+  var showMore = function (item, fragmenBigPhoto) {
     switch (true) {
       case item.comments.length <= window.constant.ADD_PHOTO_RULES.SHOW_AMOUNT_CMNT:
         fewPhoto.classList.remove('hidden');
         manyPhoto.classList.add('hidden');
         chooseWord(item.comments.length);
         window.selector.showMorePhoto.disabled = true;
+        window.selector.showMorePhoto.classList.add('hidden');
         showPhoto(item.comments.length, item.comments, fragmenBigPhoto);
         return;
 
@@ -62,6 +67,8 @@
             showPhoto(item.comments.length, item.comments, fragmenBigPhoto);
             window.selector.showedAmountComments.textContent = item.comments.length;
             window.selector.showMorePhoto.disabled = true;
+            window.selector.defaultBtn.classList.add('hidden');
+            window.selector.lockedBtn.textContent = 'Загружены ' + item.comments.length + ' из ' + item.comments.length + ' коментариев';
           } else {
             showPhoto(counter, item.comments, fragmenBigPhoto);
           }
@@ -70,7 +77,7 @@
     }
   };
 
-  // Выбирает нужную формулировку окончаяния
+  // UP.3.1 Выбирает нужную формулировку окончаяния
   var chooseWord = function (item) {
     if (item === 1) {
       fewPhoto.textContent = 'Всего ' + item + ' комментарий';
@@ -79,7 +86,7 @@
     }
   };
 
-  // показывает коменты с параметром количество коментов
+  // UP.4 показывает коменты с параметром количество коментов
   var showPhoto = function (howManyShow, itemComment, fragmenBigPhoto) {
     for (var m = 0; m < howManyShow; m++) {
       fragmenBigPhoto.appendChild(getCommentImg(itemComment[m]));
@@ -89,9 +96,8 @@
     imgСommentUl.appendChild(fragmenBigPhoto); // вешаем их на место
   };
 
-  // UP.3 Задаем параметры для одной фотки + вешкалка их на место
+  // UP.5 Задаем параметры для одной фотки + вешкалка их на место
   var openClickHandler = function (evt) {
-    window.selector.body.classList.add('modal-open');
     window.load(function (resultResponse) {
       var pictureContainer = evt.target.closest('.picture');
       if (pictureContainer) {
@@ -102,22 +108,24 @@
   }; // open handler
 
 
-  // UP.4 Закрывает окно
+  // UP.6 Закрывает окно
   var closePhoto = function () {
-    window.selector.body.classList.remove('modal-open');
     window.selector.bigPicture.classList.add('hidden');
     window.selector.body.classList.remove('modal-open');
     window.selector.showMorePhoto.disabled = false;
+    window.selector.lockedBtn.textContent = '';
+    window.selector.lockedBtn.classList.add('hidden');
+    window.selector.defaultBtn.classList.remove('hidden');
     imgСommentUl.innerHTML = '';
     commentUserPhInput.value = ''; // очищает поле комента
   };
 
-  // UP.4.1 Закрытие при клике
+  // UP.6.1 Закрытие при клике
   var closeClickPhotoHandler = function () {
     closePhoto();
   };
 
-  // UP.4.2 Функция при Esc закрывает (если фокус в коменте, то первый нажатие Esc === снятие фокуса)
+  // UP.6.2 Функция при Esc закрывает (если фокус в коменте, то первый нажатие Esc === снятие фокуса)
   var closeEscPhotoHandler = function (evt) {
     // console.log(evt.target.);
     switch (true) {

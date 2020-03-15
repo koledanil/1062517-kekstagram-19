@@ -51,6 +51,9 @@
     showMorePhoto: document.querySelector('.social__comments-loader'),
     showedAmountComments: document.querySelector('.showed-comments'),
     noCommentsAvaiable: document.querySelector('.no-comments'),
+    defaultBtn: document.querySelector('.default-btn__text'),
+    lockedBtn: document.querySelector('.locked-btn__text'),
+
 
     filterContainer: document.querySelector('.img-filters'),
     defaultFilter: document.querySelector('#filter-default'),

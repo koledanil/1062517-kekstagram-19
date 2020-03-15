@@ -20,6 +20,7 @@
     window.selector.tagInput.classList.remove('border-error');
     window.selector.textArea.classList.remove('border-error');
     window.selector.counterPlace.classList.remove('counter-error');
+    window.selector.body.classList.remove('modal-open');
     window.selector.tagErrPlaceUl.innerHTML = ''; // затираем мамку ошибок (фн.H.3)
 
     window.selector.zoomInButton.disabled = true; // лочим зум.
