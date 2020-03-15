@@ -1055,6 +1055,11 @@ background-color: white;
   border: none;
 }
 
+.social__comments-loader:disabled {
+  color: #525252;
+  opacity: 0.7;
+}
+
 .comments-loader {
   text-align: left;
   color: #3b77c0;

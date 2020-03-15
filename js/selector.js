@@ -46,6 +46,10 @@
 
 
     imgContainer: document.querySelector('#imgContainer-img'),
-    scaleContainer: document.querySelector('.img-upload__scale')
+    scaleContainer: document.querySelector('.img-upload__scale'),
+
+    showMorePhoto: document.querySelector('.social__comments-loader'),
+    showedAmountComments: document.querySelector('.showed-comments'),
+    noCommentsAvaiable: document.querySelector('.no-comments')
   };
 })();
