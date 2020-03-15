@@ -4,11 +4,10 @@
 (function () {
   var imgСommentUl = document.querySelector('.social__comments');
   var imgСommentLi = imgСommentUl.querySelector('.social__comment');
-  var bigPicture = document.querySelector('.big-picture');
-  var imgPicture = bigPicture.querySelector('img');
-  var imgLike = bigPicture.querySelector('.likes-count');
-  var imgComment = bigPicture.querySelector('.comments-count');
-  var imgDescription = bigPicture.querySelector('.social__caption');
+  var imgPicture = window.selector.bigPicture.querySelector('img');
+  var imgLike = window.selector.bigPicture.querySelector('.likes-count');
+  var imgComment = window.selector.bigPicture.querySelector('.comments-count');
+  var imgDescription = window.selector.bigPicture.querySelector('.social__caption');
   var commentCounter = document.querySelector('.social__comment-count');
   var commentsLoader = document.querySelector('.comments-loader');
   var crossBtnUserPic = document.querySelector('.big-picture__cancel');
@@ -28,7 +27,7 @@
   // UP.2 Задаем параметры для одной фотки + вешкалка их на место
   var showBigPhoto = function (item) {
     var fragmenBigPhoto = document.createDocumentFragment();
-    bigPicture.classList.remove('hidden');
+    window.selector.bigPicture.classList.remove('hidden');
     commentCounter.classList.add('hidden');
     commentsLoader.classList.add('hidden');
     imgPicture.src = item.url;
@@ -47,6 +46,7 @@
 
   // UP.3 Задаем параметры для одной фотки + вешкалка их на место
   var openClickHandler = function (evt) {
+    window.selector.body.classList.add('modal-open');
     window.load(function (resultResponse) {
       var pictureContainer = evt.target.closest('.picture');
       if (pictureContainer) {
@@ -59,7 +59,8 @@
 
   // UP.4 Закрывает окно
   var closePhoto = function () {
-    bigPicture.classList.add('hidden');
+    window.selector.body.classList.remove('modal-open');
+    window.selector.bigPicture.classList.add('hidden');
     window.selector.body.classList.remove('modal-open');
     commentUserPhInput.value = ''; // очищает поле комента
   };

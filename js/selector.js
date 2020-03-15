@@ -7,6 +7,8 @@
     counterPlace: document.querySelector('#symbol_counter'),
     body: document.querySelector('body'),
 
+    bigPicture: document.querySelector('.big-picture'),
+
     zoomOutButton: document.querySelector('.scale__control--smaller'),
     zoomInButton: document.querySelector('.scale__control--bigger'),
     tagInput: document.querySelector('.text__hashtags'),

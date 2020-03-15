@@ -12,5 +12,4 @@
     xhr.open('GET', 'https://js.dump.academy/kekstagram/data');
     xhr.send();
   };
-
 })();
