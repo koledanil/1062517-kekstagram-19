@@ -2,7 +2,7 @@
 
 (function () {
 // U.4 Disable btm TRUE +++
-  var disableBtnSendXhr = function (btn) {
+  var disabledBtnSendXhr = function (btn) {
     var button = btn;
     button.disabled = true;
     document.title = '[Загрузка...] ' + window.constant.ADD_PHOTO_RULES.ORIGINAL_TITLE;
@@ -15,7 +15,7 @@
   };
 
   // U.4.1 Делаем все првеьюшки эффектов неактив на время загрузки фото
-  var setDisabledEffectPreview = function () {
+  var disabledEffectPreview = function () {
     // отключаем хувер на превьшках эффектов
     for (var k = 0; k < window.selector.effectPrw.length; k++) {
       window.selector.effectPrw[k].classList.remove('effects__label--hover');
@@ -28,19 +28,23 @@
   };
 
   // U.4.2 Делаем все прочие КОНТРОЛЫ ПАСИВ
-  var setDisabledOtherControlls = function () {
+  var disabledOtherControlls = function () {
     var containerEffects = document.querySelector('.img-upload__effects');
     containerEffects.classList.add('effects--disabled');
     window.selector.crossButtonUpld.disabled = true;
     window.selector.crossButtonUpld.classList.remove('cancel--active');
     window.selector.crossButtonUpld.classList.add('cancel--disabled');
+
+    window.selector.zoomOutButton.classList.add('cursor--progress');
+    window.selector.zoomOutButton.classList.add('cursor--progress');
+
     window.selector.body.classList.add('img-upload__overlay---mouse-loading');
     window.selector.imgContainer.classList.add('img-opacity');
     window.selector.scaleContainer.classList.add('img-upload__scale--opacity');
   };
 
   // U.5 Disable btn FALSE
-  var activeBtnSendXhr = function (btn) {
+  var activedBtnSendXhr = function (btn) {
     var button = btn;
     button.disabled = false;
     document.title = window.constant.ADD_PHOTO_RULES.ORIGINAL_TITLE;
@@ -52,7 +56,7 @@
   };
 
   // U.5.1 Делаем все првеьюшки эффектов АКТИВ
-  var setActiveEffectPreview = function () {
+  var activedEffectPreview = function () {
     // отключаем хувер на превьшках эффектов
     for (var k = 0; k < window.selector.effectPrw.length; k++) {
       window.selector.effectPrw[k].classList.add('effects__label--hover');
@@ -65,24 +69,43 @@
   };
 
   // U.5.2 Делаем все прочие КОНТРОЛЫ АКТИВ
-  var setAcitveOtherControls = function () {
+  var acitvedOtherControls = function () {
     var containerEffects = document.querySelector('.img-upload__effects');
     containerEffects.classList.remove('effects--disabled');
     window.selector.crossButtonUpld.disabled = false;
     window.selector.crossButtonUpld.classList.add('cancel--active');
     window.selector.crossButtonUpld.classList.remove('cancel--disabled');
+
+    window.selector.zoomOutButton.classList.remove('cursor--progress');
+    window.selector.zoomOutButton.classList.remove('cursor--progress');
+
     window.selector.body.classList.remove('img-upload__overlay---mouse-loading');
     window.selector.imgContainer.classList.remove('img-opacity');
     window.selector.scaleContainer.classList.remove('img-upload__scale--opacity');
   };
 
+  // U.6 Делаем только кнопку неактивной
+  var disabledOnlyBtnSendXhr = function (btn) {
+    var button = btn;
+    button.disabled = true;
+  };
+
+  var activatedOnlyBtnSendXhr = function (btn) {
+    var button = btn;
+    button.disabled = false;
+  };
+
   // OUTPUT
-  window.setdisabled = {
-    disableBtnSendXhr: disableBtnSendXhr,
-    setDisabledEffectPreview: setDisabledEffectPreview,
-    setDisabledOtherControlls: setDisabledOtherControlls,
-    activeBtnSendXhr: activeBtnSendXhr,
-    setActiveEffectPreview: setActiveEffectPreview,
-    setAcitveOtherControls: setAcitveOtherControls
+  window.setstate = {
+    disabledBtnSendXhr: disabledBtnSendXhr,
+    disabledEffectPreview: disabledEffectPreview,
+    disabledOtherControlls: disabledOtherControlls,
+
+    activedBtnSendXhr: activedBtnSendXhr,
+    activedEffectPreview: activedEffectPreview,
+    acitvedOtherControls: acitvedOtherControls,
+
+    disabledOnlyBtnSendXhr: disabledOnlyBtnSendXhr,
+    activatedOnlyBtnSendXhr: activatedOnlyBtnSendXhr
   };
 })();

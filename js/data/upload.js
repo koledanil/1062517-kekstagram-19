@@ -20,9 +20,9 @@
     });
 
     xhr.open('POST', 'https://js.dump.academy/kekstagram');
-    window.setdisabled.setDisabledEffectPreview();
-    window.setdisabled.setDisabledOtherControlls();
-    window.setdisabled.disableBtnSendXhr(window.selector.submitBtn);
+    window.setstate.disabledEffectPreview();
+    window.setstate.disabledOtherControlls();
+    window.setstate.disabledBtnSendXhr(window.selector.submitBtn);
     xhr.ontimeout = function () {
       window.timeerr.show();
     };

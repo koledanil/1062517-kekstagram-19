@@ -135,7 +135,7 @@ main {
 }
 
 .cancel--disabled {
-  cursor: default;
+  cursor: progress;
     opacity: 0.6;
   }
 /**
@@ -420,6 +420,8 @@ img {
 .img-opacity {
   opacity: 0.8;
 }
+
+
 /* Окно для редактирования изображения
    ========================================================================== */
 
@@ -666,7 +668,7 @@ img {
       -ms-transform: translateX(-50%);
           transform: translateX(-50%);
 
-  cursor: move;
+  cursor: ew-resize;
 }
 
 .effect-level__depth {
@@ -1439,7 +1441,7 @@ background-color: white;
 
 /*Стиль счетчика по умолчанию*/
 .counter__regular {
-  color: #e60000 !important
+  color: #e60000;
 }
 
 .text__counter { /* Базовый стиль каунтера */
@@ -1574,10 +1576,20 @@ margin-bottom: 0px;
   text-transform: initial;
 }
 
+.banner--offline {
+  background-color: red;
+  height: 30px;
+}
+.banner--online {
+  height: 30px;
+  background-color: rgb(0, 175, 73);
+}
+
 .text__hashtags:disabled,
 .text__description:disabled {
   background-color: #c4c4c4;
   border-color: #c4c4c4;
+  cursor: progress;
 }
 
 
@@ -1606,7 +1618,7 @@ margin-bottom: 0px;
 
 .effects--disabled {
   opacity: 0.6;
-  cursor: default;
+  cursor: progress;
 }
 
 .img-upload__scale--opacity {

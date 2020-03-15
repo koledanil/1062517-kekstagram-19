@@ -2,11 +2,11 @@
 (function () {
   var show = function () {
     var uplaodForm = document.querySelector('.img-upload__form');
-    window.selector.timeoutPlace.appendChild(window.selector.timeoutMsg);
-    window.selector.timeoutMsg.querySelector('.banner-err__text').textContent = 'Не удалось загрузить изобаржение, так как сервер не отвечает.';
-    window.setdisabled.activeBtnSendXhr(window.selector.submitBtn);
-    window.setdisabled.setActiveEffectPreview();
-    window.setdisabled.setAcitveOtherControls();
+    window.selector.timeoutPlace.appendChild(window.selector.nonModalwBtn);
+    window.selector.nonModalwBtn.querySelector('.banner-err__text').textContent = 'Не удалось загрузить изобаржение, так как сервер не отвечает.';
+    window.setstate.activedBtnSendXhr(window.selector.submitBtn);
+    window.setstate.activedEffectPreview();
+    window.setstate.acitvedOtherControls();
     document.title = '[Ошибка! Сервер не отвечает] ' + window.constant.ADD_PHOTO_RULES.ORIGINAL_TITLE;
 
     window.addEventListener('click', function (evt) {
@@ -15,7 +15,7 @@
       if (btnContainer) {
         document.title = '[Загрузка...] ' + window.constant.ADD_PHOTO_RULES.ORIGINAL_TITLE;
         evt.preventDefault();
-        window.selector.timeoutMsg.remove();
+        window.selector.nonModalwBtn.remove();
         window.upload(new FormData(uplaodForm), function () {
         });
       }

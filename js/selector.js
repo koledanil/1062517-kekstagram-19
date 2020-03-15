@@ -36,9 +36,12 @@
     errFilePlace: document.querySelector('.img-upload__form'),
     errFileBtn: document.querySelector('#error').content.querySelector('.error__button'),
 
-    timeoutMsg: document.querySelector('#nonModalErr').content.querySelector('.non-modal-err'),
     timeoutPlace: document.querySelector('.img-upload__overlay'),
     tiemoutBtn: document.querySelector('#nonModalErr').content.querySelector('.non-modal-err__btn-retry'),
+
+    nonModalwBtn: document.querySelector('#nonModalErr').content.querySelector('.non-modal-err'),
+    nonModalwoBtn: document.querySelector('#nonModalErr--wBTN').content.querySelector('.non-modal-err'),
+
 
     imgContainer: document.querySelector('#imgContainer-img'),
     scaleContainer: document.querySelector('.img-upload__scale')

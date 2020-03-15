@@ -244,14 +244,22 @@
     </section>
   </template>
 
-  <!-- Немодальная ошибка -->
+  <!-- Немодальная ошибка c кнопкой -->
   <template id="nonModalErr">
     <section class="non-modal-err">
       <p class="banner-err"><span class="banner-err__text">Текст ошибки</span><span class="non-modal-err__btn-retry">
-        <button type="submit" class="non-modal-err__button">Попробовать еще раз</button></span></p>
+        <button type="submit" class="non-modal-err__button">Повторить</button></span></p>
     </section>
 
   </template>
+
+    <!-- Немодальная ошибка без кнопки-->
+    <template id="nonModalErr--wBTN">
+      <section class="non-modal-err">
+        <p class="banner-err"><span class="banner-err__text">Текст ошибки</p>
+      </section>
+  
+    </template>
 
   <!-- Экран загрузки изображения -->
   <template id="messages">
@@ -285,7 +293,7 @@
   <script src="js/message/time-err.js"></script> 
   <!-- ^^^ show timeout err-->
 
-  <script src="js/message/set-disabled.js"></script> 
+  <script src="js/message/set-state.js"></script> 
   <!-- ^^^ set disabled state for all controls on the page-->
 
   <script src="js/message/online.js"></script> 

@@ -30,10 +30,10 @@
     window.selector.body.classList.remove('modal-open');
     window.resetUploadForm();
     removeListener();
-    window.setdisabled.activeBtnSendXhr(window.selector.submitBtn);
-    window.setdisabled.setActiveEffectPreview();
-    window.setdisabled.setAcitveOtherControls();
-    window.selector.timeoutMsg.remove();
+    window.setstate.activedBtnSendXhr(window.selector.submitBtn);
+    window.setstate.activedEffectPreview();
+    window.setstate.acitvedOtherControls();
+    window.selector.nonModalwBtn.remove();
   };
 
   // D.1.2 Хэндлер для закртыия по ESC

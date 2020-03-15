@@ -14,8 +14,8 @@
   var crossBtnUserPic = document.querySelector('.big-picture__cancel');
   var commentUserPhInput = document.querySelector('.social__footer-text');
 
+  // UP.1 Клонируем комент из шаблона и пишем как наполнять его
   var getCommentImg = function (item) {
-
     var cloneComment = imgСommentLi.cloneNode(true);
     var avatar = cloneComment.querySelector('img');
     var comment = cloneComment.querySelector('.social__text');
@@ -25,12 +25,14 @@
     return cloneComment;
   };
 
+  // UP.2 Задаем параметры для одной фотки + вешкалка их на место
   var showBigPhoto = function (item) {
     var fragmenBigPhoto = document.createDocumentFragment();
     bigPicture.classList.remove('hidden');
     commentCounter.classList.add('hidden');
     commentsLoader.classList.add('hidden');
     imgPicture.src = item.url;
+    imgPicture.alt = item.description; // заменяем плейсхолдер АЛЬТА
     imgLike.textContent = item.likes;
     imgComment.textContent = item.comments.length;
     imgDescription.textContent = item.description;
@@ -43,10 +45,10 @@
     imgСommentUl.appendChild(fragmenBigPhoto); // вешаем их на место
   };
 
+  // UP.3 Задаем параметры для одной фотки + вешкалка их на место
   var openClickHandler = function (evt) {
     window.load(function (resultResponse) {
       var pictureContainer = evt.target.closest('.picture');
-      console.log(pictureContainer);
       if (pictureContainer) {
         var pictureId = pictureContainer.getAttribute('data-id');
         showBigPhoto(resultResponse[pictureId]);
@@ -55,19 +57,19 @@
   }; // open handler
 
 
-  // UP.1.3 Закрывает окно
+  // UP.4 Закрывает окно
   var closePhoto = function () {
     bigPicture.classList.add('hidden');
     window.selector.body.classList.remove('modal-open');
     commentUserPhInput.value = ''; // очищает поле комента
   };
 
-  // UP.1.3 Закрытие при клике
+  // UP.4.1 Закрытие при клике
   var closeClickPhotoHandler = function () {
     closePhoto();
   };
 
-  // UP.1.4 Функция при Esc закрывает (если фокус в коменте, то первый нажатие Esc === снятие фокуса)
+  // UP.4.2 Функция при Esc закрывает (если фокус в коменте, то первый нажатие Esc === снятие фокуса)
   var closeEscPhotoHandler = function (evt) {
     // console.log(evt.target.);
     switch (true) {
