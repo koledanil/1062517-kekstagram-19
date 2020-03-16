@@ -23,6 +23,7 @@
       fragment.appendChild(writeInfoPhoto(resultRespose[i], i));
     }
     window.selector.imgPlace.appendChild(fragment);
+    window.userphoto.show(resultRespose);
   });
 })();
 

@@ -91,23 +91,9 @@
     for (var m = 0; m < howManyShow; m++) {
       fragmenBigPhoto.appendChild(getCommentImg(itemComment[m]));
     } // набиваем детенышами фрагмент
-
     imgСommentUl.innerHTML = ''; // очищаем от шаблона
     imgСommentUl.appendChild(fragmenBigPhoto); // вешаем их на место
   };
-
-  window.load(function (resultResponse) {
-    // UP.5 Задаем параметры для одной фотки + вешкалка их на место
-    var openClickHandler = function (evt) {
-      var pictureContainer = evt.target.closest('.picture');
-      if (pictureContainer) {
-        var pictureId = pictureContainer.getAttribute('data-id');
-        showBigPhoto(resultResponse[pictureId]);
-      }
-    }; // open handler
-    document.addEventListener('click', openClickHandler);
-  });
-
 
   // UP.6 Закрывает окно
   var closePhoto = function () {
@@ -139,6 +125,24 @@
         return;
     }
   };
-  crossBtnUserPic.addEventListener('click', closeClickPhotoHandler);
-  document.addEventListener('keydown', closeEscPhotoHandler);
+
+  // UP.7 Эта функция активирует цепочку других функий чтобы
+  // заработало отображени больших фоток
+  var show = function (resultResponse) {
+    var openClickHandler = function (evt) {
+      var pictureContainer = evt.target.closest('.picture');
+      if (pictureContainer) {
+        var pictureId = pictureContainer.getAttribute('data-id');
+        showBigPhoto(resultResponse[pictureId]);
+      }
+    }; // open handler
+    document.addEventListener('click', openClickHandler);
+    crossBtnUserPic.addEventListener('click', closeClickPhotoHandler);
+    document.addEventListener('keydown', closeEscPhotoHandler);
+  };
+
+  // OUTPUT
+  window.userphoto = {
+    show: show
+  };
 })();
