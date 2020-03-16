@@ -9,7 +9,6 @@
       var readyState = xhr.readyState;
       onSuccess(resultResponse, readyState);
     });
-
     xhr.open('GET', 'https://js.dump.academy/kekstagram/data');
     xhr.send();
   };

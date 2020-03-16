@@ -96,16 +96,17 @@
     imgСommentUl.appendChild(fragmenBigPhoto); // вешаем их на место
   };
 
-  // UP.5 Задаем параметры для одной фотки + вешкалка их на место
-  var openClickHandler = function (evt) {
-    window.load(function (resultResponse) {
+  window.load(function (resultResponse) {
+    // UP.5 Задаем параметры для одной фотки + вешкалка их на место
+    var openClickHandler = function (evt) {
       var pictureContainer = evt.target.closest('.picture');
       if (pictureContainer) {
         var pictureId = pictureContainer.getAttribute('data-id');
         showBigPhoto(resultResponse[pictureId]);
       }
-    });
-  }; // open handler
+    }; // open handler
+    document.addEventListener('click', openClickHandler);
+  });
 
 
   // UP.6 Закрывает окно
@@ -138,8 +139,6 @@
         return;
     }
   };
-
-  document.addEventListener('click', openClickHandler);
   crossBtnUserPic.addEventListener('click', closeClickPhotoHandler);
   document.addEventListener('keydown', closeEscPhotoHandler);
 })();
