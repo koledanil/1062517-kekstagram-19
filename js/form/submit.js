@@ -9,7 +9,7 @@
       evt.preventDefault();
     } else {
       evt.preventDefault();
-      window.upload(new FormData(uplaodForm), function () {
+      window.transfer.upload(new FormData(uplaodForm), function () {
         window.dialog.hide();
       });
     }

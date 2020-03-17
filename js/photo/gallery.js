@@ -16,7 +16,7 @@
     return foundTemplate;
   };
     // G.2 На основе G.1 формируем и крепим фотки
-  window.load(function (resultRespose, readyState) {
+  window.transfer.load(function (resultRespose, readyState) {
     window.filter.show(readyState);
     window.filter.addEvtListener();
     for (var i = 0; i < resultRespose.length; i++) {
@@ -26,4 +26,3 @@
     window.userphoto.show(resultRespose);
   });
 })();
-

@@ -1,5 +1,6 @@
 'use strict';
 (function () {
+  // TE 1. Функция выводит сообщение во время загрузки изображения
   var show = function () {
     var uplaodForm = document.querySelector('.img-upload__form');
     window.selector.timeoutPlace.appendChild(window.selector.nonModalwBtn);
@@ -24,6 +25,6 @@
 
   // OUTPUT
   window.timeerr = {
-    show: show
+    show: show,
   };
 })();
