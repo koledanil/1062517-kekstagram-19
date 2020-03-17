@@ -9,10 +9,20 @@
       evt.preventDefault();
     } else {
       evt.preventDefault();
-      window.transfer.upload(new FormData(uplaodForm), function () {
-        window.dialog.hide();
-      });
+      window.backend.upload(new FormData(uplaodForm), window.constant.ADD_PHOTO_RULES.URL_UPLOAD, onSuccessHandler, onLoadHandler);
     }
+  };
+
+  // S.2 При успешном выполнении прячем окно
+  var onSuccessHandler = function () {
+    window.dialog.hide();
+  };
+
+  // S.3 Лочит интерфейс на время загрузки
+  var onLoadHandler = function () {
+    window.setstate.disabledEffectPreview();
+    window.setstate.disabledOtherControlls();
+    window.setstate.disabledBtnSendXhr(window.selector.submitBtn);
   };
 
   // S.2 Делаем кнопку ОТПРАВИТЬ неактивной, если нет интернета

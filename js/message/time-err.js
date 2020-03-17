@@ -17,7 +17,7 @@
         document.title = '[Загрузка...] ' + window.constant.ADD_PHOTO_RULES.ORIGINAL_TITLE;
         evt.preventDefault();
         window.selector.nonModalwBtn.remove();
-        window.upload(new FormData(uplaodForm), function () {
+        window.backend.upload(new FormData(uplaodForm), window.constant.ADD_PHOTO_RULES.URL_UPLOAD, function () {
         });
       }
     });

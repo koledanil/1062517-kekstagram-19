@@ -16,7 +16,7 @@
     return foundTemplate;
   };
     // G.2 На основе G.1 формируем и крепим фотки
-  window.transfer.load(function (resultRespose, readyState) {
+  window.backend.load(window.constant.ADD_PHOTO_RULES.URL_LOAD, function (resultRespose, readyState) {
     window.filter.show(readyState);
     window.filter.addEvtListener();
     for (var i = 0; i < resultRespose.length; i++) {
