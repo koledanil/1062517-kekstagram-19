@@ -17,8 +17,8 @@
   };
     // G.2 На основе G.1 формируем и крепим фотки
   window.backend.load(window.constant.ADD_PHOTO_RULES.URL_LOAD, function (resultRespose, readyState) {
-    window.filter.show(readyState);
-    window.filter.addEvtListener();
+    window.filterbutton.show(readyState);
+    window.filterbutton.addEvtListener();
     for (var i = 0; i < resultRespose.length; i++) {
       fragment.appendChild(writeInfoPhoto(resultRespose[i], i));
     }
