@@ -9,13 +9,21 @@
       evt.preventDefault();
     } else {
       evt.preventDefault();
-      window.backend.upload(new FormData(uplaodForm), window.constant.ADD_PHOTO_RULES.URL_UPLOAD, onSuccessHandler, onLoadHandler);
+      window.backend.upload(new FormData(uplaodForm), window.constant.ADD_PHOTO_RULES.URL_UPLOAD,
+          onSuccessHandler, onLoadHandler, onErrorHandler, onTimeErrHandler);
     }
   };
 
   // S.2 При успешном выполнении прячем окно
   var onSuccessHandler = function () {
+    window.done.show();
     window.dialog.hide();
+  };
+
+  // S.3 Выводит ошибку при неправильном формате файла
+  var onErrorHandler = function () {
+    window.dialog.hide();
+    window.errorFile.show();
   };
 
   // S.3 Лочит интерфейс на время загрузки
@@ -25,24 +33,29 @@
     window.setstate.disabledBtnSendXhr(window.selector.submitBtn);
   };
 
-  // S.2 Делаем кнопку ОТПРАВИТЬ неактивной, если нет интернета
+  // S.4 Лочит интерфейс на время загрузки
+  var onTimeErrHandler = function () {
+    window.timeerr.show();
+  };
+
+  // S.5 Делаем кнопку ОТПРАВИТЬ неактивной, если нет интернета
   var checkOfflineHandler = function () {
     window.setstate.disabledOnlyBtnSendXhr(window.selector.submitBtn);
   };
 
-  // S.3 Делаем кнопку ОТПРАВИТЬ активной, если есть интернет
+  // S.6 Делаем кнопку ОТПРАВИТЬ активной, если есть интернет
   var checkOnlineHandler = function () {
     window.setstate.activatedOnlyBtnSendXhr(window.selector.submitBtn);
   };
 
-  // S.4 Добавляем листенер
+  // S.7 Добавляем листенер
   var addEvtListener = function () {
     window.selector.submitBtn.addEventListener('click', checkRulesHandler);
     window.addEventListener('offline', checkOfflineHandler);
     window.addEventListener('online', checkOnlineHandler);
   };
 
-  // S.5 Удаляем листенера
+  // S.8 Удаляем листенера
   var removeListener = function () {
     window.selector.submitBtn.removeEventListener('click', checkRulesHandler);
     window.removeEventListener('offline', checkOfflineHandler);

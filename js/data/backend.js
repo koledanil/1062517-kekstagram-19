@@ -14,18 +14,17 @@
   };
 
   // Т.2 обращение для выгрузки формы загрузки фотки
-  var upload = function (data, urlUpld, onSuccess, onLoad) {
+  var upload = function (data, urlUpld, onSuccess, onLoad, onBadFile, onTimeOutErr) {
     var xhr = createRequest();
     xhr.timeout = window.constant.ADD_PHOTO_RULES.XHR_TIMEOUT;
 
     xhr.addEventListener('load', function () {
-      onSuccess(xhr.response);
       switch (true) {
         case xhr.status === 200:
-          window.done.show();
+          onSuccess(xhr.response);
           return;
         case xhr.status === 400:
-          window.errorFile.show();
+          onBadFile();
           return;
       }
     });
@@ -33,7 +32,7 @@
     xhr.open('POST', urlUpld);
     onLoad();
     xhr.ontimeout = function () {
-      window.timeerr.show();
+      onTimeOutErr();
     };
     xhr.send(data);
   };
@@ -53,4 +52,3 @@
 
 })();
 
-// window.backend.load('https://test.com', onSuccess, onFail)
