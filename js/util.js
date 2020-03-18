@@ -29,11 +29,28 @@
     return endWord;
   };
 
+  // U.4 Перемешивание набора массива в случайный порядок
+  var shuffleRandomNumber = function (array) {
+    var currentIndex = array.length;
+    var temporaryValue;
+    var randomIndex;
+    while (currentIndex !== 0) {
+
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+    return array;
+  };
 
   // OUTPUT
   window.util = {
     getRandom: getRandom,
     getTemplate: getTemplate,
-    chooseEndWord: chooseEndWord
+    chooseEndWord: chooseEndWord,
+    shuffleRandomNumber: shuffleRandomNumber
   };
 })();

@@ -6,6 +6,7 @@
 
     xhr.addEventListener('load', function () {
       onSuccess(xhr.response, xhr.readyState);
+
     });
     xhr.open('GET', urlLd);
     xhr.send();
