@@ -5,9 +5,7 @@
     var xhr = createRequest();
 
     xhr.addEventListener('load', function () {
-      var resultResponse = xhr.response;
-      var readyState = xhr.readyState;
-      onSuccess(resultResponse, readyState);
+      onSuccess(xhr.response, xhr.readyState);
     });
     xhr.open('GET', urlLd);
     xhr.send();

@@ -3,6 +3,7 @@
 (function () {
   // G.1 Записываем данные фотки в разметку для одной шутки
   var fragment = document.createDocumentFragment();
+  window.photos = [];
 
   var writeInfoPhoto = function (element, index) {
     var foundTemplate = window.util.getTemplate('#picture', '.picture');
@@ -16,13 +17,17 @@
     return foundTemplate;
   };
     // G.2 На основе G.1 формируем и крепим фотки
-  window.backend.load(window.constant.ADD_PHOTO_RULES.URL_LOAD, function (resultRespose, readyState) {
+  window.backend.load(window.constant.ADD_PHOTO_RULES.URL_LOAD, onSuccessHandler);
+
+
+  var onSuccessHandler = function (resultResponse, readyState, data) {
+    window.photos = data;
     window.filterbutton.show(readyState);
     window.filterbutton.addEvtListener();
-    for (var i = 0; i < resultRespose.length; i++) {
-      fragment.appendChild(writeInfoPhoto(resultRespose[i], i));
+    for (var i = 0; i < resultResponse.length; i++) {
+      fragment.appendChild(writeInfoPhoto(resultResponse[i], i));
     }
     window.selector.imgPlace.appendChild(fragment);
-    window.userphoto.show(resultRespose);
-  });
+    window.userphoto.show(resultResponse);
+  };
 })();
