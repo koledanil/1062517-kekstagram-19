@@ -46,11 +46,28 @@
     return array;
   };
 
+  // U.5 Debounce
+
+  var debounce = function (cb) {
+    var lastTimeout = null;
+
+    return function () {
+      var parameters = arguments;
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+      lastTimeout = window.setTimeout(function () {
+        cb.apply(null, parameters);
+      }, window.constant.GALLERY_RULES.DEBOUNCE_INTERVAL);
+    };
+  };
+
   // OUTPUT
   window.util = {
     getRandom: getRandom,
     getTemplate: getTemplate,
     chooseEndWord: chooseEndWord,
-    shuffleRandomNumber: shuffleRandomNumber
+    shuffleRandomNumber: shuffleRandomNumber,
+    debounce: debounce
   };
 })();

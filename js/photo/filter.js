@@ -69,7 +69,7 @@
         var randomArr = arr.slice();
         window.util.shuffleRandomNumber(randomArr);
         var randomArrShort = randomArr.slice(0, 10);
-        renderPhoto(randomArrShort);
+        window.util.debounce(renderPhoto(randomArrShort));
         return;
 
       case target = 'filter-discussed':
