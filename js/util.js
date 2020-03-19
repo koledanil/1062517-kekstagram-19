@@ -16,9 +16,41 @@
     return Math.floor(randomNumber);
   };
 
+  // U.3 Выбор окончания слова
+  var chooseEndWord = function (time) {
+    var endWord = '';
+    if (time === 1) {
+      endWord = 'у';
+    } else if (time >= 2 && time <= 4) {
+      endWord = 'ы';
+    } else if (time >= 5 || time === 0) {
+      endWord = '';
+    }
+    return endWord;
+  };
+
+  // U.4 Перемешивание набора массива в случайный порядок
+  var shuffleRandomNumber = function (array) {
+    var currentIndex = array.length;
+    var temporaryValue;
+    var randomIndex;
+    while (currentIndex !== 0) {
+
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+    return array;
+  };
+
   // OUTPUT
   window.util = {
     getRandom: getRandom,
-    getTemplate: getTemplate
+    getTemplate: getTemplate,
+    chooseEndWord: chooseEndWord,
+    shuffleRandomNumber: shuffleRandomNumber
   };
 })();

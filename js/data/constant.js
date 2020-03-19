@@ -56,11 +56,18 @@
         ERR_AMOUNT: 'Больше 5 штук нельзя. Лимит превышен на ',
         ERR_DUBLICATE: 'Встречаются одинаковые тэги.',
         ERR_VERY_SHORT: 'тэг не может содержать только #.',
-        ERR_MAX_CHARACTER: 'Достигли лимит в 140 символов. 😶'
+        ERR_MAX_CHARACTER: 'Достигли лимит в 140 символов. 😶',
+        ERR_NETWORK: 'Нет интернета. Проверьте подключение к интернету. ☝🏻',
+        OK_NETWORK: 'Интернет есть. Теперь все работает. 🚀'
       },
 
-
-      ORIGINAL_TITLE: document.title
+      ORIGINAL_TITLE: document.title,
+      URL_UPLOAD: 'https://js.dump.academy/kekstagram',
+      URL_LOAD: 'https://js.dump.academy/kekstagram/data',
+      TIME_CLOSE_MSG: 12,
+      XHR_TIMEOUT: 15000,
+      SHOW_AMOUNT_CMNT: 5,
+      PLUS_AMOUNT_CMNT: 5
     } // end ADD_PHOTO_RULES
   };// end window.constant
 })(); // end iief

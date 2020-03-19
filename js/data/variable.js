@@ -8,6 +8,7 @@
     validityTextArea: true, // значение присваивается на базе валидации комента comment.js ++++
     counterErrAreaTitle: 0, // для title-error.js
     counterErrTagTitle: 0, // для title-error.js
-    counterSymbol: 0 // для comment.js
+    counterSymbol: 0, // для comment.js
+    filterType: 'filter-default'
   };
 })();
