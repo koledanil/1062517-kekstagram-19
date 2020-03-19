@@ -4,30 +4,9 @@
 
 (function () {
   window.constant = {
-    PHOTO_RULES: {
-      PHOTO: {
-        COUNT: 25,
-        DECRIPTION_AMOUNT: 10,
-
-        LIKE: {
-          MIN: 15,
-          MAX: 200
-        }
-      },
-
-      NAME_AVATAR: {
-        MIN: 1,
-        MAX: 6,
-        MAX_NAME_TEMPLATE: 6
-      },
-
-      COMMENT: {
-        MIN: 1,
-        MAX: 5,
-        MAX_COMMENT_TEMPLATE: 10,
-      }
+    GALLERY_RULES: {
+      DEBOUNCE_INTERVAL: 30000,
     }, // end photo-rules
-
 
     ADD_PHOTO_RULES: {
       UPLD_COMMENTS: {// опис. правила валидации коментов
