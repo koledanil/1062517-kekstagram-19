@@ -18,11 +18,12 @@
     xhr.timeout = window.constant.ADD_PHOTO_RULES.XHR_TIMEOUT;
 
     xhr.addEventListener('load', function () {
-      switch (true) {
-        case xhr.status === 200:
+
+      switch (xhr.status) {
+        case 200:
           onSuccess(xhr.response);
           return;
-        case xhr.status === 400:
+        case 400:
           onBadFile();
           return;
       }

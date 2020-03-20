@@ -17,14 +17,15 @@
   // U.4.1 Делаем все првеьюшки эффектов неактив на время загрузки фото
   var disabledEffectPreview = function () {
     // отключаем хувер на превьшках эффектов
-    for (var k = 0; k < window.selector.effectPrw.length; k++) {
-      window.selector.effectPrw[k].classList.remove('effects__label--hover');
-      window.selector.effectPrw[k].classList.add('effects--disabled');
-    }
+    window.selector.effectPrw.forEach(function (item) {
+      item.classList.remove('effects__label--hover');
+      item.classList.add('effects--disabled');
+    });
+
     // делаем неактивными все раидо эффектов
-    for (var i = 0; i < window.selector.effectRadio.length; i++) {
-      window.selector.effectRadio[i].disabled = true;
-    }
+    window.selector.effectRadio.forEach(function () {
+      window.selector.effectRadio.disabled = true;
+    });
   };
 
   // U.4.2 Делаем все прочие КОНТРОЛЫ ПАСИВ
@@ -57,15 +58,15 @@
 
   // U.5.1 Делаем все првеьюшки эффектов АКТИВ
   var activedEffectPreview = function () {
-    // отключаем хувер на превьшках эффектов
-    for (var k = 0; k < window.selector.effectPrw.length; k++) {
-      window.selector.effectPrw[k].classList.add('effects__label--hover');
-      window.selector.effectPrw[k].classList.remove('effects--disabled');
-    }
-    // делаем неактивными все раидо эффектов
-    for (var i = 0; i < window.selector.effectRadio.length; i++) {
-      window.selector.effectRadio[i].disabled = false;
-    }
+    // ВКЛЮЧАЕМ хувер на превьшках эффектов
+    window.selector.effectPrw.forEach(function (item) {
+      item.classList.remove('effects__label--hover');
+      item.classList.add('effects--disabled');
+    });
+    // делаем АКТИВНЫМИ все раидо эффектов
+    window.selector.effectRadio.forEach(function () {
+      window.selector.effectRadio.disabled = false;
+    });
   };
 
   // U.5.2 Делаем все прочие КОНТРОЛЫ АКТИВ

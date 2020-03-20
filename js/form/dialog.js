@@ -41,11 +41,11 @@
   var closeEscHandler = function (evt) {
     switch (true) {
       case evt.key === 'Escape' && evt.target.type === 'radio':
-        for (var i = 0; i < effectPreview.length; i++) {
-          if (effectPreview[i].checked) {
-            effectPreview[i].blur();
+        effectPreview.forEach(function (item) {
+          if (item.checked) {
+            item.blur();
           }
-        }
+        });
         return;
 
       case evt.key === 'Escape' && evt.target.type === 'text':

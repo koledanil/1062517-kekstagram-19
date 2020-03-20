@@ -24,56 +24,56 @@
 
   // F.1.3 Рендеринг фотки
   var renderPhoto = function (arr) {
-    deletePictures();
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < arr.length; i++) {
-
-      fragment.appendChild(writeInfoPhoto(arr[i], i));
-    }
+    deletePictures();
+    arr.forEach(function (item, index) {
+      fragment.appendChild(writeInfoPhoto(item, index));
+    });
     window.selector.imgPlace.appendChild(fragment);
     window.userphoto.show(arr);
   };
 
   // F.2 Переключает кнопки фильтров
-  var uncheckOtherFilter = function (arr) {
-    for (var i = 0; i < arr.length; i++) {
-      if (arr[i].classList.contains('img-filters__button--active')) {
-        arr[i].classList.remove('img-filters__button--active');
+  var uncheckOtherFilter = function () {
+    var arrConverted = Array.from(window.selector.filterArray.children);
+    arrConverted.forEach(function (item) {
+      if (item.classList.contains('img-filters__button--active')) {
+        item.classList.remove('img-filters__button--active');
       }
-    }
+    });
   };
 
   // F.3 Сортируем по количеству комментариев
   var sortMax = function (arr) {
     arr.sort(function (a, b) {
-      if (b.comments > a.comments) {
-        return 1;
-      } else {
-        return -1;
-      }
+      var result = (b.comments > a.comments) ? 1 : -1;
+      return result;
     });
   };
 
   // F.4 функция переклчает и фильтры
   var change = function (target, arr, resultRespose) {
     switch (target) {
-      case target = 'filter-default':
-        uncheckOtherFilter(window.selector.filterArray.elements);
+      case 'filter-default':
+        deletePictures();
+        uncheckOtherFilter();
         window.selector.defaultFilter.classList.add('img-filters__button--active');
         renderPhoto(resultRespose);
         return;
 
-      case target = 'filter-random':
-        uncheckOtherFilter(window.selector.filterArray.elements);
+      case 'filter-random':
+        uncheckOtherFilter();
+        deletePictures();
         window.selector.randomFilter.classList.add('img-filters__button--active');
-        var randomArr = arr.slice();
+        var randomArr = resultRespose.slice();
         window.util.shuffleRandomNumber(randomArr);
-        var randomArrShort = randomArr.slice(0, 10);
+        var randomArrShort = randomArr.slice(1, 11); // если убрать обрезку массива то ошибки нет
         window.util.debounce(renderPhoto(randomArrShort));
         return;
 
-      case target = 'filter-discussed':
-        uncheckOtherFilter(window.selector.filterArray.elements);
+      case 'filter-discussed':
+        uncheckOtherFilter();
+        deletePictures();
         window.selector.discFilter.classList.add('img-filters__button--active');
         var discArr = arr.slice();
         sortMax(discArr);
@@ -81,7 +81,7 @@
         return;
 
       default:
-        uncheckOtherFilter(window.selector.filterArray.elements);
+        uncheckOtherFilter();
         window.selector.defaultFilter.classList.add('img-filters__button--active');
         renderPhoto(resultRespose);
         return;
@@ -90,11 +90,10 @@
 
   // F.5 Функция показывает фильтры при статусе запроса 4
   var show = function (readyState) {
-    if (readyState === 4) {
-      window.selector.filterContainer.classList.remove('img-filters--inactive');
-    } else {
+    var result = (readyState === window.constant.GALLERY_RULES.XHR_STATE_TO_SHOW_FILTER) ?
+      window.selector.filterContainer.classList.remove('img-filters--inactive') :
       window.selector.filterContainer.classList.add('img-filters--inactive');
-    }
+    return result;
   };
 
   // OUTPUT

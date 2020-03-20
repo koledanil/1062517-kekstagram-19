@@ -4,12 +4,14 @@
 
   var filterHandler = function (resultRespose, readyState) {
     window.filter.show(readyState);
-    var copyArr = resultRespose;
+    var copyArr = resultRespose.slice();
     window.filter.renderPhoto(resultRespose);
 
     var swithcFiltersHandler = function (evt) {
-      var target = evt.target.id;
-      window.filter.change(target, copyArr, resultRespose);
+      if (evt.target.className === 'img-filters__button') {
+        var target = evt.target.id;
+        window.filter.change(target, copyArr, resultRespose);
+      }
     };
 
     window.addEventListener('click', swithcFiltersHandler);

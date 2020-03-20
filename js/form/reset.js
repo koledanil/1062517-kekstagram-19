@@ -4,9 +4,11 @@
 (function () {
   window.resetUploadForm = function () {
     window.selector.imgPreview.removeAttribute('class');
-    window.selector.counterPlace.innerHTML = 'Введено 0 из 140 символов';
+    window.selector.counterPlace.textContent = window.constant.ADD_PHOTO_RULES.UPLD_COMMENTS.DEFAULT_TXT;
     window.selector.counterPlace.classList.add('hidden');
     window.variable.counterSymbol = 0;
+    window.variable.counterErrTagTitle = 0;
+    window.variable.counterErrAreaTitle = 0;
 
     window.selector.imgPreview.style = 'transform: 0'; // сбиваем масштаб фотки
     window.selector.zoomOutButton.disabled = false; // сбиваем псевдо с увелич, чтоб кнопка стала активной

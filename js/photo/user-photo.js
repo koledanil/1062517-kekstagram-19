@@ -30,8 +30,6 @@
     var fragmenBigPhoto = document.createDocumentFragment();
     window.selector.bigPicture.classList.remove('hidden');
     window.selector.body.classList.add('modal-open');
-    // commentCounter.classList.add('hidden');
-    // commentsLoader.classList.add('hidden');
     imgPicture.src = item.url;
     imgPicture.alt = item.description; // заменяем плейсхолдер АЛЬТА
     imgLike.textContent = item.likes;
@@ -42,48 +40,40 @@
 
   // UP.3 Функция которая заставляет работаь кнопку загрузить еще
   var showMore = function (item, fragmenBigPhoto) {
-    switch (true) {
-      case item.comments.length <= window.constant.ADD_PHOTO_RULES.SHOW_AMOUNT_CMNT:
-        fewPhoto.classList.remove('hidden');
-        manyPhoto.classList.add('hidden');
-        chooseWord(item.comments.length);
-        window.selector.showMorePhoto.disabled = true;
-        window.selector.showMorePhoto.classList.add('hidden');
-        showPhoto(item.comments.length, item.comments, fragmenBigPhoto);
-        return;
-
-      case item.comments.length > window.constant.ADD_PHOTO_RULES.SHOW_AMOUNT_CMNT:
-        var counter = window.constant.ADD_PHOTO_RULES.SHOW_AMOUNT_CMNT;
-        fewPhoto.classList.add('hidden');
-        manyPhoto.classList.remove('hidden');
+    if (item.comments.length <= window.constant.ADD_PHOTO_RULES.SHOW_AMOUNT_CMNT) {
+      fewPhoto.classList.remove('hidden');
+      manyPhoto.classList.add('hidden');
+      chooseWord(item.comments.length);
+      window.selector.showMorePhoto.disabled = true;
+      window.selector.showMorePhoto.classList.add('hidden');
+      showPhoto(item.comments.length, item.comments, fragmenBigPhoto);
+    } else if (item.comments.length > window.constant.ADD_PHOTO_RULES.SHOW_AMOUNT_CMNT) { // else if
+      var counter = window.constant.ADD_PHOTO_RULES.SHOW_AMOUNT_CMNT;
+      fewPhoto.classList.add('hidden');
+      manyPhoto.classList.remove('hidden');
+      window.selector.showedAmountComments.textContent = counter;
+      window.selector.showMorePhoto.disabled = false;
+      showPhoto(counter, item.comments, fragmenBigPhoto);
+      window.selector.showMorePhoto.onclick = function () {
+        counter = counter + window.constant.ADD_PHOTO_RULES.PLUS_AMOUNT_CMNT;
         window.selector.showedAmountComments.textContent = counter;
-        window.selector.showMorePhoto.disabled = false;
-        showPhoto(counter, item.comments, fragmenBigPhoto);
-
-        window.selector.showMorePhoto.onclick = function () {
-          counter = counter + window.constant.ADD_PHOTO_RULES.PLUS_AMOUNT_CMNT;
-          window.selector.showedAmountComments.textContent = counter;
-          if (counter >= item.comments.length) {
-            showPhoto(item.comments.length, item.comments, fragmenBigPhoto);
-            window.selector.showedAmountComments.textContent = item.comments.length;
-            window.selector.showMorePhoto.disabled = true;
-            window.selector.defaultBtn.classList.add('hidden');
-            window.selector.lockedBtn.textContent = 'Загружены ' + item.comments.length + ' из ' + item.comments.length + ' коментариев';
-          } else {
-            showPhoto(counter, item.comments, fragmenBigPhoto);
-          }
-        };
-        return;
+        if (counter >= item.comments.length) {
+          showPhoto(item.comments.length, item.comments, fragmenBigPhoto);
+          window.selector.showedAmountComments.textContent = item.comments.length;
+          window.selector.showMorePhoto.disabled = true;
+          window.selector.defaultBtn.classList.add('hidden');
+          window.selector.lockedBtn.textContent = 'Загружены ' + item.comments.length + ' из ' + item.comments.length + ' коментариев';
+        } else {
+          showPhoto(counter, item.comments, fragmenBigPhoto);
+        }
+      };
     }
   };
 
   // UP.3.1 Выбирает нужную формулировку окончаяния
   var chooseWord = function (item) {
-    if (item === 1) {
-      fewPhoto.textContent = 'Всего ' + item + ' комментарий';
-    } else {
-      fewPhoto.textContent = 'Всего ' + item + ' комментария';
-    }
+    var result = (item === 1) ? fewPhoto.textContent = 'Всего ' + item + ' комментарий' : fewPhoto.textContent = 'Всего ' + item + ' комментария';
+    return result;
   };
 
   // UP.4 показывает коменты с параметром количество коментов
@@ -134,6 +124,7 @@
       if (pictureContainer) {
         var pictureId = pictureContainer.getAttribute('data-id');
         showBigPhoto(resultResponse[pictureId]);
+        console.log(resultResponse[pictureId]);
       }
     }; // open handler
     document.addEventListener('click', openClickHandler);
