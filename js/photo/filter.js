@@ -30,7 +30,7 @@
       fragment.appendChild(writeInfoPhoto(item, index));
     });
     window.selector.imgPlace.appendChild(fragment);
-    window.userphoto.show(arr);
+    window.userphoto.show(arr); // открывает большую фотку с коментами
   };
 
   // F.2 Переключает кнопки фильтров
@@ -78,12 +78,6 @@
         var discArr = arr.slice();
         sortMax(discArr);
         renderPhoto(discArr);
-        return;
-
-      default:
-        uncheckOtherFilter();
-        window.selector.defaultFilter.classList.add('img-filters__button--active');
-        renderPhoto(resultRespose);
         return;
     }
   };

@@ -27,6 +27,7 @@
 
   // UP.2 Задаем параметры для одной фотки + вешкалка их на место
   var showBigPhoto = function (item) {
+    console.log(item);
     var fragmenBigPhoto = document.createDocumentFragment();
     window.selector.bigPicture.classList.remove('hidden');
     window.selector.body.classList.add('modal-open');
@@ -124,7 +125,6 @@
       if (pictureContainer) {
         var pictureId = pictureContainer.getAttribute('data-id');
         showBigPhoto(resultResponse[pictureId]);
-        console.log(resultResponse[pictureId]);
       }
     }; // open handler
     document.addEventListener('click', openClickHandler);
