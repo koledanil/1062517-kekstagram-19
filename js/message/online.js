@@ -6,9 +6,9 @@
   var checkOfflineHandler = function () {
     window.selector.nonModalwoBtn.remove();
     document.querySelector('main').appendChild(window.selector.nonModalwoBtn);
-    window.selector.nonModalwoBtn.querySelector('.banner-err__text').textContent = window.constant.ADD_PHOTO_RULES.MSG.ERR_NETWORK;
-    window.selector.nonModalwoBtn.querySelector('.banner-err').classList.add('banner--offline');
-    window.selector.nonModalwoBtn.querySelector('.banner-err').classList.remove('banner--online');
+    window.selector.nonModalwoBtnTxt.textContent = window.constant.ADD_PHOTO_RULES.MSG.ERR_NETWORK;
+    window.selector.nonModalwoBtnBg.classList.add('banner--offline');
+    window.selector.nonModalwoBtnBg.classList.remove('banner--online');
     document.title = '[Нет интернета] ' + window.constant.ADD_PHOTO_RULES.ORIGINAL_TITLE;
     clearTimeout(timer); // если интернет стал ОК а потом опять мнговенно пропал, то обнуляет таймер
   };
@@ -17,8 +17,8 @@
   var checkOnlineHandler = function () {
     window.selector.nonModalwoBtn.remove();
     document.querySelector('main').appendChild(window.selector.nonModalwoBtn);
-    window.selector.nonModalwoBtn.querySelector('.banner-err__text').textContent = window.constant.ADD_PHOTO_RULES.MSG.OK_NETWORK;
-    window.selector.nonModalwoBtn.querySelector('.banner-err').classList.add('banner--online');
+    window.selector.nonModalwoBtnTxt.textContent = window.constant.ADD_PHOTO_RULES.MSG.OK_NETWORK;
+    window.selector.nonModalwoBtnBg.classList.add('banner--online');
     document.title = window.constant.ADD_PHOTO_RULES.ORIGINAL_TITLE;
 
     // О.3 Хэндлер для скртыия статуса онлайн по таймеру
@@ -30,7 +30,7 @@
         document.location.reload(true);
       }
     };
-    timer = setTimeout(clearOnline, 5000);
+    timer = setTimeout(clearOnline, window.constant.GALLERY_RULES.MSG_HIDE_TIMEOUT);
   };
 
   window.addEventListener('offline', checkOfflineHandler);

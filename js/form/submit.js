@@ -9,53 +9,59 @@
       evt.preventDefault();
     } else {
       evt.preventDefault();
-      window.backend.upload(new FormData(uplaodForm), window.constant.ADD_PHOTO_RULES.URL_UPLOAD,
-          onSuccessHandler, onLoadHandler, onErrorHandler, onTimeErrHandler);
+      xhrRequest();
     }
   };
 
-  // S.2 При успешном выполнении прячем окно
+  // S.2 Эта функция отправляет запрос на сервер. Мы ее также используем в
+  // в кнопке ПОВТОРИТЬ на баннере https://drive.google.com/file/d/15WpBog6lME3qU6EW9Nlydg413GTtsQUt/view
+  var xhrRequest = function () {
+    window.backend.upload(new FormData(uplaodForm), window.constant.ADD_PHOTO_RULES.URL_UPLOAD,
+        onSuccessHandler, onLoadHandler, onErrorHandler, onTimeErrHandler);
+  };
+
+  // S.3 При успешном выполнении прячем окно
   var onSuccessHandler = function () {
     window.done.show();
     window.dialog.hide();
   };
 
-  // S.3 Выводит ошибку при неправильном формате файла
+  // S.4 Выводит ошибку при неправильном формате файла
   var onErrorHandler = function () {
     window.dialog.hide();
     window.errorFile.show();
   };
 
-  // S.3 Лочит интерфейс на время загрузки
+  // S.5 Лочит интерфейс на время загрузки
   var onLoadHandler = function () {
     window.setstate.disabledEffectPreview();
     window.setstate.disabledOtherControlls();
     window.setstate.disabledBtnSendXhr(window.selector.submitBtn);
   };
 
-  // S.4 Лочит интерфейс на время загрузки
+  // S.6 Лочит интерфейс на время загрузки
   var onTimeErrHandler = function () {
     window.timeerr.show();
   };
 
-  // S.5 Делаем кнопку ОТПРАВИТЬ неактивной, если нет интернета
+  // S.7 Делаем кнопку ОТПРАВИТЬ неактивной, если нет интернета
   var checkOfflineHandler = function () {
     window.setstate.disabledOnlyBtnSendXhr(window.selector.submitBtn);
   };
 
-  // S.6 Делаем кнопку ОТПРАВИТЬ активной, если есть интернет
+  // S.8 Делаем кнопку ОТПРАВИТЬ активной, если есть интернет
   var checkOnlineHandler = function () {
     window.setstate.activatedOnlyBtnSendXhr(window.selector.submitBtn);
   };
 
-  // S.7 Добавляем листенер
+  // S.9 Добавляем листенер
   var addEvtListener = function () {
     window.selector.submitBtn.addEventListener('click', checkRulesHandler);
     window.addEventListener('offline', checkOfflineHandler);
     window.addEventListener('online', checkOnlineHandler);
   };
 
-  // S.8 Удаляем листенера
+  // S.10 Удаляем листенера
   var removeListener = function () {
     window.selector.submitBtn.removeEventListener('click', checkRulesHandler);
     window.removeEventListener('offline', checkOfflineHandler);
@@ -65,6 +71,8 @@
   // OUTPUT
   window.submit = {
     addEvtListener: addEvtListener,
-    removeListener: removeListener
+    removeListener: removeListener,
+
+    xhrRequest: xhrRequest
   };
 })();

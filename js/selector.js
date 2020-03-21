@@ -42,8 +42,11 @@
     tiemoutBtn: document.querySelector('#nonModalErr').content.querySelector('.non-modal-err__btn-retry'),
 
     nonModalwBtn: document.querySelector('#nonModalErr').content.querySelector('.non-modal-err'),
-    nonModalwoBtn: document.querySelector('#nonModalErr--wBTN').content.querySelector('.non-modal-err'),
+    nonModalwBtnTxt: document.querySelector('#nonModalErr').content.querySelector('.non-modal-err').querySelector('.banner-err__text'),
 
+    nonModalwoBtn: document.querySelector('#nonModalErr--wBTN').content.querySelector('.non-modal-err'),
+    nonModalwoBtnTxt: document.querySelector('#nonModalErr--wBTN').content.querySelector('.non-modal-err').querySelector('.banner-err__text'),
+    nonModalwoBtnBg: document.querySelector('#nonModalErr--wBTN').content.querySelector('.non-modal-err').querySelector('.banner-err'),
 
     imgContainer: document.querySelector('#imgContainer-img'),
     scaleContainer: document.querySelector('.img-upload__scale'),
@@ -59,6 +62,7 @@
     defaultFilter: document.querySelector('#filter-default'),
     randomFilter: document.querySelector('#filter-random'),
     discFilter: document.querySelector('#filter-discussed'),
-    filterArray: document.querySelector('.img-filters__form')
+    filterArray: document.querySelector('.img-filters__form'),
   };
+
 })();
