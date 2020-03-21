@@ -67,7 +67,7 @@
         window.selector.randomFilter.classList.add('img-filters__button--active');
         var randomArr = resultResponse.slice();
         window.util.shuffleRandomNumber(randomArr);
-        var randomArrShort = randomArr.slice(0, 10); // если убрать обрезку массива то ошибки нет
+        var randomArrShort = randomArr.slice(0, 10);
         renderPhoto(randomArrShort);
         window.filter.photosToShow = randomArrShort;
         return;

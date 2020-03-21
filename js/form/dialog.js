@@ -39,28 +39,19 @@
   // D.1.2 Хэндлер для закртыия по ESC
   // также в нем пропис. функционал первый ESC потеря фокуса с поля тэги или комент, второе наж. закрыт. форму
   var closeEscHandler = function (evt) {
-    switch (true) {
-      case evt.key === 'Escape' && evt.target.type === 'radio':
-        effectPreview.forEach(function (item) {
-          if (item.checked) {
-            item.blur();
-          }
-        });
-        return;
-
-      case evt.key === 'Escape' && evt.target.type === 'text':
-        window.selector.tagInput.blur();
-        return;
-
-      case evt.key === 'Escape' && evt.target.type === 'textarea':
-        window.selector.textArea.blur();
-        return;
-      case evt.key === 'Escape':
-        hide();
-        return;
-    }
+    if(evt.key === 'Escape' && evt.target.type === 'radio') {
+      effectPreview.forEach(function (item) {
+    if (item.checked) {
+      item.blur();}
+  });
+    } else if (evt.key === 'Escape' && evt.target.type === 'text') {
+      window.selector.tagInput.blur();
+    } else if (evt.key === 'Escape' && evt.target.type === 'textarea'){
+      window.selector.textArea.blur();
+    } else if (evt.key === 'Escape') {
+      hide();
   };
-
+}
   // D.1.3 Хэндлер для закртыия по клику
   var closeClickHandler = function () {
     hide();

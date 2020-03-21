@@ -105,15 +105,10 @@
 
   // UP.6.2 Функция при Esc закрывает (если фокус в коменте, то первый нажатие Esc === снятие фокуса)
   var closeEscPhotoHandler = function (evt) {
-    // console.log(evt.target.);
-    switch (true) {
-      case evt.key === 'Escape' && evt.target.type === 'text':
-        commentUserPhInput.blur();
-        return;
-
-      case evt.key === 'Escape':
-        closePhoto();
-        return;
+    if (evt.key === 'Escape' && evt.target.type === 'text') {
+      commentUserPhInput.blur();
+    } else if (evt.key === 'Escape') {
+      closePhoto();
     }
   };
 

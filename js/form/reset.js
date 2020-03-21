@@ -1,5 +1,4 @@
 'use strict';
-
 // Очищает форму закгрузки после нажатия на ESC
 (function () {
   window.resetUploadForm = function () {
