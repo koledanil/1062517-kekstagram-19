@@ -114,13 +114,13 @@
 
   // UP.7 Эта функция активирует цепочку других функий чтобы
   // заработало отображени больших фоток
-    var openClickHandler = function (evt) {
-      var pictureContainer = evt.target.closest('.picture');
-      if (pictureContainer) {
-        var pictureId = pictureContainer.getAttribute('data-id');
-        showBigPhoto(window.filter.photosToShow[pictureId]);
-      }
-    }; // open handler
+  var openClickHandler = function (evt) {
+    var pictureContainer = evt.target.closest('.picture');
+    if (pictureContainer) {
+      var pictureId = pictureContainer.getAttribute('data-id');
+      showBigPhoto(window.filter.photosToShow[pictureId]);
+    }
+  }; // open handler
 
 
   window.selector.imgPlace.addEventListener('click', openClickHandler); // step 1

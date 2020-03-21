@@ -80,7 +80,7 @@
         sortMax(discArr);
         renderPhoto(discArr);
         window.filter.photosToShow = discArr;
-       
+
         return;
     }
   };

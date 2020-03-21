@@ -18,7 +18,7 @@
     window.addEventListener('click', swithcFiltersHandler);
   };
 
-  var debouncedFn =  window.util.debounce(filterHandler);
+  var debouncedFn = window.util.debounce(filterHandler);
   window.selector.filterContainer.classList.remove('img-filters--inactive');
   window.backend.load(window.constant.ADD_PHOTO_RULES.URL_LOAD, debouncedFn);
 })();
