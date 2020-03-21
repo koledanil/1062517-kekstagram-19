@@ -30,7 +30,6 @@
       fragment.appendChild(writeInfoPhoto(item, index));
     });
     window.selector.imgPlace.appendChild(fragment);
-    window.userphoto.show(arr); // открывает большую фотку с коментами
   };
 
   // F.2 Переключает кнопки фильтров
@@ -52,23 +51,25 @@
   };
 
   // F.4 функция переклчает и фильтры
-  var change = function (target, arr, resultRespose) {
+  var change = function (target, arr, resultResponse) {
     switch (target) {
       case 'filter-default':
         deletePictures();
         uncheckOtherFilter();
         window.selector.defaultFilter.classList.add('img-filters__button--active');
-        renderPhoto(resultRespose);
+        renderPhoto(resultResponse);
+        window.filter.photosToShow = resultResponse;
         return;
 
       case 'filter-random':
         uncheckOtherFilter();
         deletePictures();
         window.selector.randomFilter.classList.add('img-filters__button--active');
-        var randomArr = resultRespose.slice();
+        var randomArr = resultResponse.slice();
         window.util.shuffleRandomNumber(randomArr);
-        var randomArrShort = randomArr.slice(1, 11); // если убрать обрезку массива то ошибки нет
-        window.util.debounce(renderPhoto(randomArrShort));
+        var randomArrShort = randomArr.slice(0, 10); // если убрать обрезку массива то ошибки нет
+        renderPhoto(randomArrShort);
+        window.filter.photosToShow = randomArrShort;
         return;
 
       case 'filter-discussed':
@@ -78,6 +79,8 @@
         var discArr = arr.slice();
         sortMax(discArr);
         renderPhoto(discArr);
+        window.filter.photosToShow = discArr;
+       
         return;
     }
   };

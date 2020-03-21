@@ -5,9 +5,9 @@
 (function () {
   window.constant = {
     GALLERY_RULES: {
-      DEBOUNCE_INTERVAL: 30000,
+      DEBOUNCE_INTERVAL: 300,
       XHR_STATE_TO_SHOW_FILTER: 4,
-      MSG_HIDE_TIMEOUT: 5000
+      MSG_HIDE_TIMEOUT: 7000
     }, // end photo-rules
 
     ADD_PHOTO_RULES: {

@@ -27,7 +27,6 @@
 
   // UP.2 Задаем параметры для одной фотки + вешкалка их на место
   var showBigPhoto = function (item) {
-    console.log(item);
     var fragmenBigPhoto = document.createDocumentFragment();
     window.selector.bigPicture.classList.remove('hidden');
     window.selector.body.classList.add('modal-open');
@@ -54,6 +53,7 @@
       manyPhoto.classList.remove('hidden');
       window.selector.showedAmountComments.textContent = counter;
       window.selector.showMorePhoto.disabled = false;
+      window.selector.showMorePhoto.classList.remove('hidden');
       showPhoto(counter, item.comments, fragmenBigPhoto);
       window.selector.showMorePhoto.onclick = function () {
         counter = counter + window.constant.ADD_PHOTO_RULES.PLUS_AMOUNT_CMNT;
@@ -119,21 +119,17 @@
 
   // UP.7 Эта функция активирует цепочку других функий чтобы
   // заработало отображени больших фоток
-  var show = function (resultResponse) {
     var openClickHandler = function (evt) {
       var pictureContainer = evt.target.closest('.picture');
       if (pictureContainer) {
         var pictureId = pictureContainer.getAttribute('data-id');
-        showBigPhoto(resultResponse[pictureId]);
+        showBigPhoto(window.filter.photosToShow[pictureId]);
       }
     }; // open handler
-    document.addEventListener('click', openClickHandler);
-    crossBtnUserPic.addEventListener('click', closeClickPhotoHandler);
-    document.addEventListener('keydown', closeEscPhotoHandler);
-  };
 
-  // OUTPUT
-  window.userphoto = {
-    show: show
-  };
+
+  window.selector.imgPlace.addEventListener('click', openClickHandler); // step 1
+  crossBtnUserPic.addEventListener('click', closeClickPhotoHandler);
+  document.addEventListener('keydown', closeEscPhotoHandler);
+
 })();
