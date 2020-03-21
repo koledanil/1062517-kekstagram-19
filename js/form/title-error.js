@@ -46,16 +46,13 @@
 
   // TR.4 заставляет мигать текст в заголовке
   var showErrIfHidden = function () {
-    var firstTxt = '(!!!) ' + pageTitle;
+    var firstTxt = '(!) ' + pageTitle;
     var secondTxt = pageTitle;
     var switchTitle = function () {
-      if (document.title === secondTxt) {
-        document.title = firstTxt;
-      } else {
-        document.title = secondTxt;
-      }
+      var result = (document.title === secondTxt) ? document.title = firstTxt : document.title = secondTxt;
+      return result;
     };
-    intervalId = setInterval(switchTitle, 1500);
+    intervalId = setInterval(switchTitle, window.constant.ADD_PHOTO_RULES.INTERVAL_ERR_TITLE);
     return intervalId;
   };
 
@@ -67,6 +64,7 @@
   // TR.2 Удаляем листенере
   var removeListener = function () {
     formUpldImg.removeEventListener('change', showErrCounterTitleHandler);
+    document.removeEventListener('visibilitychange', checkTabHandler);
   };
 
   // / OUTPUT

@@ -7,16 +7,14 @@
   var applyEffectsHandler = function (evt) {
     window.selector.imgPreview.removeAttribute('class');
     window.selector.imgPreview.style.filter = '';
-    window.selector.pin.style.left = 453 + 'px';
-    window.selector.depth.style.width = 453 + 'px';
+    window.selector.pin.style.left = window.constant.ADD_PHOTO_RULES.SLIDER_START_POSITION + 'px';
+    window.selector.depth.style.width = window.constant.ADD_PHOTO_RULES.SLIDER_START_POSITION + 'px';
     var eventTarget = evt.target;
     if (eventTarget.value !== 'none') {
       window.selector.imgPreview.classList.add('effects__preview--' + eventTarget.value);
-
       if (window.selector.sliderTag.classList.contains !== 'hidden') {
         window.selector.sliderTag.classList.remove('hidden');
         chooseMaxLvl(eventTarget.value); // run E.2
-
       }
     } else {
       window.selector.sliderTag.classList.add('hidden');
@@ -27,25 +25,25 @@
   // E.2 записываем макс значение эффекта для выбора
   // Обраб. кейс, когда пользователь просто вкл. эффект и не двинул ползунок и нажал отправить. В этом. сл. эт. Фн отпавит эти значения
   var chooseMaxLvl = function (effectName) {
-    switch (true) {
-      case (effectName === 'chrome'):
-        window.selector.effectLevelForm.value = 1;
+    switch (effectName) {
+      case 'chrome':
+        window.selector.effectLevelForm.value = window.constant.EFFECT_DEFAULT_VALUE.CHROME;
         return;
 
-      case (effectName === 'sepia'):
-        window.selector.effectLevelForm.value = 1;
+      case 'sepia':
+        window.selector.effectLevelForm.value = window.constant.EFFECT_DEFAULT_VALUE.SEPIA;
         return;
 
-      case (effectName === 'marvin'):
-        window.selector.effectLevelForm.value = 100;
+      case 'marvin':
+        window.selector.effectLevelForm.value = window.constant.EFFECT_DEFAULT_VALUE.MARVIN;
         return;
 
-      case (effectName === 'phobos'):
-        window.selector.effectLevelForm.value = 3;
+      case 'phobos':
+        window.selector.effectLevelForm.value = window.constant.EFFECT_DEFAULT_VALUE.PHOBOS;
         return;
 
-      case (effectName === 'heat'):
-        window.selector.effectLevelForm.value = 3;
+      case 'heat':
+        window.selector.effectLevelForm.value = window.constant.EFFECT_DEFAULT_VALUE.HEAT;
         return;
     }
   };

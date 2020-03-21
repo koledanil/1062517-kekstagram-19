@@ -14,14 +14,9 @@
     temp = arr.filter(function (item) {
       return temp[item] || !(temp[item] = !0);
     });
-    if (temp.length > 0) {
-      isDuplicate = true;
-      return isDuplicate;
 
-    } else {
-      isDuplicate = false;
-      return isDuplicate;
-    }
+    isDuplicate = (temp.length > 0) ? isDuplicate = true : isDuplicate = false;
+    return isDuplicate;
   };
 
   // H.2 Функция проверяет каждый тег на ошибки характ. для 1 тэга. Проверка к-ва тэгов и дубликатов идет отдельно
@@ -29,7 +24,7 @@
     var checkedTag = {};
     checkedTag.isSharp = tagStorage[0] === window.constant.ADD_PHOTO_RULES.UPLD_TAGS.DIVIDER_SYMBOL;
     checkedTag.maxLength = tagStorage.length < window.constant.ADD_PHOTO_RULES.UPLD_TAGS.MAX_LENGTH;
-    checkedTag.onlySharp = tagStorage === '#';
+    checkedTag.onlySharp = tagStorage === window.constant.ADD_PHOTO_RULES.UPLD_TAGS.DIVIDER_SYMBOL;
     checkedTag.regExp = window.constant.ADD_PHOTO_RULES.UPLD_TAGS.REG_EXP.test(tagStorage.slice(1, (tagStorage.length)));
     return checkedTag;
   };
@@ -74,13 +69,13 @@
 
   // H.6 выводим ошибки в разметку
   var showError = function (errArray, tagErrTemplate) {
-    for (var m = 0; m < errArray.length; m++) {
+    errArray.forEach(function (item) {
       var clonedElement = tagErrTemplate.cloneNode(true);
-      clonedElement.textContent = errArray[m];
+      clonedElement.textContent = item;
       clonedElement.classList.add('error-list__item');
       window.selector.tagErrPlaceUl.appendChild(clonedElement);
       window.selector.tagInput.classList.add('border-error');
-    }
+    });
   };
 
   // H.7 запускаем проверку дубликатов и записываем ошиюку если есть
@@ -103,36 +98,37 @@
 
   // H.9 Проверка в цикле
   var checkErrors = function (enteredTags, errArray) {
-    for (var i = 0; i < enteredTags.length; i++) { // цикл запускает проверку тэгов массива
-      var checkedTag = checkTag(enteredTags[i]); // вот и стартанула фукнция H.2
-      if (enteredTags[i].trim().length > 0 && checkedTag.isSharp !== true || checkedTag.maxLength !== true
-
+    // H.9.1 Сопоставление и запись ошибок в массив
+    var pushErr = function (item) {
+      var checkedTag = checkTag(item); // вот и стартанула фукнция H.2
+      if (item.trim().length > 0 && checkedTag.isSharp !== true || checkedTag.maxLength !== true
                                             || checkedTag.onlySharp !== false
                                             || checkedTag.regExp !== false) {
         window.selector.tagErrPlaceUl.innerHTML = ''; // затирает мамку ошибок
         window.variable.validityTag = false; // ставит флаг о том что невалид и форма не отправится
 
         if (checkedTag.isSharp !== true && checkedTag !== '') {
-          (errArray.push(enteredTags[i] + ' ' + window.constant.ADD_PHOTO_RULES.MSG.ERR_SHARP));
+          (errArray.push(item + ' ' + window.constant.ADD_PHOTO_RULES.MSG.ERR_SHARP));
         } // если нет решетки записываем ошибку и имя тэга
 
         if (checkedTag.maxLength !== true) {
-          errArray.push(enteredTags[i] + ' ' + window.constant.ADD_PHOTO_RULES.MSG.ERR_LENGTH);
+          errArray.push(item + ' ' + window.constant.ADD_PHOTO_RULES.MSG.ERR_LENGTH);
         } // если тэг длиннее нормы
 
         if (checkedTag.regExp !== false) {
-          errArray.push(enteredTags[i] + ' ' + window.constant.ADD_PHOTO_RULES.MSG.ERR_REGEXP);
+          errArray.push(item + ' ' + window.constant.ADD_PHOTO_RULES.MSG.ERR_REGEXP);
         } // если регулярка пролетела
 
         if (checkedTag.onlySharp !== false) {
-          errArray.push(enteredTags[i] + ' ' + window.constant.ADD_PHOTO_RULES.MSG.ERR_VERY_SHORT);
+          errArray.push(item + ' ' + window.constant.ADD_PHOTO_RULES.MSG.ERR_VERY_SHORT);
         } // если только решетка и все
 
         window.variable.counterErrTagTitle = errArray.length; // вносим длинну тэга в значение в объекте, чтобы отобр. в тайтле S.2
       }
-    } // end for var i
+    };
+    // H.9.2 Запуск функции H.9.1 для введеных тегов
+    enteredTags.forEach(pushErr);
   };
-
   // H.5 Добавляем листенере
   var addEvtListener = function () {
     window.selector.tagInput.addEventListener('change', checkAllTags);
