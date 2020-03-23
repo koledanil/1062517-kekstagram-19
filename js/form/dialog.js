@@ -20,7 +20,7 @@
   };
 
   // D.1 Функция открывает диалоговое окно по изменению поля файл.
-  var showDialogBoxHandler = function (evt) {
+  var showDialogBoxHandler = function () {
     var fileChooser = document.querySelector('#upload-file');
     var preview = window.selector.imgPreview;
     var file = fileChooser.files[0];
