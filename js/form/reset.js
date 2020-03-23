@@ -27,6 +27,7 @@
     window.selector.zoomInButton.disabled = true; // лочим зум.
 
     window.selector.sliderTag.classList.add('hidden'); // скрываем ползунок эффекта
+    window.selector.imgPreview.src = '';
 
     // удалятор слушателей
     window.scale.removeListener();

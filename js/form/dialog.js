@@ -4,11 +4,6 @@
   var dialogBox = document.querySelector('.img-upload__overlay');
   var effectPreview = document.querySelectorAll('.effects__radio');
 
-  // D.1 Функция открывает диалоговое окно по изменению поля файл.
-  var showDialogBoxHandler = function () {
-    showDialog();
-  };
-
   var showDialog = function () {
     dialogBox.classList.remove('hidden');
     window.selector.body.classList.add('modal-open');
@@ -23,6 +18,30 @@
     window.slider.addEvtListener();
     window.submit.addEvtListener();
   };
+
+  // D.1 Функция открывает диалоговое окно по изменению поля файл.
+  var showDialogBoxHandler = function () {
+    var fileChooser = document.querySelector('#upload-file');
+    var preview = window.selector.imgPreview;
+    var file = fileChooser.files[0];
+    var fileName = file.name.toLowerCase();
+    var matches = window.constant.ADD_PHOTO_RULES.FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+    if (matches) {
+      var reader = new FileReader();
+      showDialog();
+      reader.addEventListener('load', function () {
+        preview.src = reader.result;
+      });
+
+      reader.readAsDataURL(file);
+    } else {
+      hide();
+      window.errorFile.show();
+    }
+  };
+
 
   // D.1.1 Запускает закрытие окна
   var hide = function () {
@@ -58,7 +77,6 @@
     hide();
   };
   window.selector.uploadBtn.addEventListener('change', showDialogBoxHandler);
-
   var startListener = function () {
     document.addEventListener('keydown', closeEscHandler);
     window.selector.crossButtonUpld.addEventListener('click', closeClickHandler);
