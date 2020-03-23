@@ -86,7 +86,7 @@
     window.selector.crossButtonUpld.removeEventListener('click', closeClickHandler);
   };
 
-  // OUTPUT
+  // OUTPUT DATA
   window.dialog = {
     hide: hide
   };
