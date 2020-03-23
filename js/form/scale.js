@@ -8,8 +8,10 @@
   // SC.1 Изменяем масштаб изображения туда и сюда
   var scaleImageHandler = function (evt) {
     var condition = evt.target.className;
+    console.log(evt.target.className)
     switch (condition) {
-      case 'scale__control  scale__control--smaller':
+      case 'scale__control scale__control--smaller':
+        console.log('im here')
         newValaue = parseInt(zoomStorage.value, 10) - window.constant.ADD_PHOTO_RULES.ZOOM.STEP;
         zoomStorage.value = newValaue + '%';
         scaleValue = newValaue / 100;
@@ -22,7 +24,8 @@
         }
         return;
 
-      case 'scale__control  scale__control--bigger':
+      case 'scale__control scale__control--bigger':
+        console.log('im here2')
         newValaue = parseInt(zoomStorage.value, 10) + window.constant.ADD_PHOTO_RULES.ZOOM.STEP;
         zoomStorage.value = newValaue + '%';
         scaleValue = newValaue / 100;
