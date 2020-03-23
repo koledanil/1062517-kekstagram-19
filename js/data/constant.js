@@ -52,7 +52,8 @@
       SHOW_AMOUNT_CMNT: 5,
       PLUS_AMOUNT_CMNT: 5,
       SLIDER_START_POSITION: 453,
-      INTERVAL_ERR_TITLE: 1000
+      INTERVAL_ERR_TITLE: 1000,
+      FILE_TYPES: ['gif', 'jpg', 'jpeg', 'png'],
     }, // end ADD_PHOTO_RULES
 
     EFFECT_DEFAULT_VALUE: {
